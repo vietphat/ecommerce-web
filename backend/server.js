@@ -18,13 +18,13 @@ app.listen(PORT, () => {
 });
 
 // xử lý các lỗi
-process.on('unhandledRejection', (err) => {
-  console.log('UNHANDLED REJECTIONS 💥, Shutting down...');
-  console.log(`Error name: `, err.name);
-  console.log(`Error message: `, err.message);
-  console.log(`Error stack: `, err.stack);
+// process.on('unhandledRejection', (err) => {
+//   console.log('UNHANDLED REJECTIONS 💥, Shutting down...');
+//   console.log(`Error name: `, err.name);
+//   console.log(`Error message: `, err.message);
+//   console.log(`Error stack: `, err.stack);
 
-  server.close(() => {
-    process.exit(1);
-  });
-});
+//   server.close(() => {
+//     process.exit(1);
+//   });
+// });

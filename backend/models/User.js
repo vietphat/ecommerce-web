@@ -19,7 +19,7 @@ var userSchema = new mongoose.Schema(
     phoneNumber: {
       type: String,
       default: '',
-      unique: [true, 'Số điện thoại này đã được sử dụng'],
+      unique: true,
     },
     fromGoogleAccount: {
       type: Boolean,
@@ -34,7 +34,7 @@ var userSchema = new mongoose.Schema(
     email: {
       type: String,
       required: [true, 'Trường email là bắt buộc'],
-      unique: [true, 'Email này đã được sử dụng'],
+      unique: true,
       validate: [validator.isEmail, 'Email không hợp lệ'],
     },
     password: {

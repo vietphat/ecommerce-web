@@ -20,13 +20,6 @@ router.post(
 // Logout
 router.get('/logout', authController.logout);
 
-// Change password
-router.patch(
-  '/change-password',
-  isAuthenticated,
-  authController.changePassword
-);
-
 // Forgot password
 router.post('/forgot-password', authController.forgotPassword);
 
@@ -34,6 +27,13 @@ router.post('/forgot-password', authController.forgotPassword);
 router.patch(
   '/reset-password/:resetPasswordToken',
   authController.resetPassword
+);
+
+// Change my password
+router.patch(
+  '/change-password',
+  isAuthenticated,
+  authController.changeMyPassword
 );
 
 module.exports = router;

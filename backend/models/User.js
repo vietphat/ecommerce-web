@@ -52,6 +52,11 @@ var userSchema = new mongoose.Schema(
         message: 'Mật khẩu xác nhận không chính xác',
       },
     },
+    role: {
+      type: String,
+      default: 'user',
+      enum: ['user', 'admin'],
+    },
     passwordChangedAt: {
       type: Date,
     },
@@ -61,6 +66,10 @@ var userSchema = new mongoose.Schema(
     },
     resetPasswordTokenExpiresIn: {
       type: Date,
+    },
+    active: {
+      type: Boolean,
+      default: true,
     },
   },
   {
@@ -86,6 +95,18 @@ userSchema.pre('save', function (next) {
   if (!this.isModified('password') || this.isNew) return next();
 
   this.passwordChangedAt = Date.now() - 1000;
+
+  next();
+});
+
+// PRE HOOK: Không lấy tài khoản đã xóa
+userSchema.pre(/^find/, function (next) {
+  // Nếu là admin thì có thể lấy thông tin tất cả tài khoản đã xóa
+  if (this.getOptions().byAdmin) {
+    this.find();
+  } else {
+    this.find({ active: { $ne: false } });
+  }
 
   next();
 });

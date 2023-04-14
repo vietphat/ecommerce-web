@@ -17,7 +17,7 @@ exports.register = catchAsync(async (req, res, next) => {
     firstName,
     lastName,
     phoneNumber,
-    email,
+    email: email?.toLowerCase(),
     password,
     confirmPassword,
   });
@@ -33,14 +33,16 @@ exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
 
   // 1. Kiểm tra nếu người dùng chưa nhập tài khoản hoặc mật khẩu
-  if (!email || !password) {
+  if (!email.toLowerCase() || !password) {
     return next(
       new AppError('Vui lòng nhập đầy đủ thông tin tài khoản và mật khẩu', 400)
     );
   }
 
   // 2. Lấy user trong db qua email
-  const user = await User.findOne({ email }).select('+password');
+  const user = await User.findOne({ email: email.toLowerCase() }).select(
+    '+password'
+  );
 
   if (!user) {
     return next(new AppError('Tài khoản hoặc mật khẩu chưa chính xác', 401));
@@ -83,11 +85,11 @@ exports.logout = catchAsync(async (req, res, next) => {
 });
 
 // Change password
-exports.changePassword = catchAsync(async (req, res, next) => {
+exports.changeMyPassword = catchAsync(async (req, res, next) => {
   const { currentPassword, password, confirmPassword } = req.body;
-  const user = await User.findOne({ email: req.user.email }).select(
-    'firstName lastName email password'
-  );
+  const user = await User.findOne({
+    email: req.user.email.toLowerCase(),
+  }).select('firstName lastName email password');
 
   if (!(await user.enteredPasswordIsCorrect(currentPassword, user.password))) {
     return next(new AppError('Mật khẩu hiện tại không chính xác', 401));
@@ -104,7 +106,7 @@ exports.changePassword = catchAsync(async (req, res, next) => {
 
 // Forgot password
 exports.forgotPassword = catchAsync(async (req, res, next) => {
-  const { email } = req.body;
+  const email = req.body.email.toLowerCase();
   // 1. Lấy thông tin user thông qua email
   const user = await User.findOne({ email });
 
@@ -218,23 +220,6 @@ const createAndSendToken = async (user, res, req, statusCode) => {
   res.cookie('jwt', token, cookieOptions);
 
   user.password = undefined;
-
-  // const data = await User.populate(user, [
-  //   { path: 'followers', select: 'username avatarUrl' },
-  //   { path: 'following', select: 'username avatarUrl' },
-  //   { path: 'friendsList', select: 'username avatarUrl' },
-  //   {
-  //     path: 'posts',
-  //     populate: [
-  //       {
-  //         path: 'comments',
-  //         select: 'username avatarUrl description',
-  //         populate: { path: 'likes', select: 'username avatarUrl' },
-  //       },
-  //       { path: 'likes', select: 'username avatarUrl' },
-  //     ],
-  //   },
-  // ]);
 
   res.status(statusCode).json({
     status: 'Thành công',

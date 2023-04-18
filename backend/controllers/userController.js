@@ -1,6 +1,7 @@
 const AppError = require('../utils/AppError');
 const User = require('./../models/User');
 const catchAsync = require('./../utils/catchAsync');
+const validateMongoDbId = require('./../config/validateMongoDbId');
 
 /// A. Client
 // Update my data
@@ -84,6 +85,10 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
 exports.getAUser = catchAsync(async (req, res, next) => {
   const { id } = req.params;
 
+  if (!validateMongoDbId(id)) {
+    return next(new AppError('Id không hợp lệ hoặc không tim thấy người dùng'));
+  }
+
   const user = await User.findById(id);
 
   if (!user) {
@@ -154,6 +159,10 @@ exports.createAUser = catchAsync(async (req, res, next) => {
 exports.updateAUser = catchAsync(async (req, res, next) => {
   const { id } = req.params;
 
+  if (!validateMongoDbId(id)) {
+    return next(new AppError('Id không hợp lệ hoặc không tim thấy người dùng'));
+  }
+
   const {
     firstName,
     lastName,
@@ -201,6 +210,10 @@ exports.updateAUser = catchAsync(async (req, res, next) => {
 exports.deleteAUser = catchAsync(async (req, res, next) => {
   const { id } = req.params;
 
+  if (!validateMongoDbId(id)) {
+    return next(new AppError('Id không hợp lệ hoặc không tim thấy người dùng'));
+  }
+
   await User.findByIdAndDelete(id);
 
   res.status(200).json({
@@ -212,6 +225,10 @@ exports.deleteAUser = catchAsync(async (req, res, next) => {
 // Block user
 exports.blockAUser = catchAsync(async (req, res, next) => {
   const { id } = req.params;
+
+  if (!validateMongoDbId(id)) {
+    return next(new AppError('Id không hợp lệ hoặc không tim thấy người dùng'));
+  }
 
   const user = await User.findByIdAndUpdate(
     id,
@@ -228,6 +245,10 @@ exports.blockAUser = catchAsync(async (req, res, next) => {
 // Unblock user
 exports.unblockAUser = catchAsync(async (req, res, next) => {
   const { id } = req.params;
+
+  if (!validateMongoDbId(id)) {
+    return next(new AppError('Id không hợp lệ hoặc không tim thấy người dùng'));
+  }
 
   const user = await User.findByIdAndUpdate(
     id,

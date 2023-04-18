@@ -1,10 +1,10 @@
 const crypto = require('crypto');
 
-const jwt = require('jsonwebtoken');
-
 const catchAsync = require('./../utils/catchAsync');
-const AppError = require('../utils/AppError');
-const User = require('../models/User');
+const AppError = require('./../utils/AppError');
+const User = require('./../models/User');
+const generateJWT = require('./../config/generateJWT');
+const generateRefreshToken = require('../config/generateRefreshToken');
 
 // Register
 exports.register = catchAsync(async (req, res, next) => {
@@ -24,7 +24,16 @@ exports.register = catchAsync(async (req, res, next) => {
   // ẩn trường password khi trả dữ liệu về client
   user.password = undefined;
 
-  await createAndSendToken(user, res, req, 201);
+  res.status(200).json({
+    status: 'Thành công',
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    phoneNumber: user.phoneNumber,
+    token: generateJWT(user._id),
+  });
+
+  // await createAndSendToken(user, res, req, 201);
 });
 
 // Login
@@ -53,7 +62,19 @@ exports.login = catchAsync(async (req, res, next) => {
   }
 
   // 4. Tạo và gửi token
-  await createAndSendToken(user, res, req, 200);
+  const refreshToken = generateRefreshToken(user._id);
+  // res.cookie
+
+  res.status(200).json({
+    status: 'Thành công',
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    phoneNumber: user.phoneNumber,
+    token: generateJWT(user._id),
+  });
+
+  // await createAndSendToken(user, res, req, 200);
 });
 
 // Login with google account
@@ -100,7 +121,15 @@ exports.changeMyPassword = catchAsync(async (req, res, next) => {
 
   // await new Email(user).sendChangePasswordSuccessfully();
 
-  await createAndSendToken(user, res, req, 200);
+  res.status(200).json({
+    status: 'Thành công',
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    phoneNumber: user.phoneNumber,
+    token: generateJWT(user._id),
+  });
+  // await createAndSendToken(user, res, req, 200);
 });
 
 // Forgot password
@@ -188,7 +217,15 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     // await new Email(user).sendChangePasswordSuccessfully();
 
     // Log the user in
-    await createAndSendToken(user, res, req, 200);
+    res.status(200).json({
+      status: 'Thành công',
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      phoneNumber: user.phoneNumber,
+      token: generateJWT(user._id),
+    });
+    // await createAndSendToken(user, res, req, 200);
   } catch (error) {
     res.status(500).json({
       status: 'Lấy lại mật khẩu thất bại',
@@ -197,32 +234,25 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   }
 });
 
-// Hàm tạo jsonwebtoken
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
-  });
-};
+// // Hàm tạo và gửi jsonwebtoken qua json
+// const createAndSendToken = async (user, res, req, statusCode) => {
+//   const token = generateJWT(user._id);
 
-// Hàm tạo và gửi jsonwebtoken qua json
-const createAndSendToken = async (user, res, req, statusCode) => {
-  const token = generateToken(user._id);
+//   const cookieOptions = {
+//     expires: new Date(
+//       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+//     ),
+//     httpOnly: true,
+//     secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
+//   };
 
-  const cookieOptions = {
-    expires: new Date(
-      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
-    ),
-    httpOnly: true,
-    secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
-  };
+//   res.cookie('jwt', token, cookieOptions);
 
-  res.cookie('jwt', token, cookieOptions);
+//   user.password = undefined;
 
-  user.password = undefined;
-
-  res.status(statusCode).json({
-    status: 'Thành công',
-    token,
-    data: user,
-  });
-};
+//   res.status(statusCode).json({
+//     status: 'Thành công',
+//     token,
+//     data: user,
+//   });
+// };

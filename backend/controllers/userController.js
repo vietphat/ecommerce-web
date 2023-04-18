@@ -56,11 +56,11 @@ exports.updateMyData = catchAsync(async (req, res, next) => {
 exports.deleteMe = catchAsync(async (req, res, next) => {
   const user = await User.findByIdAndDelete(req.user._id);
 
-  // xóa cookie jwt
-  res.cookie('jwt', 'loggedout', {
-    expires: new Date(Date.now() - 3 * 1000),
-    httpOnly: true,
-  });
+  // // xóa cookie jwt
+  // res.cookie('jwt', 'loggedout', {
+  //   expires: new Date(Date.now() - 3 * 1000),
+  //   httpOnly: true,
+  // });
 
   res.status(201).json({
     status: 'Thành công',

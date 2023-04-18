@@ -1,5 +1,7 @@
 const crypto = require('crypto');
 
+const jwt = require('jsonwebtoken');
+
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/AppError');
 const User = require('./../models/User');
@@ -63,7 +65,21 @@ exports.login = catchAsync(async (req, res, next) => {
 
   // 4. Tạo và gửi token
   const refreshToken = generateRefreshToken(user._id);
-  // res.cookie
+
+  await User.findByIdAndUpdate(
+    user._id,
+    {
+      refreshToken,
+    },
+    {
+      new: true,
+    }
+  );
+
+  res.cookie('refreshToken', refreshToken, {
+    httpOnly: true,
+    maxAge: 72 * 60 * 60 * 1000,
+  });
 
   res.status(200).json({
     status: 'Thành công',
@@ -72,6 +88,7 @@ exports.login = catchAsync(async (req, res, next) => {
     email: user.email,
     phoneNumber: user.phoneNumber,
     token: generateJWT(user._id),
+    refreshToken: refreshToken,
   });
 
   // await createAndSendToken(user, res, req, 200);
@@ -93,10 +110,24 @@ exports.signinWithGoogleAccount = catchAsync(async (req, res, next) => {
 
 // Logout
 exports.logout = catchAsync(async (req, res, next) => {
-  // xóa cookie jwt
-  res.cookie('jwt', 'loggedout', {
-    expires: new Date(Date.now() - 3 * 1000),
+  const { cookies } = req;
+
+  if (!cookies?.refreshToken) {
+    return next(new AppError('Bạn hiện chưa đăng nhập', 401));
+  }
+
+  const user = await User.findOne({ refreshToken: cookies.refreshToken });
+
+  if (user) {
+    await User.findOneAndUpdate(
+      { refreshToken: cookies.refreshToken },
+      { refreshToken: '' }
+    );
+  }
+
+  res.clearCookie('refreshToken', {
     httpOnly: true,
+    secure: true,
   });
 
   res.status(200).json({
@@ -234,25 +265,32 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   }
 });
 
-// // Hàm tạo và gửi jsonwebtoken qua json
-// const createAndSendToken = async (user, res, req, statusCode) => {
-//   const token = generateJWT(user._id);
+// Hàm xử lý refreshToken
+exports.handleRefreshToken = catchAsync(async (req, res, next) => {
+  const cookies = req.cookies;
 
-//   const cookieOptions = {
-//     expires: new Date(
-//       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
-//     ),
-//     httpOnly: true,
-//     secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
-//   };
+  if (!cookies?.refreshToken) {
+    return new AppError('Không tìm thấy refreshToken trong cookies', 401);
+  }
 
-//   res.cookie('jwt', token, cookieOptions);
+  const refreshToken = cookies.refreshToken;
 
-//   user.password = undefined;
+  const user = await User.findOne({ refreshToken });
 
-//   res.status(statusCode).json({
-//     status: 'Thành công',
-//     token,
-//     data: user,
-//   });
-// };
+  if (!user) {
+    return new AppError('Không tìm thấy user trong database', 401);
+  }
+
+  jwt.verify(refreshToken, process.env.JWT_SECRET, (error, decoded) => {
+    if (error || user.id !== decoded.id) {
+      return new next('Refresh token không hợp lệ', 401);
+    }
+
+    const newJsonWebToken = generateJWT(user.id);
+
+    res.status(200).json({
+      status: 'Thành công',
+      newJsonWebToken,
+    });
+  });
+});

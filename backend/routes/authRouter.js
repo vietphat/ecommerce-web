@@ -17,6 +17,9 @@ router.post(
   authController.signinWithGoogleAccount
 );
 
+// Handle refresh token
+router.put('/refresh-token', authController.handleRefreshToken);
+
 // Logout
 router.get('/logout', authController.logout);
 

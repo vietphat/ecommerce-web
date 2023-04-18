@@ -30,6 +30,22 @@ var userSchema = new mongoose.Schema(
       default:
         'https://firebasestorage.googleapis.com/v0/b/social-media-web-1648d.appspot.com/o/users%2Favatars%2Fdefault-avatar.jpg?alt=media&token=fe149b52-bf43-4711-ad59-5b1745d6f0ef',
     },
+    address: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Address',
+      },
+    ],
+    wishlist: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Product',
+      },
+    ],
+    carts: {
+      type: Array,
+      default: [],
+    },
     // các thông tin xác thực
     email: {
       type: String,
@@ -67,9 +83,9 @@ var userSchema = new mongoose.Schema(
     resetPasswordTokenExpiresIn: {
       type: Date,
     },
-    active: {
+    isBlocked: {
       type: Boolean,
-      default: true,
+      default: false,
     },
   },
   {
@@ -99,17 +115,17 @@ userSchema.pre('save', function (next) {
   next();
 });
 
-// PRE HOOK: Không lấy tài khoản đã xóa
-userSchema.pre(/^find/, function (next) {
-  // Nếu là admin thì có thể lấy thông tin tất cả tài khoản đã xóa
-  if (this.getOptions().byAdmin) {
-    this.find();
-  } else {
-    this.find({ active: { $ne: false } });
-  }
+// // PRE HOOK: Không lấy tài khoản đã xóa
+// userSchema.pre(/^find/, function (next) {
+//   // Nếu là admin thì có thể lấy thông tin tất cả tài khoản đã xóa
+//   if (this.getOptions().byAdmin) {
+//     this.find();
+//   } else {
+//     this.find({ active: { $ne: false } });
+//   }
 
-  next();
-});
+//   next();
+// });
 
 // METHOD kiểm tra mật khẩu nhập vào có chính xác hay không
 userSchema.methods.enteredPasswordIsCorrect = async (

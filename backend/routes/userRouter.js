@@ -6,7 +6,7 @@ const restrictTo = require('./../middlewares/restrictTo');
 
 const router = express.Router();
 
-/// Toàn bộ route này cần đăng nhập để sử dụng
+/// MIDDLEWARE CHECK XÁC THỰC NGƯỜI DÙNG
 router.use(isAuthenticated);
 
 // Cập nhật thông tin cá nhân
@@ -15,7 +15,7 @@ router.patch('/update-my-data', userController.updateMyData);
 // Xóa tài khoản cá nhân
 router.delete('/delete-me', userController.deleteMe);
 
-/// Các route sau cần quyền truy cập là admin
+/// CÁC ROUTE SAU CẦN QUYỀN TRUY CẬP ADMIN
 router.use(restrictTo('admin'));
 
 router
@@ -27,6 +27,10 @@ router
 
 // Tìm người dùng dựa vào tên hoặc email
 router.get('/search/:searchInput', userController.getUsersByNameOrEmail);
+
+// Block/unblock người dùng
+router.patch('/block/:id', userController.blockAUser);
+router.patch('/unblock/:id', userController.unblockAUser);
 
 router
   .route('/:id')

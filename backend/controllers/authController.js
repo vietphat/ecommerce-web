@@ -1,5 +1,4 @@
 const crypto = require('crypto');
-const { promisify } = require('util');
 
 const jwt = require('jsonwebtoken');
 
@@ -73,7 +72,7 @@ exports.signinWithGoogleAccount = catchAsync(async (req, res, next) => {
 
 // Logout
 exports.logout = catchAsync(async (req, res, next) => {
-  // xóa cookie jwt và cho nó hết hạn ngay lập tức
+  // xóa cookie jwt
   res.cookie('jwt', 'loggedout', {
     expires: new Date(Date.now() - 3 * 1000),
     httpOnly: true,

@@ -1,5 +1,3 @@
-const mongoose = require('mongoose');
-
 const AppError = require('../utils/AppError');
 const User = require('./../models/User');
 const catchAsync = require('./../utils/catchAsync');
@@ -18,7 +16,7 @@ exports.updateMyData = catchAsync(async (req, res, next) => {
   }
 
   // Ngăn việc tự cập nhật quyền (role)
-  if (req.body.role || req.body.active != null) {
+  if (req.body.role || req.body.isBlocked) {
     return next(
       new AppError(
         'Bạn không được phép thay đổi thông tin quyền và trạng thái tài khoản',
@@ -55,11 +53,13 @@ exports.updateMyData = catchAsync(async (req, res, next) => {
 
 // Delete my account
 exports.deleteMe = catchAsync(async (req, res, next) => {
-  const user = await User.findByIdAndUpdate(
-    req.user._id,
-    { active: false },
-    { new: true }
-  );
+  const user = await User.findByIdAndDelete(req.user._id);
+
+  // xóa cookie jwt
+  res.cookie('jwt', 'loggedout', {
+    expires: new Date(Date.now() - 3 * 1000),
+    httpOnly: true,
+  });
 
   res.status(201).json({
     status: 'Thành công',
@@ -70,7 +70,7 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
 /// B. Management
 // Get all users
 exports.getAllUsers = catchAsync(async (req, res, next) => {
-  const users = await User.find().setOptions({ byAdmin: true });
+  const users = await User.find();
 
   res.status(200).json({
     status: 'Thành công',
@@ -84,7 +84,7 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
 exports.getAUser = catchAsync(async (req, res, next) => {
   const { id } = req.params;
 
-  const user = await User.findById(id).setOptions({ byAdmin: true });
+  const user = await User.findById(id);
 
   if (!user) {
     return next(
@@ -117,7 +117,7 @@ exports.getUsersByNameOrEmail = catchAsync(async (req, res, next) => {
         email: { $regex: searchInput, $options: 'i' },
       },
     ],
-  }).setOptions({ byAdmin: true });
+  });
 
   res.status(200).json({
     status: 'Thành công',
@@ -180,7 +180,7 @@ exports.updateAUser = catchAsync(async (req, res, next) => {
       runValidators: true,
       new: true,
     }
-  ).setOptions({ byAdmin: true });
+  );
 
   if (password) {
     user.password = password;
@@ -201,10 +201,44 @@ exports.updateAUser = catchAsync(async (req, res, next) => {
 exports.deleteAUser = catchAsync(async (req, res, next) => {
   const { id } = req.params;
 
-  await User.findByIdAndUpdate(id, { active: false });
+  await User.findByIdAndDelete(id);
 
   res.status(200).json({
     status: 'Xóa người dùng thành công',
     data: null,
+  });
+});
+
+// Block user
+exports.blockAUser = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+
+  const user = await User.findByIdAndUpdate(
+    id,
+    { isBlocked: true },
+    { new: true }
+  );
+
+  res.status(200).json({
+    status: 'Chặn người dùng thành công',
+    data: user,
+  });
+});
+
+// Unblock user
+exports.unblockAUser = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+
+  const user = await User.findByIdAndUpdate(
+    id,
+    {
+      isBlocked: false,
+    },
+    { new: true }
+  );
+
+  res.status(200).json({
+    status: 'Bỏ chặn người dùng thành công',
+    data: user,
   });
 });

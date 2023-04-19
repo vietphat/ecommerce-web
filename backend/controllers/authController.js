@@ -88,7 +88,6 @@ exports.login = catchAsync(async (req, res, next) => {
     email: user.email,
     phoneNumber: user.phoneNumber,
     token: generateJWT(user._id),
-    refreshToken: refreshToken,
   });
 
   // await createAndSendToken(user, res, req, 200);

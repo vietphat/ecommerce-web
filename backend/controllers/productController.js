@@ -38,6 +38,10 @@ exports.getAProduct = catchAsync(async (req, res, next) => {
 
   const product = await Product.findById(id);
 
+  if (!product) {
+    return next(new AppError(`Không tìm thấy sản phẩm với id là ${id}`, 400));
+  }
+
   res.status(200).json({
     status: 'Thành công',
     data: product,

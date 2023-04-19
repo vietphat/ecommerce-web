@@ -7,6 +7,7 @@ const AppError = require('./../utils/AppError');
 const User = require('./../models/User');
 const generateJWT = require('./../config/generateJWT');
 const generateRefreshToken = require('../config/generateRefreshToken');
+const Email = require('../utils/email');
 
 // Register
 exports.register = catchAsync(async (req, res, next) => {
@@ -26,6 +27,9 @@ exports.register = catchAsync(async (req, res, next) => {
   // ẩn trường password khi trả dữ liệu về client
   user.password = undefined;
 
+  // gửi email chào mừng đăng ký tài khoản
+  await new Email(user, process.env.DEV_DOMAIN).sendWelcome();
+
   res.status(200).json({
     status: 'Thành công',
     firstName: user.firstName,
@@ -34,8 +38,6 @@ exports.register = catchAsync(async (req, res, next) => {
     phoneNumber: user.phoneNumber,
     token: generateJWT(user._id),
   });
-
-  // await createAndSendToken(user, res, req, 201);
 });
 
 // Login
@@ -149,7 +151,7 @@ exports.changeMyPassword = catchAsync(async (req, res, next) => {
   user.confirmPassword = confirmPassword;
   await user.save();
 
-  // await new Email(user).sendChangePasswordSuccessfully();
+  await new Email(user).sendChangePasswordSuccessfully();
 
   res.status(200).json({
     status: 'Thành công',
@@ -177,37 +179,30 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   await user.save({ validateBeforeSave: false });
 
   // 3. Gửi reset password token to email của người dùng
-  // tempory solution
-  const resetPasswordUrl = `${process.env.DEV_DOMAIN}/reset-password/${resetPasswordToken}`;
+  try {
+    const resetPasswordUrl = `${process.env.DEV_DOMAIN}/reset-password/${resetPasswordToken}`;
 
-  res.status(200).json({
-    status: 'Thành công',
-    resetPasswordUrl, // tạm thời
-    message: `Tạm thời chưa gửi mail...`,
-  });
-  // try {
-  //   const resetPasswordUrl = `${process.env.DEV_DOMAIN}/reset-password/${resetPasswordToken}`;
+    await new Email(user, resetPasswordUrl).sendResetPassword();
 
-  //   await new Email(user, resetPasswordUrl).sendResetPassword();
+    // 4. Response
+    res.status(200).json({
+      status: 'Thành công',
+      resetPasswordUrl, // tạm thời, sau này để link trang lấy lại mật khẩu phía frontend
+      message:
+        'Đã gửi email thay đổi mật khẩu đến người dùng (chỉ có hiệu lực trong 10 phút)',
+    });
+  } catch (err) {
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    await user.save({ validateBeforeSave: false });
 
-  //   // 4. Response
-  //   res.status(200).json({
-  //     status: 'Thành công',
-  //     resetPasswordUrl, // tạm thời
-  //     message: 'Đã gửi email thay đổi mật khẩu đến người dùng',
-  //   });
-  // } catch (err) {
-  //   user.passwordResetToken = undefined;
-  //   user.passwordResetExpires = undefined;
-  //   await user.save({ validateBeforeSave: false });
+    console.log(err);
 
-  //   console.log(err);
-
-  //   res.status(500).json({
-  //     status: 'Có lỗi',
-  //     message: 'Không thể gửi email đến người dùng',
-  //   });
-  // }
+    res.status(500).json({
+      status: 'Có lỗi',
+      message: 'Không thể gửi email đến người dùng',
+    });
+  }
 });
 
 // Reset password
@@ -244,7 +239,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   try {
     await user.save();
     //send email
-    // await new Email(user).sendChangePasswordSuccessfully();
+    await new Email(user).sendChangePasswordSuccessfully();
 
     // Log the user in
     res.status(200).json({

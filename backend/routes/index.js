@@ -5,6 +5,7 @@ const blogRouter = require('./blogRouter');
 const productCategoryRouter = require('./productCategoryRouter');
 const blogCategoryRouter = require('./blogCategoryRouter');
 const brandRouter = require('./brandRouter');
+const couponRouter = require('./couponRouter');
 
 const router = (app) => {
   app.use('/api/auth', authRouter);
@@ -14,6 +15,7 @@ const router = (app) => {
   app.use('/api/product-categories', productCategoryRouter);
   app.use('/api/blog-categories', blogCategoryRouter);
   app.use('/api/brands', brandRouter);
+  app.use('/api/coupons', couponRouter);
 };
 
 module.exports = router;

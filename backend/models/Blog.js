@@ -31,10 +31,9 @@ const blogShema = new mongoose.Schema(
         ref: 'User',
       },
     ],
-    image: {
-      type: String,
-      default:
-        'https://thumbor.forbes.com/thumbor/fit-in/900x510/https://www.forbes.com/advisor/wp-content/uploads/2022/09/how_to_start_a_travel_blog_-_article_image.jpg',
+    images: {
+      type: Array,
+      default: [],
     },
     author: {
       type: mongoose.Schema.Types.ObjectId,

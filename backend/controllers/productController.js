@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 const slugify = require('slugify');
 
 const Product = require('./../models/Product');
@@ -6,6 +8,7 @@ const AppError = require('./../utils/AppError');
 const APIFeatures = require('./../utils/APIFeatures');
 const catchAsync = require('./../utils/catchAsync');
 const validateMongoDbId = require('./../config/validateMongoDbId');
+const cloudinaryUploadImg = require('./../utils/cloudinary');
 
 exports.createAProduct = catchAsync(async (req, res, next) => {
   const { title, description, price, quantity, color, brand, category } =
@@ -190,6 +193,47 @@ exports.ratingAProduct = catchAsync(async (req, res, next) => {
   );
 
   await product.save();
+
+  res.status(200).json({
+    status: 'Thành công',
+    data: product,
+  });
+});
+
+exports.uploadImages = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+
+  if (!validateMongoDbId(id)) {
+    return next(new AppError('Product id không hợp lệ', 400));
+  }
+
+  if (!req?.files) {
+    return next(new AppError('Không nhận được files', 400));
+  }
+
+  const urls = [];
+  const { files } = req;
+
+  for (const file of files) {
+    const { path } = file;
+    const newPath = await cloudinaryUploadImg(path);
+    urls.push(newPath);
+    fs.unlinkSync(path);
+  }
+
+  const product = await Product.findByIdAndUpdate(
+    id,
+    {
+      images: urls.map((url) => url),
+    },
+    {
+      new: true,
+    }
+  );
+
+  if (!product) {
+    return next(new AppError(`Không tìm thấy product với id là ${id}`, 400));
+  }
 
   res.status(200).json({
     status: 'Thành công',

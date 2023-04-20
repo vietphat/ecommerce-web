@@ -3,6 +3,10 @@ const express = require('express');
 const productController = require('./../controllers/productController');
 const isAuthenticated = require('./../middlewares/isAuthenticated');
 const restrictTo = require('./../middlewares/restrictTo');
+const {
+  uploadPhoto,
+  productImgResize,
+} = require('./../middlewares/uploadImages');
 
 const router = express.Router();
 
@@ -13,8 +17,19 @@ router
 
 // Thêm vào ds yêu thích
 router.patch('/wishlist/:id', isAuthenticated, productController.addToWishList);
+
 // Đánh giá sản phẩm
 router.patch('/rating/:id', isAuthenticated, productController.ratingAProduct);
+
+// Upload hình sản phẩm
+router.put(
+  '/upload-images/:id',
+  isAuthenticated,
+  restrictTo('admin'),
+  uploadPhoto.array('images', 10),
+  productImgResize,
+  productController.uploadImages
+);
 
 router
   .route('/:id')

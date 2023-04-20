@@ -1,8 +1,10 @@
+const fs = require('fs');
+
 const Blog = require('./../models/Blog');
-const User = require('./../models/User');
 const AppError = require('../utils/AppError');
 const catchAsync = require('./../utils/catchAsync');
 const validateMongoDbId = require('./../config/validateMongoDbId');
+const cloudinaryUploadImg = require('../utils/cloudinary');
 
 exports.createABlog = catchAsync(async (req, res, next) => {
   const { title, description, category, image, author } = req.body;
@@ -197,6 +199,43 @@ exports.dislikeABlog = catchAsync(async (req, res, next) => {
   }
 
   await blog.save();
+
+  res.status(200).json({
+    status: 'Thành công',
+    data: blog,
+  });
+});
+
+exports.uploadImages = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+
+  if (!validateMongoDbId(id)) {
+    return next(new AppError('Blog id không hợp lệ', 400));
+  }
+
+  if (!req?.files) {
+    return next(new AppError('Không nhận được files', 400));
+  }
+
+  const urls = [];
+  const { files } = req;
+
+  for (const file of files) {
+    const { path } = file;
+    const newPath = await cloudinaryUploadImg(path);
+    urls.push(newPath);
+    fs.unlinkSync(path);
+  }
+
+  const blog = await Blog.findByIdAndUpdate(
+    id,
+    {
+      images: urls.map((url) => url),
+    },
+    {
+      new: true,
+    }
+  );
 
   res.status(200).json({
     status: 'Thành công',

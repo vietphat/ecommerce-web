@@ -148,3 +148,51 @@ exports.addToWishList = catchAsync(async (req, res, next) => {
     data: user,
   });
 });
+
+exports.ratingAProduct = catchAsync(async (req, res, next) => {
+  const { id: productId } = req.params;
+  const { _id: userId } = req.user;
+
+  const { star, comment } = req.body;
+
+  if (!validateMongoDbId(productId)) {
+    return next(new AppError('Product id không hợp lệ', 400));
+  }
+
+  const product = await Product.findById(productId);
+
+  if (!product) {
+    return next(new AppError(`Không tìm thấy sản phẩm với id là ${productId}`));
+  }
+
+  const alreadyRatedIndex = product.ratings.findIndex(
+    (ratingObj) => ratingObj.postedBy.toString() === userId.toString()
+  );
+
+  let updatedProduct;
+  // nếu đã đánh giá rồi
+  // => chỉ thay thế star
+  if (alreadyRatedIndex !== -1) {
+    product.ratings[alreadyRatedIndex].star = star;
+    product.ratings[alreadyRatedIndex].comment = comment;
+
+    // nếu chưa thì
+    // => thay thế star và tăng ratingsQuantity
+  } else {
+    product.ratings.push({ star, comment, postedBy: userId });
+    product.ratingsQuantity++;
+  }
+
+  // tính đánh giá trung bình
+  product.ratingsAverage = Math.round(
+    product.ratings.reduce((acc, cur) => acc + cur.star, 0) /
+      product.ratings.length
+  );
+
+  await product.save();
+
+  res.status(200).json({
+    status: 'Thành công',
+    data: product,
+  });
+});

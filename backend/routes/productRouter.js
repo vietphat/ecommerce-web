@@ -13,6 +13,8 @@ router
 
 // Thêm vào ds yêu thích
 router.patch('/wishlist/:id', isAuthenticated, productController.addToWishList);
+// Đánh giá sản phẩm
+router.patch('/rating/:id', isAuthenticated, productController.ratingAProduct);
 
 router
   .route('/:id')

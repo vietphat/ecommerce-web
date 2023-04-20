@@ -1,10 +1,11 @@
 const slugify = require('slugify');
 
 const Product = require('./../models/Product');
-const catchAsync = require('./../utils/catchAsync');
+const User = require('../models/User');
 const AppError = require('./../utils/AppError');
-const validateMongoDbId = require('./../config/validateMongoDbId');
 const APIFeatures = require('./../utils/APIFeatures');
+const catchAsync = require('./../utils/catchAsync');
+const validateMongoDbId = require('./../config/validateMongoDbId');
 
 exports.createAProduct = catchAsync(async (req, res, next) => {
   const { title, description, price, quantity, color, brand, category } =
@@ -109,5 +110,41 @@ exports.deleteAProduct = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: 'Thành công',
     data: null,
+  });
+});
+
+exports.addToWishList = catchAsync(async (req, res, next) => {
+  const { id: productId } = req.params;
+
+  if (!validateMongoDbId(productId)) {
+    return next(new AppError('Product Id không hợp lệ', 400));
+  }
+
+  const user = await User.findById(req.user._id);
+  const product = await Product.findById(productId);
+
+  if (!product) {
+    return next(
+      new AppError(`Không tìm thấy sản phẩm có id là ${productId}`, 400)
+    );
+  }
+
+  const alreadyAddedIndex = user.wishlist.findIndex(
+    (pId) => pId.toString() === productId
+  );
+
+  // nếu người dùng chưa thêm vào danh sách yêu thích
+  // => thêm vào ds
+  if (alreadyAddedIndex === -1) {
+    user.wishlist.push(productId);
+  } else {
+    user.wishlist.splice(alreadyAddedIndex, 1);
+  }
+
+  await user.save({ validateBeforeSave: false });
+
+  res.status(200).json({
+    status: 'Thành công',
+    data: user,
   });
 });

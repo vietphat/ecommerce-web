@@ -11,6 +11,9 @@ router
   .get(productController.getAllProducts)
   .post(isAuthenticated, restrictTo('admin'), productController.createAProduct);
 
+// Thêm vào ds yêu thích
+router.patch('/wishlist/:id', isAuthenticated, productController.addToWishList);
+
 router
   .route('/:id')
   .get(productController.getAProduct)

@@ -134,29 +134,33 @@ exports.likeABlog = catchAsync(async (req, res, next) => {
     return next(new AppError('Blog không tồn tại', 400));
   }
 
-  const currentUserHasAlreadyLikeThisBlog = blog.likes.includes(req.user._id);
+  const currentUserHasAlreadyLikeThisBlogIndex = blog.likes.findIndex(
+    (likeUserId) => likeUserId.toString() === req.user._id.toString()
+  );
   const currentUserHasAlreadyDislikeThisBlogIndex = blog.dislikes.findIndex(
     (dislikeUserId) => dislikeUserId.toString() === req.user._id.toString()
   );
 
   // nếu chưa thích blog này
-  if (!currentUserHasAlreadyLikeThisBlog) {
-    // nếu đã dislike blog này
+  if (currentUserHasAlreadyLikeThisBlogIndex === -1) {
+    // nếu đã dislike blog này => bỏ dislike
     if (currentUserHasAlreadyDislikeThisBlogIndex !== -1) {
       blog.dislikes.splice(currentUserHasAlreadyDislikeThisBlogIndex, 1);
     }
 
+    // like
     blog.likes.push(req.user._id);
-
-    await blog.save();
-
-    res.status(200).json({
-      status: 'Thành công',
-      data: blog,
-    });
   } else {
-    return next(new AppError('Bạn đã like bài đăng này rồi', 400));
+    // nếu đã thích rồi => bỏ thích
+    blog.likes.splice(currentUserHasAlreadyLikeThisBlogIndex, 1);
   }
+
+  await blog.save();
+
+  res.status(200).json({
+    status: 'Thành công',
+    data: blog,
+  });
 });
 
 exports.dislikeABlog = catchAsync(async (req, res, next) => {
@@ -172,29 +176,30 @@ exports.dislikeABlog = catchAsync(async (req, res, next) => {
     return next(new AppError('Blog không tồn tại', 400));
   }
 
-  const currentUserHasAlreadyDislikeThisBlog = blog.dislikes.includes(
-    req.user._id
+  const currentUserHasAlreadyDislikeThisBlogIndex = blog.dislikes.findIndex(
+    (dislikeUserId) => dislikeUserId.toString() === req.user._id.toString()
   );
   const currentUserHasAlreadyLikeThisBlogIndex = blog.likes.findIndex(
     (likeUserId) => likeUserId.toString() === req.user._id.toString()
   );
 
   // nếu chưa dislike thích blog này
-  if (!currentUserHasAlreadyDislikeThisBlog) {
+  if (currentUserHasAlreadyDislikeThisBlogIndex === -1) {
     // nếu đã like blog này
     if (currentUserHasAlreadyLikeThisBlogIndex !== -1) {
       blog.likes.splice(currentUserHasAlreadyLikeThisBlogIndex, 1);
     }
 
     blog.dislikes.push(req.user._id);
-
-    await blog.save();
-
-    res.status(200).json({
-      status: 'Thành công',
-      data: blog,
-    });
   } else {
-    return next(new AppError('Bạn đã dislike bài đăng này rồi', 400));
+    // nếu đã dislike rồi => bỏ dislike
+    blog.dislikes.splice(currentUserHasAlreadyDislikeThisBlogIndex, 1);
   }
+
+  await blog.save();
+
+  res.status(200).json({
+    status: 'Thành công',
+    data: blog,
+  });
 });

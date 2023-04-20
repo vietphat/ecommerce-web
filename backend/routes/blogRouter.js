@@ -19,6 +19,7 @@ router.patch('/dislike/:blogId', isAuthenticated, blogController.dislikeABlog);
 router
   .route('/:id')
   .get(blogController.getABlog)
-  .patch(isAuthenticated, restrictTo('admin'), blogController.updateABlog);
+  .patch(isAuthenticated, restrictTo('admin'), blogController.updateABlog)
+  .delete(isAuthenticated, restrictTo('admin'), blogController.deleteABlog);
 
 module.exports = router;

@@ -106,6 +106,21 @@ exports.getAllBlog = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.deleteABlog = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+
+  if (!validateMongoDbId(id)) {
+    return next(new AppError('Id không hợp lệ', 400));
+  }
+
+  await Blog.findByIdAndDelete(id);
+
+  res.status(200).json({
+    status: 'Thành công',
+    data: null,
+  });
+});
+
 exports.likeABlog = catchAsync(async (req, res, next) => {
   const { blogId } = req.params;
 

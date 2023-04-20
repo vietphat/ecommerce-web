@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 const validator = require('validator');
 
 // Declare the Schema of the Mongo model
-var userSchema = new mongoose.Schema(
+const userSchema = new mongoose.Schema(
   {
     // các thông tin cá nhân
     firstName: {

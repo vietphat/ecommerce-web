@@ -68,6 +68,44 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
   });
 });
 
+// Get Wishlist
+exports.getWishlist = catchAsync(async (req, res, next) => {
+  const foundUser = await User.findById(req.user._id).populate('wishlist');
+
+  if (!foundUser) {
+    return next(new AppError('Không tìm thấy người dùng', 400));
+  }
+
+  const { wishlist } = foundUser;
+
+  res.status(200).json({
+    status: 'Thành công',
+    data: wishlist,
+  });
+});
+
+// Save address
+exports.saveAddress = catchAsync(async (req, res, next) => {
+  const { address } = req.body;
+
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      address,
+    },
+    { new: true }
+  );
+
+  if (!user) {
+    return next(new AppError('Không tìm thấy user', 400));
+  }
+
+  res.status(200).json({
+    status: 'Thành công',
+    data: user,
+  });
+});
+
 /// B. Management
 // Get all users
 exports.getAllUsers = catchAsync(async (req, res, next) => {

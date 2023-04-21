@@ -237,6 +237,10 @@ exports.uploadImages = catchAsync(async (req, res, next) => {
     }
   );
 
+  if (!blog) {
+    return next(new AppError(`Không tìm thấy blog với id là ${id}`, 400));
+  }
+
   res.status(200).json({
     status: 'Thành công',
     data: blog,

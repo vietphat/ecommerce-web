@@ -95,6 +95,62 @@ exports.login = catchAsync(async (req, res, next) => {
   // await createAndSendToken(user, res, req, 200);
 });
 
+// Admin login
+// Login
+exports.adminLogin = catchAsync(async (req, res, next) => {
+  const { email, password } = req.body;
+
+  // 1. Kiểm tra nếu người dùng chưa nhập tài khoản hoặc mật khẩu
+  if (!email.toLowerCase() || !password) {
+    return next(
+      new AppError('Vui lòng nhập đầy đủ thông tin tài khoản và mật khẩu', 400)
+    );
+  }
+
+  // 2. Lấy user trong db qua email và check có tồn tại + là admin hay không
+  const user = await User.findOne({ email: email.toLowerCase() }).select(
+    '+password'
+  );
+
+  if (!user || user.role !== 'admin') {
+    return next(new AppError('Tài khoản hoặc mật khẩu chưa chính xác', 401));
+  }
+
+  // 3. Kiểm tra mật khẩu có chính xác hay không
+  if (!(await user.enteredPasswordIsCorrect(password, user.password))) {
+    return next(new AppError('Tài khoản hoặc mật khẩu chưa chính xác', 401));
+  }
+
+  // 4. Tạo và gửi token
+  const refreshToken = generateRefreshToken(user._id);
+
+  await User.findByIdAndUpdate(
+    user._id,
+    {
+      refreshToken,
+    },
+    {
+      new: true,
+    }
+  );
+
+  res.cookie('refreshToken', refreshToken, {
+    httpOnly: true,
+    maxAge: 72 * 60 * 60 * 1000,
+  });
+
+  res.status(200).json({
+    status: 'Thành công',
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    phoneNumber: user.phoneNumber,
+    token: generateJWT(user._id),
+  });
+
+  // await createAndSendToken(user, res, req, 200);
+});
+
 // Login with google account
 exports.signinWithGoogleAccount = catchAsync(async (req, res, next) => {
   // const { email, username } = req.body;

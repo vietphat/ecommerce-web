@@ -11,6 +11,9 @@ router.post('/register', authController.register);
 // Login
 router.post('/login', authController.login);
 
+// Login
+router.post('/admin-login', authController.adminLogin);
+
 // Login with google account
 router.post(
   '/login-with-google-account',

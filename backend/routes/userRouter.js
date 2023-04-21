@@ -12,8 +12,14 @@ router.use(isAuthenticated);
 // Cập nhật thông tin cá nhân
 router.patch('/update-my-data', userController.updateMyData);
 
+// Cập nhật thông tin địa chỉ
+router.patch('/save-address', userController.saveAddress);
+
 // Xóa tài khoản cá nhân
 router.delete('/delete-me', userController.deleteMe);
+
+// Lấy danh sách yêu thích (wishlist)
+router.get('/wishlist', userController.getWishlist);
 
 /// CÁC ROUTE SAU CẦN QUYỀN TRUY CẬP ADMIN
 router.use(restrictTo('admin'));

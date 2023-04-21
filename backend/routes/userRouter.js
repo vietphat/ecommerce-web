@@ -21,6 +21,33 @@ router.delete('/delete-me', userController.deleteMe);
 // Lấy danh sách yêu thích (wishlist)
 router.get('/wishlist', userController.getWishlist);
 
+/// GIỎ HÀNG
+// Thêm giỏ hàng
+router.post('/cart', userController.addToCart);
+
+// Lấy thông tin giỏ hàng
+router.get('/cart', userController.getUserCart);
+
+// Lấy thông tin giỏ hàng
+router.delete('/cart', userController.emptyUserCart);
+
+// Sử dụng phiếu giảm giá
+router.patch('/cart/apply-coupon', userController.applyCoupon);
+
+/// HÓA ĐƠN
+// Tạo hóa đơn
+router.post('/order', userController.createOrder);
+
+// Lấy thông tin hóa đơn
+router.get('/order', userController.getOrders);
+
+// Cập nhật thông tin hóa đơn
+router.patch(
+  '/order/:id',
+  restrictTo('admin'),
+  userController.updateOrderStatus
+);
+
 /// CÁC ROUTE SAU CẦN QUYỀN TRUY CẬP ADMIN
 router.use(restrictTo('admin'));
 

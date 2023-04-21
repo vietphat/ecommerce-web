@@ -1,5 +1,11 @@
-const AppError = require('../utils/AppError');
+const uniqid = require('uniqid');
+
 const User = require('./../models/User');
+const Cart = require('./../models/Cart');
+const Product = require('./../models/Product');
+const Coupon = require('./../models/Coupon');
+const Order = require('../models/Order');
+const AppError = require('../utils/AppError');
 const catchAsync = require('./../utils/catchAsync');
 const validateMongoDbId = require('./../config/validateMongoDbId');
 
@@ -103,6 +109,208 @@ exports.saveAddress = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: 'Thành công',
     data: user,
+  });
+});
+
+// Add To Cart
+exports.addToCart = catchAsync(async (req, res, next) => {
+  const { items } = req.body;
+  const { _id: userId } = req.user;
+
+  let products = [];
+  const user = await User.findById(userId);
+
+  // Kiểm tra xem trong db có giỏ hàng của người dùng hiện tại chưa
+  const alreadyExistCart = await Cart.findOne({ createdBy: userId });
+  if (alreadyExistCart) {
+    await alreadyExistCart.deleteOne();
+  }
+
+  for (let i = 0; i < items.length; i++) {
+    let item = {};
+    item.product = items[i]._id;
+    item.count = items[i].count;
+    item.color = items[i].color;
+
+    item.price = (
+      await Product.findById(items[i]._id).select('price').exec()
+    )?.price;
+
+    products.push(item);
+  }
+
+  // Tính tổng tiền giỏ hàng
+  const cartTotal = products.reduce(
+    (acc, cur) => acc + cur.price * cur.count,
+    0
+  );
+
+  // tạo cart và lưu vào db
+  const cart = await new Cart({
+    products,
+    cartTotal,
+    createdBy: userId,
+  }).save();
+
+  res.status(200).json({
+    status: 'Thành công',
+    data: cart,
+  });
+});
+
+// Get User Cart
+exports.getUserCart = catchAsync(async (req, res, next) => {
+  const cart = await Cart.findOne({ createdBy: req.user._id }).populate(
+    'products.product',
+    'title color price'
+  );
+
+  res.status(200).json({
+    status: 'Thành công',
+    data: cart,
+  });
+});
+
+// Empty User Cart
+exports.emptyUserCart = catchAsync(async (req, res, next) => {
+  await Cart.findOneAndDelete({ createdBy: req.user._id });
+
+  res.status(200).json({
+    status: 'Thành công',
+    data: null,
+  });
+});
+
+// Apply coupon
+exports.applyCoupon = catchAsync(async (req, res, next) => {
+  const { _id: userId } = req.user;
+  const { coupon } = req.body;
+
+  // Kiểm tra xem coupon có và còn hạn hay không
+  const couponIsValid = await Coupon.findOne({
+    name: coupon,
+    expiry: { $gt: new Date(Date.now()).toISOString() },
+  });
+
+  if (!couponIsValid) {
+    return next(
+      new AppError(
+        'Coupon đã hết hạn hoặc không hợp lệ. Vui lòng thử lại sau.',
+        400
+      )
+    );
+  }
+
+  // Lấy giỏ hàng trong db ra để tính giá sau khi áp dụng phiếu giảm giá
+  const cart = await Cart.findOne({ createdBy: userId });
+
+  if (!cart) {
+    return next(new AppError('Không tìm thấy giỏ hàng', 400));
+  }
+
+  const totalAfterDiscount =
+    cart.cartTotal - (cart.cartTotal * couponIsValid.discount) / 100;
+  cart.totalAfterDiscount = totalAfterDiscount;
+  await cart.save();
+
+  res.status(200).json({
+    status: 'Thành công',
+    data: cart,
+  });
+});
+
+// Create Order
+exports.createOrder = catchAsync(async (req, res, next) => {
+  const { COD, couponApplied } = req.body;
+  const { _id: userId } = req.user;
+
+  if (!COD) {
+    return next(new AppError('Không thể tạo đơn hàng', 400));
+  }
+
+  const cart = await Cart.findOne({ createdBy: userId });
+
+  let amount;
+  if (couponApplied && cart.totalAfterDiscount) {
+    amount = cart.totalAfterDiscount;
+  } else {
+    amount = cart.cartTotal;
+  }
+
+  // lưu hóa đơn
+  const order = await new Order({
+    products: cart.products,
+    paymentIntent: {
+      id: uniqid(),
+      method: 'COD',
+      amount,
+      status: 'Chưa xử lý',
+      createdAt: Date.now(),
+      currency: 'VND',
+    },
+    orderStatus: 'Chưa xử lý',
+    orderBy: userId,
+  }).save();
+
+  // giảm số lượng sản phẩm, tăng số lượng đã bán
+  const update = cart.products.map((item) => {
+    return {
+      updateOne: {
+        filter: { _id: item.product._id },
+        update: { $inc: { quantity: -item.count, sold: +item.count } },
+      },
+    };
+  });
+
+  await Product.bulkWrite(update, {});
+
+  res.status(200).json({
+    status: 'Thành công',
+    data: order,
+  });
+});
+
+// Get orders
+exports.getOrders = catchAsync(async (req, res, next) => {
+  const orders = await Order.find({ orderBy: req.user._id }).populate(
+    'products.product',
+    'title price'
+  );
+
+  if (!orders) {
+    return next(new AppError('Không có đơn hàng', 400));
+  }
+
+  res.status(200).json({
+    status: 'Thành công',
+    length: orders.length,
+    data: orders,
+  });
+});
+
+// Update Order Status
+exports.updateOrderStatus = catchAsync(async (req, res, next) => {
+  const { id: orderId } = req.params;
+  const { status } = req.body;
+
+  if (!status) {
+    return next(new AppError('Vui lòng điền trạng thái đơn hàng', 400));
+  }
+
+  const order = await Order.findByIdAndUpdate(
+    orderId,
+    {
+      orderStatus: status,
+      paymentIntent: {
+        status,
+      },
+    },
+    { new: true }
+  );
+
+  res.status(200).json({
+    status: 'Thành công',
+    data: order,
   });
 });
 

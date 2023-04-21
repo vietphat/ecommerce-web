@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const validator = require('validator');
 
-// Declare the Schema of the Mongo model
 const userSchema = new mongoose.Schema(
   {
     // các thông tin cá nhân
@@ -165,5 +164,4 @@ userSchema.methods.createResetPasswordToken = function () {
   return resetPasswordToken;
 };
 
-//Export the model
 module.exports = mongoose.model('User', userSchema);

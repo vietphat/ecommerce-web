@@ -4,7 +4,7 @@ const Blog = require('./../models/Blog');
 const AppError = require('../utils/AppError');
 const catchAsync = require('./../utils/catchAsync');
 const validateMongoDbId = require('./../config/validateMongoDbId');
-const cloudinaryUploadImg = require('../utils/cloudinary');
+const { cloudinaryUploadImg } = require('../utils/cloudinary');
 
 exports.createABlog = catchAsync(async (req, res, next) => {
   const { title, description, category, image, author } = req.body;

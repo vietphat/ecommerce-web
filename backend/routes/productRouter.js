@@ -23,12 +23,20 @@ router.patch('/rating/:id', isAuthenticated, productController.ratingAProduct);
 
 // Upload hình sản phẩm
 router.put(
-  '/upload-images/:id',
+  '/upload-images',
   isAuthenticated,
   restrictTo('admin'),
   uploadPhoto.array('images', 10),
   productImgResize,
   productController.uploadImages
+);
+
+// Delete hình sản phẩm
+router.delete(
+  '/delete-images/:publicId',
+  isAuthenticated,
+  restrictTo('admin'),
+  productController.deleteImages
 );
 
 router

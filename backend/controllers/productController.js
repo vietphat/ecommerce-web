@@ -8,10 +8,13 @@ const AppError = require('./../utils/AppError');
 const APIFeatures = require('./../utils/APIFeatures');
 const catchAsync = require('./../utils/catchAsync');
 const validateMongoDbId = require('./../config/validateMongoDbId');
-const cloudinaryUploadImg = require('./../utils/cloudinary');
+const {
+  cloudinaryUploadImg,
+  cloudinaryDestroyImg,
+} = require('./../utils/cloudinary');
 
 exports.createAProduct = catchAsync(async (req, res, next) => {
-  const { title, description, price, quantity, color, brand, category } =
+  const { title, description, price, quantity, colors, brand, category } =
     req.body;
 
   const slug = slugify(title);
@@ -22,7 +25,7 @@ exports.createAProduct = catchAsync(async (req, res, next) => {
     description,
     price,
     quantity,
-    color,
+    colors,
     brand,
     category,
   });
@@ -201,12 +204,6 @@ exports.ratingAProduct = catchAsync(async (req, res, next) => {
 });
 
 exports.uploadImages = catchAsync(async (req, res, next) => {
-  const { id } = req.params;
-
-  if (!validateMongoDbId(id)) {
-    return next(new AppError('Product id không hợp lệ', 400));
-  }
-
   if (!req?.files) {
     return next(new AppError('Không nhận được files', 400));
   }
@@ -216,27 +213,24 @@ exports.uploadImages = catchAsync(async (req, res, next) => {
 
   for (const file of files) {
     const { path } = file;
-    const newPath = await cloudinaryUploadImg(path);
-    urls.push(newPath);
+    const result = await cloudinaryUploadImg(path);
+    urls.push(result);
     fs.unlinkSync(path);
   }
 
-  const product = await Product.findByIdAndUpdate(
-    id,
-    {
-      images: urls.map((url) => url),
-    },
-    {
-      new: true,
-    }
-  );
-
-  if (!product) {
-    return next(new AppError(`Không tìm thấy product với id là ${id}`, 400));
-  }
+  const images = urls.map((url) => url);
 
   res.status(200).json({
     status: 'Thành công',
-    data: product,
+    data: images,
+  });
+});
+
+exports.deleteImages = catchAsync(async (req, res, next) => {
+  const { publicId } = req.params;
+  await cloudinaryDestroyImg(publicId);
+
+  res.status(200).json({
+    status: 'Thành công',
   });
 });

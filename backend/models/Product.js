@@ -22,6 +22,8 @@ const productSchema = new mongoose.Schema(
       required: true,
       min: 0,
     },
+    colors: [],
+    tags: [],
     category: {
       type: String,
       required: true,
@@ -31,12 +33,12 @@ const productSchema = new mongoose.Schema(
       required: true,
       min: 0,
     },
+    sold: {
+      type: Number,
+      default: 0,
+    },
     images: {
       type: Array,
-    },
-    color: {
-      type: String,
-      required: true,
     },
     ratings: [
       {
@@ -60,10 +62,6 @@ const productSchema = new mongoose.Schema(
     brand: {
       type: String,
       required: true,
-    },
-    sold: {
-      type: Number,
-      default: 0,
     },
   },
   {

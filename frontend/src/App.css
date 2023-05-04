@@ -34,7 +34,7 @@ a {
 }
 
 .gap-30 {
-  gap: 30;
+  gap: 30px;
 }
 
 /* header part */
@@ -93,3 +93,21 @@ a {
 }
 
 /* end header part */
+
+/* footer part */
+
+footer {
+  background-color: var(--color-232f3e);
+}
+
+footer:not(:first-child) {
+  border-top: 1px solid var(--color-3b4149);
+}
+
+footer .input-group-text {
+  background-color: var(--color-232f3e);
+  color: #fff;
+  padding: 8px 17px;
+}
+
+/* end footer part */

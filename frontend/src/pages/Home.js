@@ -222,6 +222,21 @@ const Home = () => {
         </div>
       </section>
 
+      {/* POPULAR PRODUCTS */}
+      <section className='featured-wrapper home-wrapper-2 py-5'>
+        <div className='container-xxl'>
+          <div className='row'>
+            <div className='col-12'>
+              <h3 className='section-heading'>Các sản phẩm nổi bật</h3>
+            </div>
+            <ProductCard />
+            <ProductCard />
+            <ProductCard />
+            <ProductCard />
+          </div>
+        </div>
+      </section>
+
       {/* MARQUEE */}
       <section className='marquee-wrapper py-5'>
         <div className='container-xxl'>
@@ -253,21 +268,6 @@ const Home = () => {
                 </Marquee>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* POPULAR PRODUCTS */}
-      <section className='blog-wrapper home-wrapper-2 py-5'>
-        <div className='container-xxl'>
-          <div className='row'>
-            <div className='col-12'>
-              <h3 className='section-heading'>Các sản phẩm nổi bật</h3>
-            </div>
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
           </div>
         </div>
       </section>

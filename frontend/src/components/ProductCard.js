@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 const ProductCard = () => {
   return (
     <div className='col-3'>
-      <div className='product-card position-relative'>
+      <Link className='product-card position-relative'>
         <div className='wishlist-icon position-absolute'>
           <Link>
             <img src='/images/wish.svg' alt='wishlist' />
@@ -13,7 +13,12 @@ const ProductCard = () => {
         </div>
 
         <div className='product-image'>
-          <img src='/images/watch.jpg' alt='product' />
+          <img src='/images/watch.jpg' className='img-fluid' alt='product' />
+          <img
+            src='/images/headphone.jpg'
+            className='img-fluid'
+            alt='product'
+          />
         </div>
 
         <div className='product-details'>
@@ -44,7 +49,7 @@ const ProductCard = () => {
             </Link>
           </div>
         </div>
-      </div>
+      </Link>
     </div>
   );
 };

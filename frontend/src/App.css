@@ -354,3 +354,13 @@ footer .input-group-text {
 }
 
 /* End Product Card */
+
+/* Special Product */
+
+.special-product-card {
+  padding: 20px 10px;
+  border-radius: 10px;
+  background-color: #fff;
+}
+
+/* End Special Product */

@@ -223,17 +223,89 @@ const Home = () => {
         </div>
       </section>
 
-      {/* POPULAR PRODUCTS */}
+      {/* FEATURED PRODUCTS */}
       <section className='featured-wrapper home-wrapper-2 py-5'>
         <div className='container-xxl'>
           <div className='row'>
             <div className='col-12'>
-              <h3 className='section-heading'>Sản phẩm nổi bật</h3>
+              <h3 className='section-heading'>Sản phẩm</h3>
             </div>
             <ProductCard />
             <ProductCard />
             <ProductCard />
             <ProductCard />
+          </div>
+        </div>
+      </section>
+
+      {/* FAMOUS PRODUCTS */}
+      <section className='famous-warpper py-5 home-wrapper-2'>
+        <div className='container-xxl'>
+          <div className='row'>
+            <div className='col-3'>
+              <div className='famous-card position-relative'>
+                <img
+                  className='img-fluid'
+                  src='/images/famous-1.webp'
+                  alt='famous'
+                />
+                <div className='famous-content position-absolute'>
+                  <h5>Big Screen</h5>
+                  <h6>Smart Watch Series 7</h6>
+                  <p>From $399 or $16.62/mo. for 24 mo.*</p>
+                </div>
+              </div>
+            </div>
+
+            <div className='col-3'>
+              <div className='famous-card position-relative'>
+                <img
+                  className='img-fluid'
+                  src='/images/famous-2.webp'
+                  alt='famous'
+                />
+                <div className='famous-content position-absolute'>
+                  <h5 className='text-dark'>Studio Display</h5>
+                  <h6 className='text-dark'>600 nits of brightness.</h6>
+                  <p className='text-dark'>27-inch 5K Retina display</p>
+                </div>
+              </div>
+            </div>
+
+            <div className='col-3'>
+              <div className='famous-card position-relative'>
+                <img
+                  className='img-fluid'
+                  src='/images/famous-3.webp'
+                  alt='famous'
+                />
+                <div className='famous-content position-absolute'>
+                  <h5 className='text-dark'>Smartphones</h5>
+                  <h6 className='text-dark'>Smart Phone 13 Pro. </h6>
+                  <p className='text-dark'>
+                    Now in Green. From $999.00 or $41.62/mo. for 24 mo.
+                    Footnote*
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className='col-3'>
+              <div className='famous-card position-relative'>
+                <img
+                  className='img-fluid'
+                  src='/images/famous-4.webp'
+                  alt='famous'
+                />
+                <div className='famous-content position-absolute'>
+                  <h5 className='text-dark'>Home Speakers</h5>
+                  <h6 className='text-dark'>Room-filling sound.</h6>
+                  <p className='text-dark'>
+                    From $699 or $116.58/mo. for 12 mo.*
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -250,6 +322,23 @@ const Home = () => {
             <SpecialProduct />
             <SpecialProduct />
             <SpecialProduct />
+          </div>
+        </div>
+      </section>
+
+      {/* POPULAR PRODUCTS */}
+      <section className='popular-wrapper home-wrapper-2 py-5'>
+        <div className='container-xxl'>
+          <div className='row'>
+            <div className='col-12'>
+              <h3 className='section-heading'>Sản phẩm nổi bật</h3>
+            </div>
+            <div className='row'>
+              <ProductCard />
+              <ProductCard />
+              <ProductCard />
+              <ProductCard />
+            </div>
           </div>
         </div>
       </section>

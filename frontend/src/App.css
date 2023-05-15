@@ -16,6 +16,7 @@
   --color-777777: #777777;
   --color-131921: #131921;
   --color-1c1c1b: #1c1c1b;
+  --color-ededed: #ededed;
 }
 
 .section-heading {
@@ -369,7 +370,7 @@ footer .input-group-text {
 
 .famous-card .famous-content {
   top: 10%;
-  left: 10%;
+  left: 5%;
 }
 
 .famous-card img {
@@ -400,3 +401,70 @@ footer .input-group-text {
 }
 
 /* End Famous Card */
+
+/* Our Store */
+
+.filter-card {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 15px 15px 25px;
+}
+
+.filter-title {
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 600;
+  color: var(--color-1c1c1b);
+}
+
+.filter-card ul,
+.filter-card .form-check-label {
+  list-style-type: none;
+  font-size: 13px;
+  line-height: 30px;
+  color: var(--color-777777);
+  cursor: pointer;
+}
+
+.filter-card .form-check-input:focus {
+  box-shadow: none;
+  border-color: rgba(0, 0, 0, 0.25);
+}
+
+.filter-card .form-check-input:checked {
+  background-color: var(--color-febd69);
+  border-color: var(--color-febd69);
+}
+
+.sub-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-1c1c1b);
+  margin-bottom: 15px;
+  margin-top: 25px;
+}
+
+.colors {
+  list-style-type: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.colors li {
+  width: 20px;
+  height: 20px;
+  background-color: #ff0000;
+  border-radius: 50%;
+}
+
+.random-products h5 {
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.random-products:first-child {
+  border-bottom: 1px solid var(--color-ededed);
+}
+
+/* End Our Store */

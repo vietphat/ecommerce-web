@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export const BreadCrumb = (props) => {
+const BreadCrumb = (props) => {
   const { title } = props;
   return (
     <div className='breadcrumb mb-0 py-4'>
@@ -20,3 +20,5 @@ export const BreadCrumb = (props) => {
     </div>
   );
 };
+
+export default BreadCrumb;

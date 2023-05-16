@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactStars from 'react-rating-stars-component';
 
-import { BreadCrumb } from '../components/BreadCrumb';
+import BreadCrumb from '../components/BreadCrumb';
 import Meta from '../components/Meta';
+import ProductCard from '../components/ProductCard';
 
 const OurStore = () => {
+  const [grid, setGrid] = useState(4);
+
   return (
     <>
       <Meta title='Cửa hàng' />
@@ -236,7 +239,75 @@ const OurStore = () => {
               </div>
             </div>
 
-            <div className='col-9'></div>
+            <div className='col-9'>
+              <div className='filter-sort-grid mb-4'>
+                <div className='d-flex justify-content-between align-items-center'>
+                  <div className='d-flex align-items-center gap-10'>
+                    <p className='mb-0 d-block' style={{ width: '100px' }}>
+                      Xếp theo:{' '}
+                    </p>
+                    <select className='form-control form-select' name='' id=''>
+                      <option value='manual'>Sản phẩm nổi bật</option>
+                      <option value='best-selling'>Bán chạy</option>
+                      <option value='title-ascending'>
+                        Theo thứ tự chữ cái, A-Z
+                      </option>
+                      <option value='title-descending'>
+                        Theo thứ tự chữ cái, Z-A
+                      </option>
+                      <option value='price-ascending'>
+                        Theo giá, thấp đến cao
+                      </option>
+                      <option value='price-descending'>
+                        Theo giá, cao đến thấp
+                      </option>
+                      <option value='created-ascending'>
+                        Theo ngày, cũ đến mới
+                      </option>
+                      <option value='created-descending'>
+                        Theo ngày, mơi đến cũ
+                      </option>
+                    </select>
+                  </div>
+
+                  <div className='d-flex align-items-center gap-10'>
+                    <p className='totalproducts mb-0'>21 sản phẩm</p>
+                    <div className='d-flex align-items-center gap-10 grid'>
+                      <img
+                        onClick={() => setGrid(3)}
+                        src='/images/gr4.svg'
+                        alt='grid'
+                        className='d-block img-fluid'
+                      />
+                      <img
+                        onClick={() => setGrid(4)}
+                        src='/images/gr3.svg'
+                        alt='grid'
+                        className='d-block img-fluid'
+                      />
+                      <img
+                        onClick={() => setGrid(6)}
+                        src='/images/gr2.svg'
+                        alt='grid'
+                        className='d-block img-fluid'
+                      />
+                      <img
+                        onClick={() => setGrid(12)}
+                        src='/images/gr.svg'
+                        alt='grid'
+                        className='d-block img-fluid'
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className='products-list pb-5'>
+                <div className='d-flex gap-10 flex-wrap'>
+                  <ProductCard grid={grid} />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

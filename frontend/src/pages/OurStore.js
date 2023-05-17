@@ -11,8 +11,8 @@ const OurStore = () => {
 
   return (
     <>
-      <Meta title='Cửa hàng' />
-      <BreadCrumb title='Cửa hàng' />
+      <Meta title='Sản phẩm' />
+      <BreadCrumb title='Sản phẩm' />
       <div className='store-wrapper home-wrapper-2 py-5'>
         <div className='container-xxl'>
           <div className='row'>
@@ -292,6 +292,8 @@ const OurStore = () => {
 
               <div className='products-list pb-5'>
                 <div className='d-flex gap-10 flex-wrap'>
+                  <ProductCard grid={grid} />
+                  <ProductCard grid={grid} />
                   <ProductCard grid={grid} />
                 </div>
               </div>

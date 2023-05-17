@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Marquee from 'react-fast-marquee';
 
+import Meta from '../components/Meta';
 import BlogCard from '../components/BlogCard';
 import ProductCard from '../components/ProductCard';
 import SpecialProduct from '../components/SpecialProduct';
@@ -9,6 +10,7 @@ import SpecialProduct from '../components/SpecialProduct';
 const Home = () => {
   return (
     <>
+      <Meta title='Trang chủ' />
       {/* BANNER */}
       <section className='home-wrapper-1 py-5'>
         <div className='container-xxl'>

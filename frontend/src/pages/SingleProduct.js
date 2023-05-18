@@ -3,7 +3,6 @@ import ReactStars from 'react-rating-stars-component';
 import ReactImageZoom from 'react-image-zoom';
 import { TbGitCompare } from 'react-icons/tb';
 import { AiOutlineHeart } from 'react-icons/ai';
-import { useLocation } from 'react-router-dom';
 
 import Meta from '../components/Meta';
 import BreadCrumb from '../components/BreadCrumb';

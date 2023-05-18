@@ -18,8 +18,10 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import RefundPolicy from './pages/RefundPolicy';
 import TermsAndConditions from './pages/TermsAndConditions';
 import ShippingPolicy from './pages/ShippingPolicy';
-import './App.css';
 import SingleProduct from './pages/SingleProduct';
+import Cart from './pages/Cart';
+import Checkout from './pages/Checkout';
+import './App.css';
 
 function App() {
   return (
@@ -34,6 +36,8 @@ function App() {
             <Route path='product/:id' element={<SingleProduct />} />
             <Route path='blog' element={<Blog />} />
             <Route path='blog/:id' element={<SingleBlog />} />
+            <Route path='cart' element={<Cart />} />
+            <Route path='checkout' element={<Checkout />} />
             <Route path='compare-products' element={<CompareProducts />} />
             <Route path='wishlist' element={<Wishlist />} />
             <Route path='login' element={<Login />} />

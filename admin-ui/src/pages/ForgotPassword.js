@@ -8,7 +8,7 @@ const ForgotPassowrd = () => {
       <br />
       <div className='my-5 w-25 bg-white rounded-3 mx-auto p-3'>
         <form>
-          <h3 className='text-center'>Quên mật khẩu</h3>
+          <h3 className='text-center title'>Quên mật khẩu</h3>
           <p className='text-center'>
             Chúng tôi sẽ gửi email tạo mới mật khẩu cho bạn
           </p>

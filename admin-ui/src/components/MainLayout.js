@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Outlet } from 'react-router-dom';
+import { useNavigate, Outlet, Link } from 'react-router-dom';
 import { Button, Layout, Menu, theme } from 'antd';
 import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 import { AiOutlineDashboard, AiOutlineUser } from 'react-icons/ai';
@@ -56,7 +56,7 @@ const MainLayout = () => {
               title: 'Quản lý',
               children: [
                 {
-                  key: 'product',
+                  key: 'add-product',
                   // icon: <AiOutlineShoppingCart className='fs-4' />,
                   label: 'Thêm sản phẩm',
                   title: 'Thêm sản phẩm',
@@ -68,7 +68,7 @@ const MainLayout = () => {
                   title: 'Danh sách sản phẩm',
                 },
                 {
-                  key: 'brand',
+                  key: 'add-brand',
                   // icon: <SiBrandfolder className='fs-4' />,
                   label: 'Thêm thương hiệu',
                   title: 'Thêm thương hiệu',
@@ -80,19 +80,19 @@ const MainLayout = () => {
                   title: 'Danh sách thương hiệu',
                 },
                 {
-                  key: 'category',
+                  key: 'add-product-category',
                   // icon: <BiCategoryAlt className='fs-4' />,
-                  label: 'Thêm danh mục sản phẩm',
-                  title: 'Thêm danh mục sản phẩm',
+                  label: 'Thêm loại sản phẩm',
+                  title: 'Thêm loại sản phẩm',
                 },
                 {
-                  key: 'categories-list',
+                  key: 'product-categories-list',
                   // icon: <BiCategoryAlt className='fs-4' />,
-                  label: 'Danh mục sản phẩm',
-                  title: 'Danh mục sản phẩm',
+                  label: 'Danh sách loại sản phẩm',
+                  title: 'Danh sách loại sản phẩm',
                 },
                 {
-                  key: 'color',
+                  key: 'add-color',
                   // icon: <MdColorLens className='fs-4' />,
                   label: 'Thêm màu sản phẩm',
                   title: 'Thêm màu sản phẩm',
@@ -100,8 +100,8 @@ const MainLayout = () => {
                 {
                   key: 'colors-list',
                   // icon: <MdColorLens className='fs-4' />,
-                  label: 'Danh mục màu sản phẩm',
-                  title: 'Danh mục màu sản phẩm',
+                  label: 'Danh sách màu sản phẩm',
+                  title: 'Danh sách màu sản phẩm',
                 },
               ],
             },
@@ -118,7 +118,7 @@ const MainLayout = () => {
               title: 'Blogs',
               children: [
                 {
-                  key: 'blog',
+                  key: 'add-blog',
                   // icon: <FaBloggerB className='fs-4' />,
                   label: 'Thêm bài viết',
                   title: 'Thêm bài viết',
@@ -130,7 +130,7 @@ const MainLayout = () => {
                   title: 'Danh sách bài viết',
                 },
                 {
-                  key: 'blog-category',
+                  key: 'add-blog-category',
                   label: 'Thêm danh mục bài viết',
                   title: 'Thêm danh mục bài viết',
                 },
@@ -143,10 +143,10 @@ const MainLayout = () => {
               ],
             },
             {
-              key: 'inquiries',
+              key: 'enquiries',
               icon: <FaQuestionCircle className='fs-4' />,
-              label: 'Phản hồi',
-              title: 'Phản hồi',
+              label: 'Phản hồi của khách hàng',
+              title: 'Phản hồi của khách hàng',
             },
           ]}
         />
@@ -177,7 +177,7 @@ const MainLayout = () => {
               </span>
             </div>
 
-            <div className='d-flex gap-3 align-items-center'>
+            <div className='d-flex gap-3 align-items-center dropdown'>
               <div>
                 <img
                   width={32}
@@ -187,9 +187,36 @@ const MainLayout = () => {
                   className='img-fluid'
                 />
               </div>
-              <div>
+
+              <div
+                role='button'
+                id='dropdownMenuLink'
+                data-bs-toggle='dropdown'
+                aria-expanded='false'
+              >
                 <h5 className='mb-0'>PhatLe</h5>
                 <p className='mb-0'>vietphatt1909@gmail.com</p>
+              </div>
+
+              <div className='dropdown-menu' aria-labelledby='dropdownMenuLink'>
+                <li>
+                  <Link
+                    to='/'
+                    className='dropdown-item py-1 mb-1'
+                    style={{ height: 'auto', lineHeight: '20px' }}
+                  >
+                    Trang cá nhân
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to='/'
+                    className='dropdown-item py-1 mb-1'
+                    style={{ height: 'auto', lineHeight: '20px' }}
+                  >
+                    Đăng xuất
+                  </Link>
+                </li>
               </div>
             </div>
           </div>

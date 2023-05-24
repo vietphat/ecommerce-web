@@ -8,7 +8,7 @@ const ResetPassword = () => {
       <br />
       <div className='my-5 w-25 bg-white rounded-3 mx-auto p-3'>
         <form>
-          <h3 className='text-center'>Tạo lại mật khẩu</h3>
+          <h3 className='text-center title'>Tạo lại mật khẩu</h3>
           <p className='text-center'>Tạo lại mật khẩu mới</p>
           <Input type='password' label='Mật khẩu mới' id='newPassword' />
           <Input

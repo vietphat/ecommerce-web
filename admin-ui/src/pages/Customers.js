@@ -1,41 +1,61 @@
-import React from 'react';
+import { useEffect } from 'react';
 import { Table } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { getUsers } from '../features/customer/customerSlice';
 
 const columns = [
   {
-    title: 'STT',
+    title: 'Id',
     dataIndex: 'key',
   },
   {
-    title: 'Họ tên',
-    dataIndex: 'name',
+    title: 'Họ',
+    dataIndex: 'lastName',
+    defaultSortOrder: 'descend',
+    sorter: (a, b) => a.lastName.length - b.lastName.length,
   },
   {
-    title: 'Sản phẩm',
-    dataIndex: 'product',
+    title: 'Tên',
+    dataIndex: 'firstName',
+    defaultSortOrder: 'descend',
+    sorter: (a, b) => a.firstName.length - b.firstName.length,
   },
   {
-    title: 'Trạng thái',
-    dataIndex: 'status',
+    title: 'Email',
+    dataIndex: 'email',
+    defaultSortOrder: 'descend',
+    sorter: (a, b) => a.email.length - b.email.length,
+  },
+  {
+    title: 'Số điện thoại',
+    dataIndex: 'phoneNumber',
+    defaultSortOrder: 'descend',
+    sorter: (a, b) => a.phoneNumber.length - b.phoneNumber.length,
   },
 ];
 
-const data = [];
-for (let i = 0; i < 46; i++) {
-  data.push({
-    key: i,
-    name: `Edward King ${i}`,
-    product: `Macbook Air ${i}`,
-    status: `Đang giao hàng`,
-  });
-}
-
 const Customers = () => {
+  const dispatch = useDispatch();
+
+  const { user } = useSelector((state) => state.auth);
+  const { customers } = useSelector((state) => state.customer);
+
+  const { token } = user;
+  useEffect(() => {
+    dispatch(getUsers(token));
+  }, [token, dispatch]);
+
   return (
     <div>
       <h3 className='mt-4 title'>Danh sách khách hàng</h3>
       <div>
-        <Table columns={columns} dataSource={data} />
+        <Table
+          columns={columns}
+          dataSource={customers.map((customer) => {
+            return { key: customer._id, ...customer };
+          })}
+        />
       </div>
     </div>
   );

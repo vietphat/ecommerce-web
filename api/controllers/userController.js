@@ -327,6 +327,18 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
   });
 });
 
+// Get all customers
+exports.getAllCustomers = catchAsync(async (req, res, next) => {
+  const users = await User.find({ role: { $ne: 'admin' } });
+
+  res.status(200).json({
+    status: 'Thành công',
+    data: {
+      users,
+    },
+  });
+});
+
 // Get a user
 exports.getAUser = catchAsync(async (req, res, next) => {
   const { id } = req.params;

@@ -1,6 +1,7 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
+const cors = require('cors');
 
 const routes = require('./routes');
 const errorController = require('./controllers/errorController');
@@ -8,6 +9,7 @@ const AppError = require('./utils/AppError');
 
 const app = express();
 
+app.use(cors());
 app.use(cookieParser());
 app.use(express.json());
 app.use(morgan('common'));

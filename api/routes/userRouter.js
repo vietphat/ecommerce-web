@@ -58,6 +58,9 @@ router
   // Tạo người dùng
   .post(userController.createAUser);
 
+// Lấy thông tin tất cả khách hàng
+router.get('/customers', userController.getAllCustomers);
+
 // Tìm người dùng dựa vào tên hoặc email
 router.get('/search/:searchInput', userController.getUsersByNameOrEmail);
 

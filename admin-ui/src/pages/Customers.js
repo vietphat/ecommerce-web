@@ -6,8 +6,10 @@ import { getUsers } from '../features/customer/customerSlice';
 
 const columns = [
   {
-    title: 'Id',
+    title: 'STT',
     dataIndex: 'key',
+    defaultSortOrder: 'descend',
+    sorter: (a, b) => b.key - a.key,
   },
   {
     title: 'Họ',
@@ -52,8 +54,8 @@ const Customers = () => {
       <div>
         <Table
           columns={columns}
-          dataSource={customers.map((customer) => {
-            return { key: customer._id, ...customer };
+          dataSource={customers.map((customer, i) => {
+            return { key: i + 1, ...customer };
           })}
         />
       </div>

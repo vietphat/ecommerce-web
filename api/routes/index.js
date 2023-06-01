@@ -8,6 +8,7 @@ const brandRouter = require('./brandRouter');
 const couponRouter = require('./couponRouter');
 const colorRouter = require('./colorRouter');
 const enquiryRouter = require('./enquiryRouter');
+const orderRouter = require('./orderRouter');
 
 const router = (app) => {
   app.use('/api/auth', authRouter);
@@ -20,6 +21,7 @@ const router = (app) => {
   app.use('/api/coupons', couponRouter);
   app.use('/api/colors', colorRouter);
   app.use('/api/enquiries', enquiryRouter);
+  app.use('/api/orders', orderRouter);
 };
 
 module.exports = router;

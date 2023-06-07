@@ -9,6 +9,7 @@ const couponRouter = require('./couponRouter');
 const colorRouter = require('./colorRouter');
 const enquiryRouter = require('./enquiryRouter');
 const orderRouter = require('./orderRouter');
+const uploadRouter = require('./uploadRouter');
 
 const router = (app) => {
   app.use('/api/auth', authRouter);
@@ -22,6 +23,7 @@ const router = (app) => {
   app.use('/api/colors', colorRouter);
   app.use('/api/enquiries', enquiryRouter);
   app.use('/api/orders', orderRouter);
+  app.use('/api/upload', uploadRouter);
 };
 
 module.exports = router;

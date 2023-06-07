@@ -7,16 +7,16 @@ import * as Yup from 'yup';
 
 import Input from '../components/Input';
 
+let loginSchema = Yup.object({
+  email: Yup.string()
+    .email('Email không hợp lệ')
+    .required('Email không được để trống'),
+  password: Yup.string().required('Mật khẩu không để được để trống'),
+});
+
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  let loginSchema = Yup.object({
-    email: Yup.string()
-      .email('Email không hợp lệ')
-      .required('Email không được để trống'),
-    password: Yup.string().required('Mật khẩu không để được để trống'),
-  });
 
   const formik = useFormik({
     initialValues: {

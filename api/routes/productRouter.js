@@ -3,10 +3,6 @@ const express = require('express');
 const productController = require('./../controllers/productController');
 const isAuthenticated = require('./../middlewares/isAuthenticated');
 const restrictTo = require('./../middlewares/restrictTo');
-const {
-  uploadPhoto,
-  productImgResize,
-} = require('./../middlewares/uploadImages');
 
 const router = express.Router();
 
@@ -20,24 +16,6 @@ router.patch('/wishlist/:id', isAuthenticated, productController.addToWishList);
 
 // Đánh giá sản phẩm
 router.patch('/rating/:id', isAuthenticated, productController.ratingAProduct);
-
-// Upload hình sản phẩm
-router.put(
-  '/upload-images',
-  isAuthenticated,
-  restrictTo('admin'),
-  uploadPhoto.array('images', 10),
-  productImgResize,
-  productController.uploadImages
-);
-
-// Delete hình sản phẩm
-router.delete(
-  '/delete-images/:publicId',
-  isAuthenticated,
-  restrictTo('admin'),
-  productController.deleteImages
-);
 
 router
   .route('/:id')

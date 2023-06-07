@@ -10,6 +10,7 @@ import blogReducer from '../features/blog/blogSlice';
 import blogCategoryReducer from '../features/blog-category/blogCategorySlice';
 import enquiryReducer from '../features/enquiry/enquirySlice';
 import orderReducer from '../features/order/orderSlice';
+import uploadReducer from '../features/upload/uploadSlice';
 
 export const store = configureStore({
   reducer: {
@@ -23,5 +24,8 @@ export const store = configureStore({
     blogCategory: blogCategoryReducer,
     enquiry: enquiryReducer,
     order: orderReducer,
+    upload: uploadReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ serializableCheck: false }),
 });

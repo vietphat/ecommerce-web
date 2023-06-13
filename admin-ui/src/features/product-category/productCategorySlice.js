@@ -1,7 +1,7 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, createAction } from '@reduxjs/toolkit';
+import { toast } from 'react-toastify';
 
 import productCategoryServices from './productCategoryServices';
-import { toast } from 'react-toastify';
 
 const initialState = {
   productCategories: [],
@@ -10,6 +10,8 @@ const initialState = {
   isSuccess: false,
   message: '',
 };
+
+export const resetState = createAction('Reset_all');
 
 export const getProductCategories = createAsyncThunk(
   'product-category/get-product-categories',
@@ -76,8 +78,10 @@ export const productCategorySlice = createSlice({
         state.isError = true;
         state.isSuccess = false;
         state.message = action.error;
-        toast.error(`Thêm loại sản phẩm thất bại!`);
-      });
+        toast.error('Thêm loại sản phẩm thất bại!');
+      })
+      // RESET STATE
+      .addCase(resetState, () => initialState);
   },
 });
 

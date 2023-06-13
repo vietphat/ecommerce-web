@@ -6,14 +6,13 @@ import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import Dropzone from 'react-dropzone';
 import { Select } from 'antd';
-import { useNavigate } from 'react-router-dom';
 
 import Input from '../components/Input';
 import { getBrands } from '../features/brand/brandSlice';
 import { getProductCategories } from '../features/product-category/productCategorySlice';
 import { getColors } from '../features/color/colorSlice';
 import { uploadImg, deleteImg } from '../features/upload/uploadSlice';
-import { createProduct } from '../features/product/productSlice';
+import { createProduct, resetState } from '../features/product/productSlice';
 
 let productSchema = Yup.object({
   title: Yup.string().required('Tên sản phẩm không được để trống'),
@@ -30,7 +29,6 @@ let productSchema = Yup.object({
 
 const AddProduct = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const [selectedColors, setSelectedColors] = useState([]);
 
   const formik = useFormik({
@@ -53,7 +51,7 @@ const AddProduct = () => {
       formik.resetForm();
       setSelectedColors(null);
       setTimeout(() => {
-        navigate('/admin/products-list');
+        dispatch(resetState());
       }, 3000);
     },
   });

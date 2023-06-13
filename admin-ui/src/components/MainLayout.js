@@ -6,6 +6,7 @@ import { AiOutlineDashboard, AiOutlineUser } from 'react-icons/ai';
 import { FaClipboardList, FaBloggerB, FaQuestionCircle } from 'react-icons/fa';
 import { MdOutlineManageSearch } from 'react-icons/md';
 import { IoIosNotifications } from 'react-icons/io';
+import { RiCouponLine } from 'react-icons/ri';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -112,6 +113,26 @@ const MainLayout = () => {
               icon: <FaClipboardList className='fs-4' />,
               label: 'Đơn đặt hàng',
               title: 'Đơn đặt hàng',
+            },
+            {
+              key: 'coupons',
+              icon: <RiCouponLine className='fs-4' />,
+              label: 'Mã khuyến mãi',
+              title: 'Mã khuyến mãi',
+              children: [
+                {
+                  key: 'add-coupon',
+                  // icon: <FaBloggerB className='fs-4' />,
+                  label: 'Thêm mã khuyến mãi',
+                  title: 'Thêm mã khuyến mãi',
+                },
+                {
+                  key: 'coupons-list',
+                  // icon: <FaBloggerB className='fs-4' />,
+                  label: 'Danh sách mã khuyến mãi',
+                  title: 'Danh sách mã khuyến mãi',
+                },
+              ],
             },
             {
               key: 'blogs',

@@ -5,10 +5,12 @@ import Dropzone from 'react-dropzone';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 
 import Input from '../components/Input';
-import { getBlogCategories } from '../features/blog-category/blogCategorySlice';
+import {
+  getBlogCategories,
+  resetState,
+} from '../features/blog-category/blogCategorySlice';
 import { deleteImg, uploadImg } from '../features/upload/uploadSlice';
 import { createBlog } from '../features/blog/blogSlice';
 
@@ -20,7 +22,6 @@ let blogSchema = Yup.object({
 
 const AddBlog = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: {
@@ -32,11 +33,10 @@ const AddBlog = () => {
     validationSchema: blogSchema,
     // SUBMIT
     onSubmit: (values) => {
-      console.log(values);
       dispatch(createBlog(values));
       formik.resetForm();
       setTimeout(() => {
-        navigate('/admin/blogs-list');
+        dispatch(resetState());
       }, 3000);
     },
   });

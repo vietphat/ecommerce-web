@@ -1,7 +1,7 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, createAction } from '@reduxjs/toolkit';
+import { toast } from 'react-toastify';
 
 import blogServices from './blogServices';
-import { toast } from 'react-toastify';
 
 const initialState = {
   blogs: [],
@@ -10,6 +10,8 @@ const initialState = {
   isSuccess: false,
   message: '',
 };
+
+export const resetState = createAction('Reset_all');
 
 export const getBlogs = createAsyncThunk('blog/get-blogs', async (thunkAPI) => {
   try {
@@ -61,15 +63,17 @@ export const blogSlice = createSlice({
         state.isError = false;
         state.isSuccess = true;
         state.blogs = [...state.blogs, action.payload.data];
-        toast.success('Thêm blog thành công!');
+        toast.success('Thêm bài viết thành công!');
       })
       .addCase(createBlog.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
         state.message = action.error;
-        toast.error('Thêm blog thất bại!');
-      });
+        toast.success('Thêm bài viết thất bại!');
+      })
+      // RESET STATE
+      .addCase(resetState, () => initialState);
   },
 });
 

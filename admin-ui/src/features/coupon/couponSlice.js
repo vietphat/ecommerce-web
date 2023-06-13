@@ -1,10 +1,10 @@
 import { createSlice, createAsyncThunk, createAction } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 
-import brandServices from './brandServices';
+import couponServices from './couponServices';
 
 const initialState = {
-  brands: [],
+  coupons: [],
   isError: false,
   isLoading: false,
   isSuccess: false,
@@ -13,71 +13,71 @@ const initialState = {
 
 export const resetState = createAction('Reset_all');
 
-export const getBrands = createAsyncThunk(
-  'brand/get-brands',
+export const getCoupons = createAsyncThunk(
+  'coupon/get-coupons',
   async (thunkAPI) => {
     try {
-      return await brandServices.getBrands();
+      return await couponServices.getCoupons();
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
   }
 );
 
-export const createBrand = createAsyncThunk(
-  'brand/create-brand',
-  async (brand, thunkAPI) => {
+export const createCoupon = createAsyncThunk(
+  'coupon/create-coupon',
+  async (coupon, thunkAPI) => {
     try {
-      return await brandServices.createBrand(brand);
+      return await couponServices.createCoupon(coupon);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
   }
 );
 
-export const brandSlice = createSlice({
-  name: 'brands',
+export const couponSlice = createSlice({
+  name: 'coupons',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // GET BRANDS
-      .addCase(getBrands.pending, (state) => {
+      // GET COUPONS
+      .addCase(getCoupons.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(getBrands.fulfilled, (state, action) => {
+      .addCase(getCoupons.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        state.brands = action.payload.data;
+        state.coupons = action.payload.data;
       })
-      .addCase(getBrands.rejected, (state, action) => {
+      .addCase(getCoupons.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
         state.message = action.error;
       })
-      // CREATE BRAND
-      .addCase(createBrand.pending, (state) => {
+      // CREATE COUPON
+      .addCase(createCoupon.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(createBrand.fulfilled, (state, action) => {
+      .addCase(createCoupon.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        state.brands = [...state.brands, action.payload.data];
-        toast.success('Thêm thương hiệu thành công!');
+        state.coupons = [...state.coupons, action.payload.data];
+        toast.success('Thêm mã giảm giá thành công!');
       })
-      .addCase(createBrand.rejected, (state, action) => {
+      .addCase(createCoupon.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
         state.message = action.error;
-        toast.error('Thêm thương hiệu thất bại!');
+        toast.error('Thêm mã giảm giá thất bại!');
       })
       // RESET STATE
       .addCase(resetState, () => initialState);
   },
 });
 
-export default brandSlice.reducer;
+export default couponSlice.reducer;

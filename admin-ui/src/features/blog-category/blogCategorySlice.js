@@ -1,7 +1,7 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, createAction } from '@reduxjs/toolkit';
+import { toast } from 'react-toastify';
 
 import blogCategoryServices from './blogCategoryServices';
-import { toast } from 'react-toastify';
 
 const initialState = {
   blogCategories: [],
@@ -10,6 +10,8 @@ const initialState = {
   isSuccess: false,
   message: '',
 };
+
+export const resetState = createAction('Reset_all');
 
 export const getBlogCategories = createAsyncThunk(
   'blog-category/get-blog-categories',
@@ -55,7 +57,7 @@ export const blogCategorySlice = createSlice({
         state.isSuccess = false;
         state.message = action.error;
       })
-      // CREATE COLOR
+      // CREATE BLOG CATEGORY
       .addCase(createBlogCategory.pending, (state) => {
         state.isLoading = true;
       })
@@ -64,15 +66,17 @@ export const blogCategorySlice = createSlice({
         state.isError = false;
         state.isSuccess = true;
         state.blogCategories = [...state.blogCategories, action.payload.data];
-        toast.success('Thêm loại bài viết thành công!');
+        toast.success('Thêm danh mục bài viết thành công!');
       })
       .addCase(createBlogCategory.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
         state.message = action.error;
-        toast.error(`Thêm loại bài viết thất bại!`);
-      });
+        toast.error('Thêm danh mục bài viết thất bại!');
+      })
+      // RESET STATE
+      .addCase(resetState, () => initialState);
   },
 });
 

@@ -1,10 +1,12 @@
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
 import Input from '../components/Input';
-import { createBlogCategory } from '../features/blog-category/blogCategorySlice';
+import {
+  createBlogCategory,
+  resetState,
+} from '../features/blog-category/blogCategorySlice';
 
 let blogCategorySchema = Yup.object({
   title: Yup.string().required('Danh mục bài vết không được để trống'),
@@ -12,7 +14,6 @@ let blogCategorySchema = Yup.object({
 
 const AddBlogCategory = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: {
@@ -24,7 +25,7 @@ const AddBlogCategory = () => {
       dispatch(createBlogCategory(values));
       formik.resetForm();
       setTimeout(() => {
-        navigate('/admin/blog-categories-list');
+        dispatch(resetState());
       }, 3000);
     },
   });

@@ -21,6 +21,8 @@ import AddColor from './pages/AddColor';
 import AddBrand from './pages/AddBrand';
 import AddProductCategory from './pages/AddProductCategory';
 import AddProduct from './pages/AddProduct';
+import AddCoupon from './pages/AddCoupon';
+import Coupons from './pages/Coupons';
 
 function App() {
   return (
@@ -30,33 +32,46 @@ function App() {
         <Route path='/reset-password' element={<ResetPassword />} />
         <Route path='/forgot-password' element={<ForgotPassword />} />
         <Route path='/admin' element={<MainLayout />}>
+          {/* DASHBOARD */}
           <Route index element={<Dashboard />} />
 
-          <Route path='enquiries' element={<Enquiries />} />
-
-          <Route path='add-blog' element={<AddBlog />} />
-          <Route path='blogs-list' element={<Blogs />} />
-          <Route path='add-blog-category' element={<AddBlogCategory />} />
-          <Route path='blog-categories-list' element={<BlogCategories />} />
-
-          <Route path='orders' element={<Orders />} />
-
+          {/* CUSTOMERS */}
           <Route path='customers' element={<Customers />} />
 
-          <Route path='add-color' element={<AddColor />} />
-          <Route path='colors-list' element={<Colors />} />
+          {/* PRODUCTS */}
+          <Route path='add-product' element={<AddProduct />} />
+          <Route path='products-list' element={<Products />} />
 
+          {/* BRANDS */}
+          <Route path='add-brand' element={<AddBrand />} />
+          <Route path='brands-list' element={<Brands />} />
+
+          {/* PRODUCT-CATEGORIES */}
           <Route path='add-product-category' element={<AddProductCategory />} />
           <Route
             path='product-categories-list'
             element={<ProductCategories />}
           />
 
-          <Route path='add-brand' element={<AddBrand />} />
-          <Route path='brands-list' element={<Brands />} />
+          {/* COLORS */}
+          <Route path='add-color' element={<AddColor />} />
+          <Route path='colors-list' element={<Colors />} />
 
-          <Route path='add-product' element={<AddProduct />} />
-          <Route path='products-list' element={<Products />} />
+          {/* ORDERS */}
+          <Route path='orders' element={<Orders />} />
+
+          {/* COUPONS */}
+          <Route path='add-coupon' element={<AddCoupon />} />
+          <Route path='coupons-list' element={<Coupons />} />
+
+          {/* BLOGS */}
+          <Route path='add-blog' element={<AddBlog />} />
+          <Route path='blogs-list' element={<Blogs />} />
+          <Route path='add-blog-category' element={<AddBlogCategory />} />
+          <Route path='blog-categories-list' element={<BlogCategories />} />
+
+          {/* ENQUIRIES */}
+          <Route path='enquiries' element={<Enquiries />} />
         </Route>
       </Routes>
     </Router>

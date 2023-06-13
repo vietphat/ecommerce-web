@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, createAction } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 
 import productServices from './productServices';
@@ -10,6 +10,8 @@ const initialState = {
   isSuccess: false,
   message: '',
 };
+
+export const resetState = createAction('Reset_all');
 
 export const getProducts = createAsyncThunk(
   'product/get-products',
@@ -72,7 +74,9 @@ export const productSlice = createSlice({
         state.isSuccess = false;
         state.message = action.error;
         toast.error('Thêm sản phẩm thất bại!');
-      });
+      })
+      // RESET STATE
+      .addCase(resetState, () => initialState);
   },
 });
 

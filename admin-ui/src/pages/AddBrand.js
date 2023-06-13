@@ -1,14 +1,53 @@
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+
 import Input from '../components/Input';
+import { createBrand } from '../features/brand/brandSlice';
+
+let brandSchema = Yup.object({
+  title: Yup.string().required('Tên thương hiệu không được để trống'),
+});
 
 const AddBrand = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const formik = useFormik({
+    initialValues: {
+      title: '',
+    },
+    validationSchema: brandSchema,
+    // SUBMIT
+    onSubmit: (values) => {
+      dispatch(createBrand(values));
+      formik.resetForm();
+      setTimeout(() => {
+        navigate('/admin/brands-list');
+      }, 3000);
+    },
+  });
+
   return (
     <div>
       <h3 className='mb-4 title'>Thêm thương hiệu</h3>
 
       <div>
-        <form action=''>
+        <form action='' onSubmit={formik.handleSubmit}>
+          {/* TÊN THƯƠNG HIỆU */}
           <div className='mt-4'>
-            <Input type='text' label='Thương hiệu' />
+            <Input
+              type='text'
+              label='Thương hiệu'
+              name='title'
+              onChange={formik.handleChange('title')}
+              onBlur={formik.handleBlur('title')}
+              value={formik.values.title}
+            />
+          </div>
+          <div className='error'>
+            {formik.touched.title && formik.errors.title}
           </div>
 
           <button

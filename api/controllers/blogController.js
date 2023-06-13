@@ -7,13 +7,13 @@ const validateMongoDbId = require('./../config/validateMongoDbId');
 const { cloudinaryUploadImg } = require('../utils/cloudinary');
 
 exports.createABlog = catchAsync(async (req, res, next) => {
-  const { title, description, category, image, author } = req.body;
+  const { title, description, category, images } = req.body;
 
   const blog = await Blog.create({
     title,
     description,
     category,
-    image,
+    images,
     author: req.user._id,
   });
 

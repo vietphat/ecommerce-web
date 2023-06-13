@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 import colorServices from './colorServices';
+import { toast } from 'react-toastify';
 
 const initialState = {
   colors: [],
@@ -21,12 +22,24 @@ export const getColors = createAsyncThunk(
   }
 );
 
+export const createColor = createAsyncThunk(
+  'color/create-color',
+  async (color, thunkAPI) => {
+    try {
+      return await colorServices.createColor(color);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
 export const colorSlice = createSlice({
   name: 'colors',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // GET COLORS
       .addCase(getColors.pending, (state) => {
         state.isLoading = true;
       })
@@ -41,6 +54,24 @@ export const colorSlice = createSlice({
         state.isError = true;
         state.isSuccess = false;
         state.message = action.error;
+      })
+      // CREATE COLOR
+      .addCase(createColor.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(createColor.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.colors = [...state.colors, action.payload.data];
+        toast.success('Thêm màu thành công!');
+      })
+      .addCase(createColor.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.error;
+        toast.error(`Thêm màu thất bại!`);
       });
   },
 });

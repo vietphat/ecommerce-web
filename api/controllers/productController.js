@@ -17,6 +17,7 @@ exports.createAProduct = catchAsync(async (req, res, next) => {
     brand,
     category,
     images,
+    tag,
   } = req.body;
 
   const slug = slugify(title);
@@ -31,6 +32,7 @@ exports.createAProduct = catchAsync(async (req, res, next) => {
     brand,
     category,
     images,
+    tag,
   });
 
   res.status(200).json({
@@ -81,8 +83,17 @@ exports.updateAProduct = catchAsync(async (req, res, next) => {
     return next(new AppError('Id không hợp lệ', 400));
   }
 
-  const { title, description, price, quantity, color, brand, category } =
-    req.body;
+  const {
+    title,
+    description,
+    price,
+    quantity,
+    colors,
+    brand,
+    category,
+    images,
+    tag,
+  } = req.body;
 
   const slug = slugify(title);
 
@@ -90,13 +101,14 @@ exports.updateAProduct = catchAsync(async (req, res, next) => {
     id,
     {
       title,
-      slug,
       description,
       price,
       quantity,
-      color,
+      colors,
       brand,
       category,
+      images,
+      tag,
     },
     { new: true }
   );

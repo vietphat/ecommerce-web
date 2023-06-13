@@ -4,9 +4,9 @@ import 'react-quill/dist/quill.snow.css';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
-import Multiselect from 'react-widgets/Multiselect';
 import Dropzone from 'react-dropzone';
-import 'react-widgets/styles.css';
+import { Select } from 'antd';
+import { useNavigate } from 'react-router-dom';
 
 import Input from '../components/Input';
 import { getBrands } from '../features/brand/brandSlice';
@@ -15,18 +15,22 @@ import { getColors } from '../features/color/colorSlice';
 import { uploadImg, deleteImg } from '../features/upload/uploadSlice';
 import { createProduct } from '../features/product/productSlice';
 
-let loginSchema = Yup.object({
+let productSchema = Yup.object({
   title: Yup.string().required('Tên sản phẩm không được để trống'),
   description: Yup.string().required('Mô tả không được để trống'),
   price: Yup.number().required('Giá sản phẩm không được để trống'),
   category: Yup.string().required('Loại sản phẩm không được để trống'),
+  tag: Yup.string().required('Tags không được để trống'),
   brand: Yup.string().required('Thương hiệu không được để trống'),
-  colors: Yup.array().required('Màu sản phẩm không được để trống'),
+  colors: Yup.array()
+    .min(1, 'Vui lòng chọn ít nhất 1 màu')
+    .required('Màu sản phẩm không được để trống'),
   quantity: Yup.number().required('Số lượng sản phẩm không được để trống'),
 });
 
 const AddProduct = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [selectedColors, setSelectedColors] = useState([]);
 
   const formik = useFormik({
@@ -35,15 +39,22 @@ const AddProduct = () => {
       description: '',
       price: undefined,
       category: '',
+      tag: '',
       brand: '',
       colors: [],
       quantity: '',
       images: [],
     },
-    validationSchema: loginSchema,
+    validationSchema: productSchema,
+    // SUBMIT
     onSubmit: (values) => {
       console.log(values);
       dispatch(createProduct(values));
+      formik.resetForm();
+      setSelectedColors(null);
+      setTimeout(() => {
+        navigate('/admin/products-list');
+      }, 3000);
     },
   });
 
@@ -65,6 +76,10 @@ const AddProduct = () => {
     });
   }, [formik.values, selectedColors, images]);
 
+  const handleColors = (e) => {
+    setSelectedColors(e);
+  };
+
   return (
     <div>
       <h3 className='mb-4 title'>Thêm sản phẩm</h3>
@@ -74,6 +89,7 @@ const AddProduct = () => {
           onSubmit={formik.handleSubmit}
           className='d-flex gap-3 flex-column'
         >
+          {/* TÊN */}
           <Input
             type='text'
             label='Tên sản phẩm'
@@ -86,6 +102,7 @@ const AddProduct = () => {
             {formik.touched.title && formik.errors.title}
           </div>
 
+          {/* MÔ TẢ */}
           <div>
             <ReactQuill
               theme='snow'
@@ -96,6 +113,7 @@ const AddProduct = () => {
           </div>
           <div className='error'>{formik.errors.description}</div>
 
+          {/* GIÁ */}
           <Input
             type='number'
             label='Giá'
@@ -108,6 +126,7 @@ const AddProduct = () => {
             {formik.touched.price && formik.errors.price}
           </div>
 
+          {/* LOẠI SẢN PHẨM */}
           <select
             className='form-control py-3 mb-3'
             name='category'
@@ -128,15 +147,38 @@ const AddProduct = () => {
             {formik.touched.category && formik.errors.category}
           </div>
 
-          <Multiselect
-            dataKey='id'
-            textField='color'
-            data={colors.map((c) => {
-              return { id: c._id, color: c.title };
-            })}
-            onChange={(e) => setSelectedColors(e)}
-          />
+          {/* TAG */}
+          <select
+            className='form-control py-3 mb-3'
+            name='tags'
+            onChange={formik.handleChange('tag')}
+            onBlur={formik.handleBlur('tag')}
+            value={formik.values.tag}
+          >
+            <option value=''>Chọn tags</option>
+            <option value='featured'>Nổi bật</option>
+            <option value='popular'>Phổ biến</option>
+            <option value='special'>Đặc biệt</option>
+          </select>
+          <div className='error'>{formik.touched.tag && formik.errors.tag}</div>
 
+          {/* MÀU */}
+          <Select
+            mode='multiple'
+            allowClear
+            className='w-100'
+            placeholder='Chọn màu'
+            defaultValue={selectedColors}
+            onChange={(i) => handleColors(i)}
+            options={colors.map((c) => {
+              return { label: c.title, value: c._id };
+            })}
+          />
+          <div className='error'>
+            {formik.touched.colors && formik.errors.colors}
+          </div>
+
+          {/* THƯƠNG HIỆU */}
           <select
             className='form-control py-3 mb-3'
             name='brand'
@@ -157,6 +199,7 @@ const AddProduct = () => {
             {formik.touched.brand && formik.errors.brand}
           </div>
 
+          {/* SỐ LƯỢNG */}
           <Input
             type='number'
             label='Nhập số lượng'
@@ -169,6 +212,7 @@ const AddProduct = () => {
             {formik.touched.quantity && formik.errors.quantity}
           </div>
 
+          {/* HÌNH ẢNH */}
           <div className='bg-white border-1 p-5 text-center'>
             <Dropzone
               onDrop={(acceptedFiles) => {
@@ -179,9 +223,7 @@ const AddProduct = () => {
                 <section>
                   <div {...getRootProps()}>
                     <input {...getInputProps()} />
-                    <p>
-                      Drag 'n' drop some files here, or click to select files
-                    </p>
+                    <p>Kéo thả file hình ảnh hoặc nhấp vào đây để thêm hình</p>
                   </div>
                 </section>
               )}

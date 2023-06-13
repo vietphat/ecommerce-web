@@ -6,6 +6,8 @@ import { AiOutlineDashboard, AiOutlineUser } from 'react-icons/ai';
 import { FaClipboardList, FaBloggerB, FaQuestionCircle } from 'react-icons/fa';
 import { MdOutlineManageSearch } from 'react-icons/md';
 import { IoIosNotifications } from 'react-icons/io';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const { Header, Sider, Content } = Layout;
 
@@ -229,6 +231,17 @@ const MainLayout = () => {
             background: colorBgContainer,
           }}
         >
+          <ToastContainer
+            position='top-right'
+            autoClose={1000}
+            hideProgressBar={false}
+            newestOnTop={true}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            theme='light'
+          />
           <Outlet />
         </Content>
       </Layout>

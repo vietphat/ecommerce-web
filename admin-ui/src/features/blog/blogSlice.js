@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 import blogServices from './blogServices';
+import { toast } from 'react-toastify';
 
 const initialState = {
   blogs: [],
@@ -18,12 +19,24 @@ export const getBlogs = createAsyncThunk('blog/get-blogs', async (thunkAPI) => {
   }
 });
 
+export const createBlog = createAsyncThunk(
+  'blog/create-blog',
+  async (blog, thunkAPI) => {
+    try {
+      return await blogServices.createBlog(blog);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
 export const blogSlice = createSlice({
   name: 'blogs',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // GET BLOGS
       .addCase(getBlogs.pending, (state) => {
         state.isLoading = true;
       })
@@ -38,6 +51,24 @@ export const blogSlice = createSlice({
         state.isError = true;
         state.isSuccess = false;
         state.message = action.error;
+      })
+      // CREATE BLOG
+      .addCase(createBlog.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(createBlog.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.blogs = [...state.blogs, action.payload.data];
+        toast.success('Thêm blog thành công!');
+      })
+      .addCase(createBlog.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.error;
+        toast.error('Thêm blog thất bại!');
       });
   },
 });

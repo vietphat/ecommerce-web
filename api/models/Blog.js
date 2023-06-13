@@ -30,10 +30,12 @@ const blogShema = new mongoose.Schema(
         ref: 'User',
       },
     ],
-    images: {
-      type: Array,
-      default: [],
-    },
+    images: [
+      {
+        public_id: String,
+        url: String,
+      },
+    ],
     author: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,

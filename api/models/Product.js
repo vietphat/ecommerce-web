@@ -23,7 +23,7 @@ const productSchema = new mongoose.Schema(
       min: 0,
     },
     colors: [],
-    tags: [],
+    tag: String,
     category: {
       type: String,
       required: true,

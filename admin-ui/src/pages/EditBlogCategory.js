@@ -1,42 +1,52 @@
-import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import Input from '../components/Input';
 import {
-  createBlogCategory,
-  resetState,
+  getABlogCategory,
+  editABlogCategory,
 } from '../features/blog-category/blogCategorySlice';
 
 let blogCategorySchema = Yup.object({
-  title: Yup.string().required('Danh mục bài vết không được để trống'),
+  title: Yup.string().required('Tên danh mục không được để trống'),
 });
 
-const AddBlogCategory = () => {
+const EditBlogCategory = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { id } = useParams();
+
+  // Lấy thông tin danh mục
+  useEffect(() => {
+    dispatch(getABlogCategory(id));
+  }, [id, dispatch]);
+
+  const { currentBlogCategory } = useSelector((state) => state.blogCategory);
 
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      title: '',
+      title: currentBlogCategory?.title ? currentBlogCategory?.title : '',
     },
     validationSchema: blogCategorySchema,
     // SUBMIT
     onSubmit: (values) => {
-      dispatch(createBlogCategory(values));
+      dispatch(editABlogCategory({ _id: id, blogCategory: values }));
       formik.resetForm();
-      setTimeout(() => {
-        dispatch(resetState());
-      }, 3000);
+      navigate('/admin/blog-categories-list');
     },
   });
 
   return (
     <div>
-      <h3 className='mb-4 title'>Thêm danh mục bài viết</h3>
+      <h3 className='mb-4 title'>{`Sửa danh mục bài viết ${currentBlogCategory?.title}`}</h3>
 
       <div>
         <form action='' onSubmit={formik.handleSubmit}>
-          {/* LOẠI BÀI BIẾT */}
+          {/* TÊN DANH MỤC */}
           <div className='mt-4'>
             <Input
               type='text'
@@ -55,7 +65,7 @@ const AddBlogCategory = () => {
             type='submit'
             className='btn btn-success border-0 rounded-3 my-5'
           >
-            Thêm danh mục bài viết
+            Sửa danh mục bài viết
           </button>
         </form>
       </div>
@@ -63,4 +73,4 @@ const AddBlogCategory = () => {
   );
 };
 
-export default AddBlogCategory;
+export default EditBlogCategory;

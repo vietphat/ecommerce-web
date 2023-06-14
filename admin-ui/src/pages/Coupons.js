@@ -1,11 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { BiEdit } from 'react-icons/bi';
 import { AiFillDelete } from 'react-icons/ai';
 
-import { getCoupons } from '../features/coupon/couponSlice';
+import { getCoupons, deleteACoupon } from '../features/coupon/couponSlice';
+import Modal from '../components/Modal';
 
 const columns = [
   {
@@ -41,6 +42,23 @@ const columns = [
 const Coupons = () => {
   const dispatch = useDispatch();
 
+  const [open, setOpen] = useState(false);
+  const [deletedCouponId, setDeletedCouponId] = useState();
+
+  const showModal = (couponId) => {
+    setOpen(true);
+    setDeletedCouponId(couponId);
+  };
+
+  const handleOk = () => {
+    dispatch(deleteACoupon(deletedCouponId));
+    setOpen(false);
+  };
+
+  const handleCancel = () => {
+    setOpen(false);
+  };
+
   const { coupons } = useSelector((state) => state.coupon);
 
   useEffect(() => {
@@ -49,7 +67,7 @@ const Coupons = () => {
 
   return (
     <div>
-      <h3 className='mt-4 title'>Danh sách mã giảm giá</h3>
+      <h3 className='mt-4 title'>Danh sách phiếu giảm giá</h3>
       <div>
         <Table
           columns={columns}
@@ -58,12 +76,17 @@ const Coupons = () => {
               key: i + 1,
               actions: (
                 <>
-                  <Link to='/' className='fs-3'>
+                  <Link to={`/admin/coupon/${coupon._id}`} className='fs-3'>
                     <BiEdit />
                   </Link>
-                  <Link to='/' className='ms-3 fs-3 text-danger'>
+
+                  <button
+                    type='button'
+                    className='ms-3 fs-3 text-danger bg-transparent border-0'
+                    onClick={() => showModal(coupon._id)}
+                  >
                     <AiFillDelete />
-                  </Link>
+                  </button>
                 </>
               ),
               ...coupon,
@@ -72,6 +95,14 @@ const Coupons = () => {
           })}
         />
       </div>
+
+      <Modal
+        title='Xác nhận xóa'
+        content='Bạn có chắc chắn muốn xóa phiếu giảm giá này không?'
+        open={open}
+        handleOk={handleOk}
+        handleCancel={handleCancel}
+      />
     </div>
   );
 };

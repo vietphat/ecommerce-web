@@ -1,11 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { BiEdit } from 'react-icons/bi';
 import { AiFillDelete } from 'react-icons/ai';
 
-import { getProductCategories } from '../features/product-category/productCategorySlice';
+import {
+  deleteAProductCategory,
+  getProductCategories,
+} from '../features/product-category/productCategorySlice';
+import Modal from '../components/Modal';
 
 const columns = [
   {
@@ -29,6 +33,23 @@ const columns = [
 const ProductCategories = () => {
   const dispatch = useDispatch();
 
+  const [open, setOpen] = useState(false);
+  const [deletedProductCategoryId, setDeletedProductCategoryId] = useState();
+
+  const showModal = (productCategoryId) => {
+    setOpen(true);
+    setDeletedProductCategoryId(productCategoryId);
+  };
+
+  const handleOk = () => {
+    dispatch(deleteAProductCategory(deletedProductCategoryId));
+    setOpen(false);
+  };
+
+  const handleCancel = () => {
+    setOpen(false);
+  };
+
   const { productCategories } = useSelector((state) => state.productCategory);
 
   useEffect(() => {
@@ -46,12 +67,20 @@ const ProductCategories = () => {
               key: i + 1,
               actions: (
                 <>
-                  <Link to='/' className='fs-3'>
+                  <Link
+                    to={`/admin/product-category/${productCategory._id}`}
+                    className='fs-3'
+                  >
                     <BiEdit />
                   </Link>
-                  <Link to='/' className='ms-3 fs-3 text-danger'>
+
+                  <button
+                    type='button'
+                    className='ms-3 fs-3 text-danger bg-transparent border-0'
+                    onClick={() => showModal(productCategory._id)}
+                  >
                     <AiFillDelete />
-                  </Link>
+                  </button>
                 </>
               ),
               ...productCategory,
@@ -59,6 +88,14 @@ const ProductCategories = () => {
           })}
         />
       </div>
+
+      <Modal
+        title='Xác nhận xóa'
+        content='Bạn có chắc chắn muốn xóa loại sản phẩm này không?'
+        open={open}
+        handleOk={handleOk}
+        handleCancel={handleCancel}
+      />
     </div>
   );
 };

@@ -1,11 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { BiEdit } from 'react-icons/bi';
 import { AiFillDelete } from 'react-icons/ai';
 
-import { getBrands } from '../features/brand/brandSlice';
+import { getBrands, deleteABrand } from '../features/brand/brandSlice';
+import Modal from '../components/Modal';
 
 const columns = [
   {
@@ -29,6 +30,23 @@ const columns = [
 const Brands = () => {
   const dispatch = useDispatch();
 
+  const [open, setOpen] = useState(false);
+  const [deletedBrandId, setDeletedBrandId] = useState();
+
+  const showModal = (brandId) => {
+    setOpen(true);
+    setDeletedBrandId(brandId);
+  };
+
+  const handleOk = () => {
+    dispatch(deleteABrand(deletedBrandId));
+    setOpen(false);
+  };
+
+  const handleCancel = () => {
+    setOpen(false);
+  };
+
   const { brands } = useSelector((state) => state.brand);
 
   useEffect(() => {
@@ -46,12 +64,17 @@ const Brands = () => {
               key: i + 1,
               actions: (
                 <>
-                  <Link to='/' className='fs-3'>
+                  <Link to={`/admin/brand/${brand._id}`} className='fs-3'>
                     <BiEdit />
                   </Link>
-                  <Link to='/' className='ms-3 fs-3 text-danger'>
+
+                  <button
+                    type='button'
+                    className='ms-3 fs-3 text-danger bg-transparent border-0'
+                    onClick={() => showModal(brand._id)}
+                  >
                     <AiFillDelete />
-                  </Link>
+                  </button>
                 </>
               ),
               ...brand,
@@ -59,6 +82,14 @@ const Brands = () => {
           })}
         />
       </div>
+
+      <Modal
+        title='Xác nhận xóa'
+        content='Bạn có chắc chắn muốn xóa thương hiệu này không?'
+        open={open}
+        handleOk={handleOk}
+        handleCancel={handleCancel}
+      />
     </div>
   );
 };

@@ -252,7 +252,7 @@ const AddProduct = () => {
 
           <button
             type='submit'
-            className='btn btn-success border-0 ronded-3 my-5'
+            className='btn btn-success border-0 rounded-3 my-5'
           >
             Thêm sản phẩm
           </button>

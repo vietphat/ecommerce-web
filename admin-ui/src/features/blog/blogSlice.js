@@ -13,6 +13,17 @@ const initialState = {
 
 export const resetState = createAction('Reset_all');
 
+export const getABlog = createAsyncThunk(
+  'blog/get-a-blog',
+  async (id, thunkAPI) => {
+    try {
+      return await blogServices.getABlog(id);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
 export const getBlogs = createAsyncThunk('blog/get-blogs', async (thunkAPI) => {
   try {
     return await blogServices.getBlogs();
@@ -26,6 +37,28 @@ export const createBlog = createAsyncThunk(
   async (blog, thunkAPI) => {
     try {
       return await blogServices.createBlog(blog);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const editABlog = createAsyncThunk(
+  'blog/edit-a-blog',
+  async (blogData, thunkAPI) => {
+    try {
+      return await blogServices.editABlog(blogData);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const deleteABlog = createAsyncThunk(
+  'blog/delete-a-blog',
+  async (id, thunkAPI) => {
+    try {
+      return await blogServices.deleteABlog(id);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -54,6 +87,22 @@ export const blogSlice = createSlice({
         state.isSuccess = false;
         state.message = action.error;
       })
+      // GET A BLOG
+      .addCase(getABlog.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getABlog.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.currentBlog = action.payload.data;
+      })
+      .addCase(getABlog.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.error;
+      })
       // CREATE BLOG
       .addCase(createBlog.pending, (state) => {
         state.isLoading = true;
@@ -71,6 +120,43 @@ export const blogSlice = createSlice({
         state.isSuccess = false;
         state.message = action.error;
         toast.success('Thêm bài viết thất bại!');
+      })
+      // EDIT A BLOG
+      .addCase(editABlog.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(editABlog.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        toast.success('Sửa bài viết thành công!');
+      })
+      .addCase(editABlog.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.error;
+        toast.error('Sửa bài viết thất bại!');
+      })
+      // DELETE A PRODUCT CATEGORY
+      .addCase(deleteABlog.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteABlog.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.blogs = state.blogs.filter(
+          (b) => b._id !== action.payload.deletedBlogId
+        );
+        toast.success('Xóa bài viết thành công!');
+      })
+      .addCase(deleteABlog.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.error;
+        toast.error('Xóa bài viết thất bại!');
       })
       // RESET STATE
       .addCase(resetState, () => initialState);

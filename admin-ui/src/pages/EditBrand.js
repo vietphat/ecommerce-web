@@ -1,35 +1,45 @@
-import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import Input from '../components/Input';
-import { createBrand, resetState } from '../features/brand/brandSlice';
+import { getABrand, editABrand } from '../features/brand/brandSlice';
 
 let brandSchema = Yup.object({
   title: Yup.string().required('Tên thương hiệu không được để trống'),
 });
 
-const AddBrand = () => {
+const EditBrand = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { id } = useParams();
+
+  // Lấy thông tin thương hiệu
+  useEffect(() => {
+    dispatch(getABrand(id));
+  }, [id, dispatch]);
+
+  const { currentBrand } = useSelector((state) => state.brand);
 
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      title: '',
+      title: currentBrand?.title ? currentBrand?.title : '',
     },
     validationSchema: brandSchema,
     // SUBMIT
     onSubmit: (values) => {
-      dispatch(createBrand(values));
+      dispatch(editABrand({ _id: id, brand: values }));
       formik.resetForm();
-      setTimeout(() => {
-        dispatch(resetState());
-      }, 3000);
+      navigate('/admin/brands-list');
     },
   });
 
   return (
     <div>
-      <h3 className='mb-4 title'>Thêm thương hiệu</h3>
+      <h3 className='mb-4 title'>{`Sửa thương hiệu ${currentBrand?.title}`}</h3>
 
       <div>
         <form action='' onSubmit={formik.handleSubmit}>
@@ -52,7 +62,7 @@ const AddBrand = () => {
             type='submit'
             className='btn btn-success border-0 rounded-3 my-5'
           >
-            Thêm thương hiệu
+            Sửa thương hiệu
           </button>
         </form>
       </div>
@@ -60,4 +70,4 @@ const AddBrand = () => {
   );
 };
 
-export default AddBrand;
+export default EditBrand;

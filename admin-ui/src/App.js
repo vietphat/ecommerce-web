@@ -23,6 +23,12 @@ import AddProductCategory from './pages/AddProductCategory';
 import AddProduct from './pages/AddProduct';
 import AddCoupon from './pages/AddCoupon';
 import Coupons from './pages/Coupons';
+import EditBrand from './pages/EditBrand';
+import EditProductCategory from './pages/EditProductCategory';
+import EditColor from './pages/EditColor';
+import EditCoupon from './pages/EditCoupon';
+import EditBlogCategory from './pages/EditBlogCategory';
+import EditBlog from './pages/EditBlog';
 
 function App() {
   return (
@@ -44,6 +50,7 @@ function App() {
 
           {/* BRANDS */}
           <Route path='add-brand' element={<AddBrand />} />
+          <Route path='brand/:id' element={<EditBrand />} />
           <Route path='brands-list' element={<Brands />} />
 
           {/* PRODUCT-CATEGORIES */}
@@ -52,9 +59,14 @@ function App() {
             path='product-categories-list'
             element={<ProductCategories />}
           />
+          <Route
+            path='product-category/:id'
+            element={<EditProductCategory />}
+          />
 
           {/* COLORS */}
           <Route path='add-color' element={<AddColor />} />
+          <Route path='color/:id' element={<EditColor />} />
           <Route path='colors-list' element={<Colors />} />
 
           {/* ORDERS */}
@@ -62,12 +74,15 @@ function App() {
 
           {/* COUPONS */}
           <Route path='add-coupon' element={<AddCoupon />} />
+          <Route path='coupon/:id' element={<EditCoupon />} />
           <Route path='coupons-list' element={<Coupons />} />
 
           {/* BLOGS */}
           <Route path='add-blog' element={<AddBlog />} />
+          <Route path='blog/:id' element={<EditBlog />} />
           <Route path='blogs-list' element={<Blogs />} />
           <Route path='add-blog-category' element={<AddBlogCategory />} />
+          <Route path='blog-category/:id' element={<EditBlogCategory />} />
           <Route path='blog-categories-list' element={<BlogCategories />} />
 
           {/* ENQUIRIES */}

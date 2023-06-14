@@ -24,6 +24,17 @@ export const getProductCategories = createAsyncThunk(
   }
 );
 
+export const getAProductCategory = createAsyncThunk(
+  'product-category/get-a-product-category',
+  async (id, thunkAPI) => {
+    try {
+      return await productCategoryServices.getAProductCategory(id);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
 export const createProductCategory = createAsyncThunk(
   'product-category/create-product-category',
   async (productCategory, thunkAPI) => {
@@ -31,6 +42,30 @@ export const createProductCategory = createAsyncThunk(
       return await productCategoryServices.createProductCategory(
         productCategory
       );
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const editAProductCategory = createAsyncThunk(
+  'product-category/edit-a-product-category',
+  async (productCategoryData, thunkAPI) => {
+    try {
+      return await productCategoryServices.editAProductCategory(
+        productCategoryData
+      );
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const deleteAProductCategory = createAsyncThunk(
+  'product-category/delete-a-product-category',
+  async (id, thunkAPI) => {
+    try {
+      return await productCategoryServices.deleteAProductCategory(id);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -59,6 +94,22 @@ export const productCategorySlice = createSlice({
         state.isSuccess = false;
         state.message = action.error;
       })
+      // GET A PRODUCT CATEGORY
+      .addCase(getAProductCategory.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getAProductCategory.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.currentProductCategory = action.payload.data;
+      })
+      .addCase(getAProductCategory.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.error;
+      })
       // CREATE PRODUCT CATEGORIES
       .addCase(createProductCategory.pending, (state) => {
         state.isLoading = true;
@@ -79,6 +130,43 @@ export const productCategorySlice = createSlice({
         state.isSuccess = false;
         state.message = action.error;
         toast.error('Thêm loại sản phẩm thất bại!');
+      })
+      // EDIT A PRODUCT CATEGORY
+      .addCase(editAProductCategory.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(editAProductCategory.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        toast.success('Sửa loại sản phẩm thành công!');
+      })
+      .addCase(editAProductCategory.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.error;
+        toast.error('Sửa loại sản phẩm thất bại!');
+      })
+      // DELETE A PRODUCT CATEGORY
+      .addCase(deleteAProductCategory.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteAProductCategory.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.productCategories = state.productCategories.filter(
+          (pc) => pc._id !== action.payload.deletedProductCategoryId
+        );
+        toast.success('Xóa loại sản phẩm thành công!');
+      })
+      .addCase(deleteAProductCategory.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.error;
+        toast.error('Xóa loại sản phẩm thất bại!');
       })
       // RESET STATE
       .addCase(resetState, () => initialState);

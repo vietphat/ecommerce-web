@@ -1,43 +1,53 @@
-import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import Input from '../components/Input';
-import { createColor, resetState } from '../features/color/colorSlice';
+import { getAColor, editAColor } from '../features/color/colorSlice';
 
 let colorSchema = Yup.object({
-  title: Yup.string().required('Màu không được để trống'),
+  title: Yup.string().required('Mã màu không được để trống'),
 });
 
-const AddColor = () => {
+const EditColor = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { id } = useParams();
+
+  // Lấy thông tin màu
+  useEffect(() => {
+    dispatch(getAColor(id));
+  }, [id, dispatch]);
+
+  const { currentColor } = useSelector((state) => state.color);
 
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      title: '',
+      title: currentColor?.title ? currentColor?.title : '',
     },
     validationSchema: colorSchema,
     // SUBMIT
     onSubmit: (values) => {
-      dispatch(createColor(values));
+      dispatch(editAColor({ _id: id, color: values }));
       formik.resetForm();
-      setTimeout(() => {
-        dispatch(resetState());
-      }, 3000);
+      navigate('/admin/colors-list');
     },
   });
 
   return (
     <div>
-      <h3 className='mb-4 title'>Thêm màu sản phẩm</h3>
+      <h3 className='mb-4 title'>{`Sửa màu ${currentColor?.title}`}</h3>
 
       <div>
         <form action='' onSubmit={formik.handleSubmit}>
-          {/* MÀU SẢN PHẨM */}
+          {/* MÃ MÀU */}
           <div className='mt-4'>
             <Input
               type='color'
-              label='Màu sản phẩm'
+              label='Mã màu'
               name='title'
               onChange={formik.handleChange('title')}
               onBlur={formik.handleBlur('title')}
@@ -52,7 +62,7 @@ const AddColor = () => {
             type='submit'
             className='btn btn-success border-0 rounded-3 my-5'
           >
-            Thêm màu sản phẩm
+            Sửa mã màu
           </button>
         </form>
       </div>
@@ -60,4 +70,4 @@ const AddColor = () => {
   );
 };
 
-export default AddColor;
+export default EditColor;

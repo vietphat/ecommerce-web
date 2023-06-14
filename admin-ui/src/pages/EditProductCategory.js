@@ -1,38 +1,50 @@
-import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import Input from '../components/Input';
 import {
-  createProductCategory,
-  resetState,
+  getAProductCategory,
+  editAProductCategory,
 } from '../features/product-category/productCategorySlice';
 
 let productCategorySchema = Yup.object({
   title: Yup.string().required('Loại sản phẩm không được để trống'),
 });
 
-const AddProductCategory = () => {
+const EditProductCategory = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { id } = useParams();
+
+  // Lấy thông tin loại sản phẩm
+  useEffect(() => {
+    dispatch(getAProductCategory(id));
+  }, [id, dispatch]);
+
+  const { currentProductCategory } = useSelector(
+    (state) => state.productCategory
+  );
 
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      title: '',
+      title: currentProductCategory?.title ? currentProductCategory?.title : '',
     },
     validationSchema: productCategorySchema,
     // SUBMIT
     onSubmit: (values) => {
-      dispatch(createProductCategory(values));
+      dispatch(editAProductCategory({ _id: id, productCategory: values }));
       formik.resetForm();
-      setTimeout(() => {
-        dispatch(resetState());
-      }, 3000);
+      navigate('/admin/product-categories-list');
     },
   });
 
   return (
     <div>
-      <h3 className='mb-4 title'>Thêm loại sản phẩm</h3>
+      <h3 className='mb-4 title'>{`Sửa loại sản phẩm ${currentProductCategory?.title}`}</h3>
 
       <div>
         <form action='' onSubmit={formik.handleSubmit}>
@@ -55,7 +67,7 @@ const AddProductCategory = () => {
             type='submit'
             className='btn btn-success border-0 rounded-3 my-5'
           >
-            Thêm loại sản phẩm
+            Sửa loại sản phẩm
           </button>
         </form>
       </div>
@@ -63,4 +75,4 @@ const AddProductCategory = () => {
   );
 };
 
-export default AddProductCategory;
+export default EditProductCategory;

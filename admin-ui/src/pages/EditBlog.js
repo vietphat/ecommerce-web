@@ -2,17 +2,15 @@ import { useEffect } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import Dropzone from 'react-dropzone';
+import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { useDispatch, useSelector } from 'react-redux';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import Input from '../components/Input';
-import {
-  getBlogCategories,
-  resetState,
-} from '../features/blog-category/blogCategorySlice';
+import { getABlog, editABlog } from '../features/blog/blogSlice';
 import { deleteImg, uploadImg } from '../features/upload/uploadSlice';
-import { createBlog } from '../features/blog/blogSlice';
+import { getBlogCategories } from '../features/blog-category/blogCategorySlice';
 
 let blogSchema = Yup.object({
   title: Yup.string().required('Tiêu đề bài viết không được để trống'),
@@ -20,46 +18,45 @@ let blogSchema = Yup.object({
   category: Yup.string().required('Danh mục bài viết không được để trống'),
 });
 
-const AddBlog = () => {
+const EditBrand = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { id } = useParams();
+
+  // Lấy thông tin blog
+  useEffect(() => {
+    dispatch(getABlog(id));
+    dispatch(getBlogCategories());
+  }, [id, dispatch]);
+
+  const { blogCategories } = useSelector((state) => state.blogCategory);
+  const { currentBlog } = useSelector((state) => state.blog);
+  const { images } = useSelector((state) => state.upload);
 
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      title: '',
-      description: '',
-      category: '',
-      images: [],
+      title: currentBlog?.title ? currentBlog?.title : '',
+      description: currentBlog?.description ? currentBlog?.description : '',
+      category: currentBlog?.category ? currentBlog?.category : '',
+      images: currentBlog?.images,
     },
     validationSchema: blogSchema,
     // SUBMIT
     onSubmit: (values) => {
-      dispatch(createBlog(values));
+      dispatch(editABlog({ _id: id, blog: values }));
       formik.resetForm();
-      setTimeout(() => {
-        dispatch(resetState());
-      }, 3000);
+      navigate('/admin/blogs-list');
     },
   });
 
-  useEffect(() => {
-    dispatch(getBlogCategories());
-  }, [dispatch]);
-
-  const { blogCategories } = useSelector((state) => state.blogCategory);
-  const { images } = useSelector((state) => state.upload);
-
-  useEffect(() => {
-    formik.values.images = images.map((img) => {
-      return { public_id: img.public_id, url: img.url };
-    });
-  }, [formik.values, images]);
-
   return (
     <div>
-      <h3 className='mb-4 title'>Thêm bài viết</h3>
+      <h3 className='mb-4 title'>{`Sửa bài viết ${currentBlog?.title}`}</h3>
 
       <div>
         <form
+          action=''
           onSubmit={formik.handleSubmit}
           className='d-flex gap-3 flex-column'
         >
@@ -154,7 +151,7 @@ const AddBlog = () => {
             type='submit'
             className='btn btn-success border-0 rounded-3 my-5'
           >
-            Thêm bài viết
+            Sửa bài viết
           </button>
         </form>
       </div>
@@ -162,4 +159,4 @@ const AddBlog = () => {
   );
 };
 
-export default AddBlog;
+export default EditBrand;

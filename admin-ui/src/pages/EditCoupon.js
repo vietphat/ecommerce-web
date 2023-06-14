@@ -1,9 +1,11 @@
-import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import Input from '../components/Input';
-import { createCoupon, resetState } from '../features/coupon/couponSlice';
+import { getACoupon, editACoupon } from '../features/coupon/couponSlice';
 
 let couponSchema = Yup.object({
   name: Yup.string().required('Mã giảm giá không được để trống'),
@@ -14,29 +16,39 @@ let couponSchema = Yup.object({
     .required('Số phần trăm giảm không được để trống'),
 });
 
-const AddCoupon = () => {
+const EditBrand = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { id } = useParams();
+
+  // Lấy thông tin phiếu giảm giá
+  useEffect(() => {
+    dispatch(getACoupon(id));
+  }, [id, dispatch]);
+
+  const { currentCoupon } = useSelector((state) => state.coupon);
 
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      name: '',
-      expiry: '',
-      discount: '',
+      name: currentCoupon?.name ? currentCoupon?.name : '',
+      expiry: currentCoupon?.expiry
+        ? new Date(currentCoupon?.expiry).toISOString().split('T')[0]
+        : new Date().toISOString(),
+      discount: currentCoupon?.discount,
     },
     validationSchema: couponSchema,
     // SUBMIT
     onSubmit: (values) => {
-      dispatch(createCoupon(values));
+      dispatch(editACoupon({ _id: id, coupon: values }));
       formik.resetForm();
-      setTimeout(() => {
-        dispatch(resetState());
-      }, 3000);
+      navigate('/admin/coupons-list');
     },
   });
 
   return (
     <div>
-      <h3 className='mb-4 title'>Thêm phiếu giảm giá</h3>
+      <h3 className='mb-4 title'>{`Sửa phiếu giảm giá ${currentCoupon?.name}`}</h3>
 
       <div>
         <form action='' onSubmit={formik.handleSubmit}>
@@ -92,7 +104,7 @@ const AddCoupon = () => {
             type='submit'
             className='btn btn-success border-0 rounded-3 my-5'
           >
-            Thêm mã giảm giá
+            Sửa phiếu giảm giá
           </button>
         </form>
       </div>
@@ -100,4 +112,4 @@ const AddCoupon = () => {
   );
 };
 
-export default AddCoupon;
+export default EditBrand;

@@ -124,7 +124,7 @@ export const colorSlice = createSlice({
         state.message = action.error;
         toast.error('Thêm màu sản phẩm thất bại!');
       })
-      // EDIT A PRODUCT CATEGORY
+      // EDIT A COLOR
       .addCase(editAColor.pending, (state) => {
         state.isLoading = true;
       })
@@ -141,7 +141,7 @@ export const colorSlice = createSlice({
         state.message = action.error;
         toast.error('Sửa màu thất bại!');
       })
-      // DELETE A PRODUCT CATEGORY
+      // DELETE A COLOR
       .addCase(deleteAColor.pending, (state) => {
         state.isLoading = true;
       })

@@ -10,11 +10,7 @@ const router = express.Router();
 router
   .route('/')
   .get(enquiryController.getAllEnquiries)
-  .post(
-    isAuthenticated,
-    restrictTo('admin'),
-    enquiryController.createAnEnquiry
-  );
+  .post(enquiryController.createAnEnquiry);
 
 router
   .route('/:id')

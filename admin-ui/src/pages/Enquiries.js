@@ -1,10 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { AiFillDelete } from 'react-icons/ai';
+import { AiFillDelete, AiOutlineEye } from 'react-icons/ai';
 
-import { getEnquiries } from '../features/enquiry/enquirySlice';
+import {
+  getEnquiries,
+  deleteAnEnquiry,
+  editAnEnquiry,
+} from '../features/enquiry/enquirySlice';
+import Modal from '../components/Modal';
 
 const columns = [
   {
@@ -44,6 +49,28 @@ const columns = [
 const Enquiries = () => {
   const dispatch = useDispatch();
 
+  const [open, setOpen] = useState(false);
+  const [deletedEnquiryId, setDeletedEnquiryId] = useState();
+
+  const showModal = (enquiryId) => {
+    setOpen(true);
+    setDeletedEnquiryId(enquiryId);
+  };
+
+  const handleOk = () => {
+    dispatch(deleteAnEnquiry(deletedEnquiryId));
+    setOpen(false);
+  };
+
+  const handleCancel = () => {
+    setOpen(false);
+  };
+
+  const handleEditStatus = (value, id) => {
+    const enquiryData = { _id: id, enquiry: { status: value } };
+    dispatch(editAnEnquiry(enquiryData));
+  };
+
   const { enquiries } = useSelector((state) => state.enquiry);
 
   useEffect(() => {
@@ -61,15 +88,37 @@ const Enquiries = () => {
               key: i + 1,
               actions: (
                 <>
-                  <Link to='/' className='ms-3 fs-3 text-danger'>
-                    <AiFillDelete />
+                  <Link
+                    to={`/admin/enquiry-details/${enquiry._id}`}
+                    className='ms-3 fs-3 text-primary'
+                  >
+                    <AiOutlineEye />
                   </Link>
+
+                  <button
+                    type='button'
+                    className='ms-3 fs-3 text-danger bg-transparent border-0'
+                    onClick={() => showModal(enquiry._id)}
+                  >
+                    <AiFillDelete />
+                  </button>
                 </>
               ),
               setStatus: (
                 <>
-                  <select name='' className='form-control form-select' id=''>
-                    <option value=''>Thay đổi trạng thái</option>
+                  <select
+                    name=''
+                    defaultValue={enquiry.status}
+                    className='form-control form-select'
+                    id=''
+                    onChange={(e) =>
+                      handleEditStatus(e.target.value, enquiry._id)
+                    }
+                  >
+                    <option value='submitted'>Đã gửi</option>
+                    <option value='contacted'>Đã liên hệ</option>
+                    <option value='processing'>Đang xử lý</option>
+                    <option value='resolved'>Đã xử lý</option>
                   </select>
                 </>
               ),
@@ -78,6 +127,14 @@ const Enquiries = () => {
           })}
         />
       </div>
+
+      <Modal
+        title='Xác nhận xóa'
+        content='Bạn có chắc chắn muốn xóa thắc mắc của khách hàng này không?'
+        open={open}
+        handleOk={handleOk}
+        handleCancel={handleCancel}
+      />
     </div>
   );
 };

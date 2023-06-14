@@ -44,6 +44,7 @@ export const uploadSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // UPLOAD IMAGE
       .addCase(uploadImg.pending, (state) => {
         state.isLoading = true;
       })
@@ -59,6 +60,7 @@ export const uploadSlice = createSlice({
         state.isSuccess = false;
         state.message = action.error;
       })
+      // DELETE IMAGE
       .addCase(deleteImg.pending, (state) => {
         state.isLoading = true;
       })

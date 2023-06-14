@@ -18,7 +18,7 @@ let blogSchema = Yup.object({
   category: Yup.string().required('Danh mục bài viết không được để trống'),
 });
 
-const EditBrand = () => {
+const EditBlog = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
@@ -32,6 +32,8 @@ const EditBrand = () => {
   const { blogCategories } = useSelector((state) => state.blogCategory);
   const { currentBlog } = useSelector((state) => state.blog);
   const { images } = useSelector((state) => state.upload);
+
+  console.log(images);
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -112,13 +114,14 @@ const EditBrand = () => {
             <Dropzone
               onDrop={(acceptedFiles) => {
                 dispatch(uploadImg(acceptedFiles));
+                formik.values.images = [...formik.values.images, ...images];
               }}
             >
               {({ getRootProps, getInputProps }) => (
                 <section>
                   <div {...getRootProps()}>
                     <input {...getInputProps()} />
-                    <p>Kéo thả file hình ảnh hoặc nhấp vào đây để thêm hình</p>
+                    <p>Kéo thả file hình ảnh hoặc click vào đây để thêm hình</p>
                   </div>
                 </section>
               )}
@@ -126,15 +129,21 @@ const EditBrand = () => {
           </div>
 
           <div className='showimages d-flex flex-wrap gap-3'>
-            {images.map((img) => {
+            {currentBlog?.images.map((img) => {
               return (
                 <div className='position-relative' key={img.public_id}>
                   <button
                     className='btn-close position-absolute'
                     style={{ top: '10px', right: '10px' }}
-                    onClick={() => dispatch(deleteImg(img.public_id))}
+                    onClick={() => {
+                      dispatch(deleteImg(img.public_id));
+                      formik.values.images = formik.values.images.filter(
+                        (fi) => fi.public_id !== img.public_id
+                      );
+                    }}
                     type='button'
                   />
+
                   <img
                     className='img-fluid'
                     src={img.url}
@@ -159,4 +168,4 @@ const EditBrand = () => {
   );
 };
 
-export default EditBrand;
+export default EditBlog;

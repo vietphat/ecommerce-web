@@ -29,6 +29,7 @@ import EditColor from './pages/EditColor';
 import EditCoupon from './pages/EditCoupon';
 import EditBlogCategory from './pages/EditBlogCategory';
 import EditBlog from './pages/EditBlog';
+import EnquiryDetails from './pages/EnquiryDetails';
 
 function App() {
   return (
@@ -87,6 +88,7 @@ function App() {
 
           {/* ENQUIRIES */}
           <Route path='enquiries' element={<Enquiries />} />
+          <Route path='enquiry-details/:id' element={<EnquiryDetails />} />
         </Route>
       </Routes>
     </Router>

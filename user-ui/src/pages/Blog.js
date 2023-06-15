@@ -1,11 +1,21 @@
-import React from 'react';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import Meta from '../components/Meta';
 import BreadCrumb from '../components/BreadCrumb';
 import BlogCard from '../components/BlogCard';
 import Container from '../components/Container';
+import { getBlogs } from '../features/blogs/blogSlice';
 
 const Blog = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getBlogs());
+  }, [dispatch]);
+
+  const { blogs } = useSelector((state) => state.blog);
+
   return (
     <>
       <Meta title='Blogs' />
@@ -28,18 +38,17 @@ const Blog = () => {
 
           <div className='col-9'>
             <div className='row'>
-              <div className='col-6 mb-3'>
-                <BlogCard />
-              </div>
-              <div className='col-6 mb-3'>
-                <BlogCard />
-              </div>
-              <div className='col-6 mb-3'>
-                <BlogCard />
-              </div>
-              <div className='col-6 mb-3'>
-                <BlogCard />
-              </div>
+              {blogs?.length === 0 ? (
+                <div className='text-center fs-5'>Chưa có bài viết nào</div>
+              ) : (
+                blogs?.map((blog) => {
+                  return (
+                    <div key={blog._id} className='col-6 mb-3'>
+                      <BlogCard blog={blog} />
+                    </div>
+                  );
+                })
+              )}
             </div>
           </div>
         </div>

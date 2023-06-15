@@ -114,56 +114,31 @@ exports.saveAddress = catchAsync(async (req, res, next) => {
 
 // Add To Cart
 exports.addToCart = catchAsync(async (req, res, next) => {
-  const { items } = req.body;
-  const { _id: userId } = req.user;
-
-  let products = [];
-  const user = await User.findById(userId);
-
-  // Kiểm tra xem trong db có giỏ hàng của người dùng hiện tại chưa
-  const alreadyExistCart = await Cart.findOne({ createdBy: userId });
-  if (alreadyExistCart) {
-    await alreadyExistCart.deleteOne();
-  }
-
-  for (let i = 0; i < items.length; i++) {
-    let item = {};
-    item.product = items[i]._id;
-    item.count = items[i].count;
-    item.color = items[i].color;
-
-    item.price = (
-      await Product.findById(items[i]._id).select('price').exec()
-    )?.price;
-
-    products.push(item);
-  }
-
-  // Tính tổng tiền giỏ hàng
-  const cartTotal = products.reduce(
-    (acc, cur) => acc + cur.price * cur.count,
-    0
-  );
+  const { product, color, quantity, price } = req.body;
+  const { _id } = req.user;
 
   // tạo cart và lưu vào db
   const cart = await new Cart({
-    products,
-    cartTotal,
-    createdBy: userId,
+    user: _id,
+    product,
+    color,
+    quantity,
+    price,
   }).save();
+
+  const data = await cart.populate('product color');
 
   res.status(200).json({
     status: 'Thành công',
-    data: cart,
+    data,
   });
 });
 
 // Get User Cart
 exports.getUserCart = catchAsync(async (req, res, next) => {
-  const cart = await Cart.findOne({ createdBy: req.user._id }).populate(
-    'products.product',
-    'title color price'
-  );
+  const cart = await Cart.find({ user: req.user._id })
+    .populate('product')
+    .populate('color');
 
   res.status(200).json({
     status: 'Thành công',
@@ -173,7 +148,7 @@ exports.getUserCart = catchAsync(async (req, res, next) => {
 
 // Empty User Cart
 exports.emptyUserCart = catchAsync(async (req, res, next) => {
-  await Cart.findOneAndDelete({ createdBy: req.user._id });
+  await Cart.findOneAndDelete({ user: req.user._id });
 
   res.status(200).json({
     status: 'Thành công',

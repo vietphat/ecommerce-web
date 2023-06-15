@@ -272,6 +272,7 @@ footer .input-group-text {
 .blog-card {
   background-color: #fff;
   border-radius: 10px;
+  display: block;
 }
 
 .blog-card img {
@@ -489,7 +490,6 @@ footer .input-group-text {
 .colors li {
   width: 20px;
   height: 20px;
-  background-color: #ff0000;
   border-radius: 50%;
 }
 
@@ -813,7 +813,8 @@ footer .input-group-text {
 }
 
 .main-product-details a.review-btn,
-.t-review {
+.t-review,
+.main-product-details button.like-btn {
   color: var(--color-777777);
   font-size: 13px;
 }

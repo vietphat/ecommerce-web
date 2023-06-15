@@ -3,8 +3,13 @@ import { toast } from 'react-toastify';
 
 import { authServices } from './authServices';
 
+const userFromLocalStorage = localStorage.getItem('user')
+  ? JSON.parse(localStorage.getItem('user'))
+  : {};
+
 const initialState = {
-  user: {},
+  user: userFromLocalStorage,
+  cart: [],
   isLoading: false,
   isSuccess: false,
   isError: false,
@@ -33,6 +38,17 @@ export const login = createAsyncThunk(
   }
 );
 
+export const addEnquiry = createAsyncThunk(
+  'auth/add-enquiry',
+  async (enquiryData, thunkAPI) => {
+    try {
+      return await authServices.addEnquiry(enquiryData);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -48,7 +64,7 @@ export const authSlice = createSlice({
         state.isSuccess = true;
         state.isError = false;
         state.user = action.payload;
-        localStorage.setItem('token', action.payload.token);
+        localStorage.setItem('user', JSON.stringify(action.payload));
         toast.success('Đăng ký tài khoản thành công!');
       })
       .addCase(register.rejected, (state, action) => {
@@ -67,7 +83,7 @@ export const authSlice = createSlice({
         state.isSuccess = true;
         state.isError = false;
         state.user = action.payload;
-        localStorage.setItem('token', action.payload.token);
+        localStorage.setItem('user', JSON.stringify(action.payload));
         toast.success('Đăng nhập thành công!');
       })
       .addCase(login.rejected, (state, action) => {
@@ -76,6 +92,23 @@ export const authSlice = createSlice({
         state.isError = true;
         state.message = action.error;
         toast.error('Đăng nhập thất bại!');
+      })
+      // THÊM LIÊN HỆ/THẮC MẮC
+      .addCase(addEnquiry.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(addEnquiry.fulfilled, (state) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.isError = false;
+        toast.success('Đã gửi liên hệ thành công!');
+      })
+      .addCase(addEnquiry.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.isError = true;
+        state.message = action.error;
+        toast.error('Gửi thắc mắc thất bại!');
       });
   },
 });

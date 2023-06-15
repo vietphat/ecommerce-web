@@ -1,14 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactStars from 'react-rating-stars-component';
+import { useDispatch, useSelector } from 'react-redux';
 
 import BreadCrumb from '../components/BreadCrumb';
 import Meta from '../components/Meta';
 import ProductCard from '../components/ProductCard';
-import Color from '../components/Color';
+import Colors from '../components/Colors';
 import Container from '../components/Container';
+import { getAllProducts } from '../features/products/productSlice';
 
 const OurStore = () => {
+  const dispatch = useDispatch();
   const [grid, setGrid] = useState(4);
+
+  useEffect(() => {
+    dispatch(getAllProducts());
+  }, [dispatch]);
+
+  const { products } = useSelector((state) => state.product);
 
   return (
     <>
@@ -90,7 +99,7 @@ const OurStore = () => {
                 <h5 className='sub-title'>Màu sắc</h5>
                 <div>
                   <div className='d-flex flex-wrap'>
-                    <Color />
+                    <Colors colors={[]} />
                   </div>
                 </div>
 
@@ -292,9 +301,16 @@ const OurStore = () => {
 
             <div className='products-list pb-5'>
               <div className='d-flex gap-10 flex-wrap'>
-                <ProductCard grid={grid} />
-                <ProductCard grid={grid} />
-                <ProductCard grid={grid} />
+                {products &&
+                  products?.map((product) => {
+                    return (
+                      <ProductCard
+                        key={product._id}
+                        grid={grid}
+                        data={product}
+                      />
+                    );
+                  })}
               </div>
             </div>
           </div>

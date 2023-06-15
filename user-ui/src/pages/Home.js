@@ -1,4 +1,5 @@
-import React from 'react';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Marquee from 'react-fast-marquee';
 
@@ -8,8 +9,22 @@ import ProductCard from '../components/ProductCard';
 import SpecialProduct from '../components/SpecialProduct';
 import Container from '../components/Container';
 import { services } from '../utils/Data';
+import { getBlogs } from '../features/blogs/blogSlice';
+import { getAllProducts } from '../features/products/productSlice';
 
 const Home = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getBlogs());
+    dispatch(getAllProducts());
+  }, [dispatch]);
+
+  const { blogs } = useSelector((state) => state.blog);
+  const { products } = useSelector((state) => state.product);
+
+  console.log(products);
+
   return (
     <>
       <Meta title='Trang chủ' />
@@ -199,12 +214,16 @@ const Home = () => {
       <Container class1='featured-wrapper home-wrapper-2 py-5'>
         <div className='row'>
           <div className='col-12'>
-            <h3 className='section-heading'>Sản phẩm</h3>
+            <h3 className='section-heading'>Sản phẩm nổi bật</h3>
           </div>
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
+
+          {products &&
+            products
+              .filter((product) => product.tag === 'featured')
+              .slice(0, 4)
+              .map((product) => {
+                return <ProductCard key={product._id} data={product} />;
+              })}
         </div>
       </Container>
 
@@ -285,9 +304,13 @@ const Home = () => {
           </div>
         </div>
         <div className='row'>
-          <SpecialProduct />
-          <SpecialProduct />
-          <SpecialProduct />
+          {products &&
+            products
+              .filter((product) => product.tag === 'featured')
+              .slice(0, 4)
+              .map((product) => {
+                return <SpecialProduct key={product._id} data={product} />;
+              })}
         </div>
       </Container>
 
@@ -295,13 +318,16 @@ const Home = () => {
       <Container class1='popular-wrapper home-wrapper-2 py-5'>
         <div className='row'>
           <div className='col-12'>
-            <h3 className='section-heading'>Sản phẩm nổi bật</h3>
+            <h3 className='section-heading'>Sản phẩm phổ biến</h3>
           </div>
           <div className='row'>
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
+            {products &&
+              products
+                .filter((product) => product.tag === 'popular')
+                .slice(0, 4)
+                .map((product) => {
+                  return <ProductCard key={product._id} data={product} />;
+                })}
           </div>
         </div>
       </Container>
@@ -345,18 +371,22 @@ const Home = () => {
           <div className='col-12'>
             <h3 className='section-heading'>Bản tin</h3>
           </div>
-          <div className='col-3'>
-            <BlogCard />
-          </div>
-          <div className='col-3'>
-            <BlogCard />
-          </div>
-          <div className='col-3'>
-            <BlogCard />
-          </div>
-          <div className='col-3'>
-            <BlogCard />
-          </div>
+
+          {blogs?.length === 0 ? (
+            <></>
+          ) : (
+            blogs?.map((blog, index) => {
+              if (index === 3) {
+                return null;
+              }
+
+              return (
+                <div key={blog._id} className='col-3'>
+                  <BlogCard blog={blog} />
+                </div>
+              );
+            })
+          )}
         </div>
       </Container>
     </>

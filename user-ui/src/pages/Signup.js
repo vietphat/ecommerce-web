@@ -53,7 +53,6 @@ const Signup = () => {
             <div className='auth-card'>
               <h3 className='text-center mb-3'>Đăng ký tài khoản</h3>
               <form
-                action=''
                 className='d-flex flex-column gap-15'
                 onSubmit={formik.handleSubmit}
               >

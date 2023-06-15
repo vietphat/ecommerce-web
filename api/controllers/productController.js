@@ -163,6 +163,7 @@ exports.addToWishList = catchAsync(async (req, res, next) => {
   }
 
   await user.save({ validateBeforeSave: false });
+  await user.populate('wishlist');
 
   res.status(200).json({
     status: 'Thành công',

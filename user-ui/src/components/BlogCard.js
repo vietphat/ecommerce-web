@@ -1,24 +1,31 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import moment from 'moment';
 
-const BlogCard = () => {
+const BlogCard = ({ blog }) => {
   return (
-    <div className='blog-card'>
+    <Link to={`/blog/${blog?._id}`} className='blog-card'>
       <div className='card-image'>
-        <img src='/images/blog-1.jpg' alt='blog' className='img-fluid w-100' />
+        <img
+          src={blog?.images[0]?.url}
+          alt='blog'
+          className='img-fluid w-100'
+        />
       </div>
       <div className='blog-content'>
-        <p className='date'>01/01/2023</p>
-        <h5 className='title'>Some title</h5>
-        <p className='desc'>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facilis enim
-          exercitationem quas.
-        </p>
+        <p className='date'>{moment(blog?.createdAt).format('DD/MM/YYYY')}</p>
+        <h5 className='title'>{blog?.title}</h5>
+        <p
+          className='desc'
+          dangerouslySetInnerHTML={{
+            __html: blog?.description.substr(0, 150) + '...',
+          }}
+        ></p>
         <Link to='/blog/:id' className='button '>
           Đọc thêm
         </Link>
       </div>
-    </div>
+    </Link>
   );
 };
 

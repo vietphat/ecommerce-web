@@ -22,10 +22,17 @@ const productSchema = new mongoose.Schema(
       required: true,
       min: 0,
     },
-    colors: [],
+    colors: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Color',
+        required: true,
+      },
+    ],
     tag: String,
     category: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'ProductCategory',
       required: true,
     },
     quantity: {
@@ -59,11 +66,13 @@ const productSchema = new mongoose.Schema(
       default: 0,
     },
     ratingsAverage: {
-      type: Number,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Brand',
       default: 0,
     },
     brand: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Brand',
       required: true,
     },
   },
@@ -71,5 +80,9 @@ const productSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+productSchema.pre(/^find/, function () {
+  this.populate('brand').populate('category').populate('colors'); // Populate thông tin brand
+});
 
 module.exports = mongoose.model('Product', productSchema);

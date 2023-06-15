@@ -2,7 +2,7 @@ import React from 'react';
 
 import Meta from '../components/Meta';
 import BreadCrumb from '../components/BreadCrumb';
-import Color from '../components/Color';
+import Colors from '../components/Colors';
 import Container from '../components/Container';
 
 const CompareProducts = () => {
@@ -49,7 +49,7 @@ const CompareProducts = () => {
 
                   <div className='product-detail'>
                     <h5>Màu sắc:</h5>
-                    <Color />
+                    <Colors />
                   </div>
 
                   <div className='product-detail'>
@@ -101,7 +101,7 @@ const CompareProducts = () => {
 
                   <div className='product-detail'>
                     <h5>Màu sắc:</h5>
-                    <Color />
+                    <Colors />
                   </div>
 
                   <div className='product-detail'>

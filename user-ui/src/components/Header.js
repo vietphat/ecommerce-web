@@ -26,7 +26,9 @@ const Header = () => {
           <div className='row align-items-center'>
             <div className='col-2'>
               <h2>
-                <Link className='text-white'>Developers</Link>
+                <Link to='/' className='text-white'>
+                  Developers
+                </Link>
               </h2>
             </div>
 
@@ -116,7 +118,7 @@ const Header = () => {
                       data-bs-toggle='dropdown'
                       aria-expanded='false'
                     >
-                      <img src='images/menu.svg' alt='menu' />
+                      <img src='/images/menu.svg' alt='menu' />
                       <span className='me-5 d-inline-block'>
                         Danh mục sản phẩm
                       </span>

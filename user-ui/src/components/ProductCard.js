@@ -1,19 +1,23 @@
 import React from 'react';
 import ReactStarts from 'react-rating-stars-component';
 import { Link, useLocation } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 import prodcompare from '../images/prodcompare.svg';
 import wish from '../images/wish.svg';
-import wishlist from '../images/wishlist.svg';
-import watch from '../images/watch.jpg';
-import watch2 from '../images/watch-1.avif';
 import addcart from '../images/add-cart.svg';
 import view from '../images/view.svg';
+import { addToWishlist } from '../features/wishlist/wishlistSlice';
 
 const ProductCard = (props) => {
-  const { grid } = props;
+  const { grid, data } = props;
 
   const location = useLocation();
+  const dispatch = useDispatch();
+
+  const handleAddToWishlist = (productId) => {
+    dispatch(addToWishlist(productId));
+  };
 
   return (
     <>
@@ -22,37 +26,46 @@ const ProductCard = (props) => {
           location.pathname === '/products' ? `gr-${grid}` : 'col-3'
         }`}
       >
-        <Link to='/product/:id' className='product-card position-relative'>
+        <div className='product-card position-relative'>
           <div className='wishlist-icon position-absolute'>
-            <button className='border-0 bg-transparent'>
+            <button
+              className='border-0 bg-transparent'
+              onClick={() => handleAddToWishlist(data._id)}
+            >
               <img src={wish} alt='wishlist' />
             </button>
           </div>
 
           <div className='product-image'>
-            <img src={watch} className='img-fluid' alt='product' />
-            <img src={watch2} className='img-fluid' alt='product' />
+            <img
+              src={data?.images[0]?.url}
+              className='img-fluid'
+              alt='product'
+            />
+            <img
+              src={data?.images[1]?.url}
+              className='img-fluid'
+              alt='product'
+            />
           </div>
 
           <div className='product-details'>
-            <h6 className='brand'>Havels</h6>
-            <h5 className='product-title'>
-              Kids headphone bulk 10 pack multi colored for students
-            </h5>
+            <h6 className='brand'>{data?.brand?.title}</h6>
+            <Link to={`/product/${data?._id}`}>
+              <h5 className='product-title'>{data?.title}</h5>
+            </Link>
             <ReactStarts
               count={5}
               size={24}
-              value={3}
+              value={data?.ratingsAverage}
               edit={false}
               activeColor='#ffd700'
             />
-            <p className={`description ${grid === 12 ? 'd-block' : 'd-none'}`}>
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-              Inventore architecto veritatis nostrum velit quas officiis earum
-              cumque aut, libero dolorem quaerat qui soluta eaque molestiae
-              laboriosam veniam non rem harum?
-            </p>
-            <p className='price'>$100.00</p>
+            <p
+              className={`description ${grid === 12 ? 'd-block' : 'd-none'}`}
+              dangerouslySetInnerHTML={{ __html: data?.description }}
+            ></p>
+            <p className='price'>{data?.price} đ</p>
           </div>
 
           <div className='action-bar position-absolute'>
@@ -60,15 +73,18 @@ const ProductCard = (props) => {
               <button className='border-0 bg-transparent'>
                 <img src={prodcompare} alt='compare' />
               </button>
-              <button className='border-0 bg-transparent'>
+              <Link
+                to={`/product/${data?._id}`}
+                className='border-0 bg-transparent'
+              >
                 <img src={view} alt='view' />
-              </button>
+              </Link>
               <button className='border-0 bg-transparent'>
                 <img src={addcart} alt='addcart' />
               </button>
             </div>
           </div>
-        </Link>
+        </div>
       </div>
     </>
   );

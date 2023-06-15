@@ -1,12 +1,40 @@
-import React from 'react';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { useDispatch } from 'react-redux';
 import { AiOutlineHome, AiOutlineMail } from 'react-icons/ai';
 import { BiPhoneCall, BiInfoCircle } from 'react-icons/bi';
 
+import { addEnquiry } from '../features/auth/authSlice';
 import Meta from '../components/Meta';
 import BreadCrumb from '../components/BreadCrumb';
 import Container from '../components/Container';
+import Input from '../components/Input';
+
+const enquirySchema = Yup.object({
+  name: Yup.string().required('Họ tên không được để trống'),
+  email: Yup.string().required('Email không được để trống'),
+  mobile: Yup.string().required('Số điện thoại không được để trống'),
+  comment: Yup.string().required('Nội dung không được để trống'),
+});
 
 const Contact = () => {
+  const dispatch = useDispatch();
+
+  const formik = useFormik({
+    initialValues: {
+      name: '',
+      email: '',
+      mobile: '',
+      comment: '',
+    },
+    validationSchema: enquirySchema,
+    onSubmit: (values) => {
+      dispatch(addEnquiry(values));
+      formik.resetForm();
+      // navigate('/');
+    },
+  });
+
   return (
     <>
       <Meta title='Liên hệ' />
@@ -14,6 +42,7 @@ const Contact = () => {
 
       <Container class1='contact-wrapper py-5 home-wrapper-2'>
         <div className='row'>
+          {/* MAP */}
           <div className='col-12'>
             <iframe
               className='border-0 w-100'
@@ -27,40 +56,67 @@ const Contact = () => {
             ></iframe>
           </div>
 
+          {/* FORM */}
           <div className='col-12 mt-5'>
             <div className='contact-inner-wrapper d-flex justify-content-between'>
               <div>
                 <h3 className='contact-title mb-4'>Liên hệ</h3>
-                <form action='' className='d-flex flex-column gap-15'>
-                  <div>
-                    <input
-                      type='text'
-                      className='form-control'
-                      placeholder='Tên'
-                    />
+                <form
+                  onSubmit={formik.handleSubmit}
+                  className='d-flex flex-column gap-15'
+                >
+                  <Input
+                    type='text'
+                    name='name'
+                    placeholder='Họ và tên'
+                    value={formik.values.name}
+                    onChange={formik.handleChange('name')}
+                    onBlur={formik.handleBlur('name')}
+                  />
+                  <div className='error'>
+                    {formik.touched.name && formik.errors.name}
                   </div>
-                  <div>
-                    <input
-                      type='email'
-                      className='form-control'
-                      placeholder='Email'
-                    />
+
+                  <Input
+                    type='email'
+                    name='email'
+                    placeholder='Email'
+                    value={formik.values.email}
+                    onChange={formik.handleChange('email')}
+                    onBlur={formik.handleBlur('email')}
+                  />
+                  <div className='error'>
+                    {formik.touched.email && formik.errors.email}
                   </div>
-                  <div>
-                    <input
-                      type='tel'
-                      className='form-control'
-                      placeholder='Số điện thoại'
-                    />
+
+                  <Input
+                    type='text'
+                    name='mobile'
+                    placeholder='Số điện thoại'
+                    value={formik.values.mobile}
+                    onChange={formik.handleChange('mobile')}
+                    onBlur={formik.handleBlur('mobile')}
+                  />
+                  <div className='error'>
+                    {formik.touched.mobile && formik.errors.mobile}
                   </div>
+
                   <div>
                     <textarea
                       className='w-100 form-control'
                       cols={30}
                       rows={5}
+                      name='comment'
                       placeholder='Nội dung'
+                      value={formik.values.comment}
+                      onChange={formik.handleChange('comment')}
+                      onBlur={formik.handleBlur('comment')}
                     ></textarea>
                   </div>
+                  <div className='error'>
+                    {formik.touched.comment && formik.errors.comment}
+                  </div>
+
                   <div>
                     <button className='button border-0'>Gửi</button>
                   </div>

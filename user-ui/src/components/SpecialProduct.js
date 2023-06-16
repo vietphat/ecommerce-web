@@ -2,6 +2,8 @@ import React from 'react';
 import ReactStars from 'react-rating-stars-component';
 import { Link } from 'react-router-dom';
 
+import formatCurrency from '../utils/format_currency';
+
 const SpecialProduct = ({ data }) => {
   return (
     <>
@@ -26,8 +28,8 @@ const SpecialProduct = ({ data }) => {
                 activeColor='#ffd700'
               />
               <p className='price'>
-                <span className='red-p'>{data?.price} đ</span> &nbsp;{' '}
-                <strike>{data?.price} đ</strike>
+                <span className='red-p'>{formatCurrency(data?.price)}</span>
+                {/* &nbsp;<strike>{data?.price} đ</strike> */}
               </p>
               <div className='discount-till d-flex align-items-center gap-10'>
                 <p className='mb-0'>

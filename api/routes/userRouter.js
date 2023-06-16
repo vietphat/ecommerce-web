@@ -28,8 +28,11 @@ router.post('/cart', userController.addToCart);
 // Lấy thông tin giỏ hàng
 router.get('/cart', userController.getUserCart);
 
-// Lấy thông tin giỏ hàng
-router.delete('/cart', userController.emptyUserCart);
+// Cập nhật số lượng
+router.patch('/cart/:id', userController.updateCartQuantity);
+
+// Xóa giỏ hàng
+router.delete('/cart/:id', userController.emptyUserCart);
 
 // Sử dụng phiếu giảm giá
 router.patch('/cart/apply-coupon', userController.applyCoupon);

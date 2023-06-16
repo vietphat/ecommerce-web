@@ -16,8 +16,8 @@ import {
   getAllProducts,
 } from '../features/products/productSlice';
 import { addToWishlist } from '../features/wishlist/wishlistSlice';
-import { addToCart } from '../features/cart/cartSlice';
-import { toast } from 'react-toastify';
+import { addToCart, getCart, updateQuantity } from '../features/cart/cartSlice';
+import formatCurrency from '../utils/format_currency';
 
 const copyToClipboard = (text) => {
   navigator.clipboard.writeText(text);
@@ -33,10 +33,12 @@ const SingleProduct = () => {
   useEffect(() => {
     dispatch(getAProducts(id));
     dispatch(getAllProducts());
+    dispatch(getCart());
   }, [dispatch, id]);
 
   const { currentProduct } = useSelector((state) => state.product);
   const { products } = useSelector((state) => state.product);
+  const { cart } = useSelector((state) => state.cart);
 
   const props = {
     width: 400,
@@ -54,13 +56,41 @@ const SingleProduct = () => {
   };
 
   const handleAddToCart = () => {
+    // nếu trong giỏ hàng đã có sản phẩm này, thêm số lượng sp
+    const existedCartIndex = cart?.findIndex(
+      (c) => c.product._id === currentProduct._id
+    );
+
+    if (cart?.length > 0 && existedCartIndex !== -1) {
+      // nếu số lượng thêm vào + số lượng có sẵn trong giỏ hàng > số lượng trong kho
+      // => alert người dùng không thể cập nhật giỏ hàng
+      if (
+        quantity + cart[existedCartIndex].quantity >
+        cart[existedCartIndex].product.quantity
+      ) {
+        alert(
+          'Cập nhật giỏ hàng thất bại. Số lượng cộng thêm vào giỏ hàng nhiều hơn số lượng sản phẩm tồn kho.'
+        );
+        return;
+        // ngược lại gọi api cập nhật số lượng với số lượng cộng thêm từ input quantity
+      } else {
+        const data = {
+          id: cart[existedCartIndex]._id,
+          quantity: quantity + cart[existedCartIndex].quantity,
+        };
+        // alert('Cập nhật số lượng' + JSON.stringify(data));
+        dispatch(updateQuantity(data));
+        return;
+      }
+    }
+
     if (quantity > currentProduct.quantity) {
-      toast.error('Số lượng không được chọn quá số lượng trong kho');
+      alert('Số lượng không được chọn quá số lượng trong kho');
       return;
     }
 
     if (!color) {
-      toast.error('Vui lòng chọn màu');
+      alert('Vui lòng chọn màu');
       return;
     }
 
@@ -117,7 +147,9 @@ const SingleProduct = () => {
                   </div>
 
                   <div className='border-bottom py-3'>
-                    <p className='price'>{currentProduct?.price} đ</p>
+                    <p className='price'>
+                      {formatCurrency(currentProduct?.price)}
+                    </p>
                     <div className='d-flex align-items-center gap-10'>
                       <ReactStars
                         count={5}

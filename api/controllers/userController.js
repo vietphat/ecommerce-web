@@ -136,9 +136,20 @@ exports.addToCart = catchAsync(async (req, res, next) => {
 
 // Get User Cart
 exports.getUserCart = catchAsync(async (req, res, next) => {
-  const cart = await Cart.find({ user: req.user._id })
-    .populate('product')
-    .populate('color');
+  const cart = await Cart.find({ user: req.user._id });
+
+  res.status(200).json({
+    status: 'Thành công',
+    data: cart,
+  });
+});
+
+// Update quantity
+exports.updateCartQuantity = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+  const { quantity } = req.body;
+
+  const cart = await Cart.findByIdAndUpdate(id, { quantity }, { new: true });
 
   res.status(200).json({
     status: 'Thành công',
@@ -148,11 +159,13 @@ exports.getUserCart = catchAsync(async (req, res, next) => {
 
 // Empty User Cart
 exports.emptyUserCart = catchAsync(async (req, res, next) => {
-  await Cart.findOneAndDelete({ user: req.user._id });
+  const { id } = req.params;
+
+  const cart = await Cart.findOneAndDelete({ _id: id, user: req.user._id });
 
   res.status(200).json({
     status: 'Thành công',
-    data: null,
+    data: cart,
   });
 });
 

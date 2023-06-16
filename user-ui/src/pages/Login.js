@@ -9,6 +9,7 @@ import Meta from '../components/Meta';
 import BreadCrumb from '../components/BreadCrumb';
 import Container from '../components/Container';
 import Input from '../components/Input';
+import { getCart } from '../features/cart/cartSlice';
 
 const loginSchema = Yup.object({
   email: Yup.string().required('Email không được để trống'),
@@ -24,10 +25,13 @@ const Login = () => {
       password: '',
     },
     validationSchema: loginSchema,
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       // alert(JSON.stringify(values));
-      dispatch(login(values));
-      // navigate('/');
+      const loginResult = await dispatch(login(values));
+
+      if (loginResult.meta.requestStatus === 'fulfilled') {
+        dispatch(getCart());
+      }
     },
   });
 

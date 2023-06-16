@@ -5,9 +5,13 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import Meta from '../components/Meta';
 import BreadCrumb from '../components/BreadCrumb';
-import watch from '../images/watch.jpg';
 import Container from '../components/Container';
-import { getCart } from '../features/cart/cartSlice';
+import {
+  deleteCartItem,
+  getCart,
+  updateQuantity,
+} from '../features/cart/cartSlice';
+import formatCurrency from '../utils/format_currency';
 
 const Cart = () => {
   const dispatch = useDispatch();
@@ -16,7 +20,22 @@ const Cart = () => {
     dispatch(getCart());
   }, [dispatch]);
 
-  const { cart } = useSelector((state) => state.cart);
+  const { cart, totalPrice } = useSelector((state) => state.cart);
+
+  const handleChangeQuantity = (cartItem, quantity) => {
+    if (quantity > cartItem.quantity + cartItem.product.quantity) {
+      alert(
+        'Cập nhật giỏ hàng thất bại. Số lượng cộng thêm vào giỏ hàng nhiều hơn số lượng sản phẩm tồn kho.'
+      );
+    } else {
+      const data = { id: cartItem._id, quantity };
+      dispatch(updateQuantity(data));
+    }
+  };
+
+  const handleDeleteCartItem = (cartId) => {
+    dispatch(deleteCartItem(cartId));
+  };
 
   return (
     <>
@@ -36,7 +55,7 @@ const Cart = () => {
 
             {/* sản phẩm */}
             {cart?.length === 0 ? (
-              <div className='text-center fs-5'>Không có sản phẩm nào</div>
+              <div className='text-center fs-5'>Giỏ hàng trống</div>
             ) : (
               cart?.map((item) => {
                 return (
@@ -53,7 +72,12 @@ const Cart = () => {
                         />
                       </div>
                       <div className='w-25'>
-                        <p>{item?.product?.title}</p>
+                        <Link
+                          className='cart-item-link'
+                          to={`/product/${item?.product?._id}`}
+                        >
+                          {item?.product?.title}
+                        </Link>
                         <p className='d-flex gap-2'>
                           Màu:
                           <li
@@ -69,7 +93,9 @@ const Cart = () => {
                       </div>
                     </div>
                     <div className='cart-col-2'>
-                      <h5 className='price'>{item?.product?.price} đ</h5>
+                      <h5 className='price'>
+                        {formatCurrency(item?.product?.price)}
+                      </h5>
                     </div>
                     <div className='cart-col-3 d-flex align-items-center gap-15'>
                       <div>
@@ -79,15 +105,26 @@ const Cart = () => {
                           min={1}
                           max={item?.product?.quantity}
                           value={item?.quantity}
+                          onChange={(e) => {
+                            if (
+                              e.target.value <= 0 ||
+                              e.target.value > item?.product?.quantity
+                            )
+                              return;
+                            handleChangeQuantity(item, e.target.value);
+                          }}
                         />
                       </div>
-                      <div>
-                        <AiFillDelete className='text-danger' />
+                      <div
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => handleDeleteCartItem(item._id)}
+                      >
+                        <AiFillDelete className='text-danger fs-5' />
                       </div>
                     </div>
                     <div className='cart-col-4'>
                       <h5 className='price'>
-                        {item?.product?.price * item?.quantity} đ
+                        {formatCurrency(item?.product?.price * item?.quantity)}
                       </h5>
                     </div>
                   </div>
@@ -101,7 +138,7 @@ const Cart = () => {
                   Tiếp tục mua sắm
                 </Link>
                 <div className='d-flex flex-column align-items-end'>
-                  <h4>Tổng cộng: 5.000.000đ</h4>
+                  <h4>Tổng cộng: {formatCurrency(totalPrice)}</h4>
                   <p>Khách được quyền yêu cầu người vận chuyển cho xem hàng</p>
                   <Link to='/checkout' className='button'>
                     Thanh toán

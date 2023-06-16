@@ -859,6 +859,16 @@ footer .input-group-text {
   font-size: 14px;
 }
 
+.cart-col-1 a.cart-item-link {
+  color: var(--color-131921);
+  font-size: 14px;
+}
+
+.cart-col-1 a.cart-item-link:hover {
+  color: var(--color-131921);
+  font-size: 14px;
+}
+
 .cart-col-2 {
   width: 10%;
 }

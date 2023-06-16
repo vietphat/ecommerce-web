@@ -1,8 +1,14 @@
 import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { BsSearch } from 'react-icons/bs';
+import { useSelector } from 'react-redux';
+import { AiOutlineLogout } from 'react-icons/ai';
+
+import formatCurrency from '../utils/format_currency';
 
 const Header = () => {
+  const { cart, auth } = useSelector((state) => state);
+
   return (
     <>
       {/* HEADER-TOP */}
@@ -76,15 +82,28 @@ const Header = () => {
                   </Link>
                 </div>
                 <div>
-                  <Link
-                    to='/login'
-                    className='d-flex align-items-center gap-10 text-white'
-                  >
-                    <img src='/images/user.svg' alt='user' />
-                    <p className='mb-0'>
-                      Đăng <br /> nhập
-                    </p>
-                  </Link>
+                  {auth.isLoggedIn ? (
+                    <Link
+                      to='/login'
+                      className='d-flex align-items-center gap-10 text-white'
+                    >
+                      <img src='/images/user.svg' alt='user' />
+                      <p className='mb-0'>
+                        Đăng <br /> nhập
+                      </p>
+                    </Link>
+                  ) : (
+                    <button
+                      onClick={() => alert('đăng xuất')}
+                      className='d-flex align-items-center gap-10 text-white bg-transparent border-0'
+                    >
+                      {/* <img src='/images/user.svg' alt='user' /> */}
+                      <AiOutlineLogout fontSize={40} fontWeight={100} />
+                      <p className='mb-0'>
+                        Đăng <br /> xuất
+                      </p>
+                    </button>
+                  )}
                 </div>
                 <div>
                   <Link
@@ -93,8 +112,10 @@ const Header = () => {
                   >
                     <img src='/images/cart.svg' alt='cart' />
                     <div className='d-flex flex-column gap-10'>
-                      <span className='badge bg-white text-dark'>0</span>
-                      <p className='mb-0'>0đ</p>
+                      <span className='badge bg-white text-dark'>
+                        {cart.cart.length}
+                      </span>
+                      <p className='mb-0'>{formatCurrency(cart.totalPrice)}</p>
                     </div>
                   </Link>
                 </div>

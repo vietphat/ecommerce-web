@@ -8,6 +8,7 @@ import wish from '../images/wish.svg';
 import addcart from '../images/add-cart.svg';
 import view from '../images/view.svg';
 import { addToWishlist } from '../features/wishlist/wishlistSlice';
+import formatCurrency from '../utils/format_currency';
 
 const ProductCard = (props) => {
   const { grid, data } = props;
@@ -65,7 +66,7 @@ const ProductCard = (props) => {
               className={`description ${grid === 12 ? 'd-block' : 'd-none'}`}
               dangerouslySetInnerHTML={{ __html: data?.description }}
             ></p>
-            <p className='price'>{data?.price} đ</p>
+            <p className='price'>{formatCurrency(data?.price)}</p>
           </div>
 
           <div className='action-bar position-absolute'>

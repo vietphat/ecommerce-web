@@ -13,6 +13,7 @@ const initialState = {
   isLoading: false,
   isSuccess: false,
   isError: false,
+  isLoggedIn: false,
   message: '',
 };
 
@@ -63,6 +64,7 @@ export const authSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
+        state.isLoggedIn = true;
         state.user = action.payload;
         localStorage.setItem('user', JSON.stringify(action.payload));
         toast.success('Đăng ký tài khoản thành công!');
@@ -82,6 +84,7 @@ export const authSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
+        state.isLoggedIn = true;
         state.user = action.payload;
         localStorage.setItem('user', JSON.stringify(action.payload));
         toast.success('Đăng nhập thành công!');

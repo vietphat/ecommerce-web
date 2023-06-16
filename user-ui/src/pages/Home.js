@@ -23,8 +23,6 @@ const Home = () => {
   const { blogs } = useSelector((state) => state.blog);
   const { products } = useSelector((state) => state.product);
 
-  console.log(products);
-
   return (
     <>
       <Meta title='Trang chủ' />

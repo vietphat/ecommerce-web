@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, NotFound } from 'react-router-dom';
 
 import Layout from './components/Layout';
 import Home from './pages/Home';
@@ -21,6 +21,8 @@ import ShippingPolicy from './pages/ShippingPolicy';
 import SingleProduct from './pages/SingleProduct';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
+import { PrivateRoutes } from './routing/PrivateRoutes';
+import { OpenRoutes } from './routing/OpenRoutes';
 import './App.css';
 
 function App() {
@@ -36,18 +38,54 @@ function App() {
             <Route path='product/:id' element={<SingleProduct />} />
             <Route path='blog' element={<Blog />} />
             <Route path='blog/:id' element={<SingleBlog />} />
-            <Route path='cart' element={<Cart />} />
-            <Route path='checkout' element={<Checkout />} />
+            <Route
+              path='cart'
+              element={
+                <PrivateRoutes>
+                  <Cart />
+                </PrivateRoutes>
+              }
+            />
+            <Route
+              path='checkout'
+              element={
+                <PrivateRoutes>
+                  <Checkout />
+                </PrivateRoutes>
+              }
+            />
             <Route path='compare-products' element={<CompareProducts />} />
-            <Route path='wishlist' element={<Wishlist />} />
-            <Route path='login' element={<Login />} />
-            <Route path='signup' element={<Signup />} />
+            <Route
+              path='wishlist'
+              element={
+                <PrivateRoutes>
+                  <Wishlist />
+                </PrivateRoutes>
+              }
+            />
+            <Route
+              path='login'
+              element={
+                <OpenRoutes>
+                  <Login />
+                </OpenRoutes>
+              }
+            />
+            <Route
+              path='signup'
+              element={
+                <OpenRoutes>
+                  <Signup />
+                </OpenRoutes>
+              }
+            />
             <Route path='forgot-password' element={<ForgotPassword />} />
             <Route path='reset-password' element={<ResetPassword />} />
             <Route path='privacy-policy' element={<PrivacyPolicy />} />
             <Route path='refund-policy' element={<RefundPolicy />} />
             <Route path='shipping-policy' element={<ShippingPolicy />} />
             <Route path='terms-conditions' element={<TermsAndConditions />} />
+            <Route path='*' exact={true} element={<Home />} />
           </Route>
         </Routes>
       </BrowserRouter>

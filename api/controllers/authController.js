@@ -32,6 +32,7 @@ exports.register = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: 'Thành công',
+    _id: user._id,
     firstName: user.firstName,
     lastName: user.lastName,
     email: user.email,
@@ -85,6 +86,7 @@ exports.login = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: 'Thành công',
+    _id: user._id,
     firstName: user.firstName,
     lastName: user.lastName,
     email: user.email,
@@ -141,6 +143,7 @@ exports.adminLogin = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: 'Thành công',
+    _id: user._id,
     firstName: user.firstName,
     lastName: user.lastName,
     email: user.email,
@@ -166,25 +169,37 @@ exports.signinWithGoogleAccount = catchAsync(async (req, res, next) => {
 });
 
 // Logout
+// exports.logout = catchAsync(async (req, res, next) => {
+//   const { cookies } = req;
+
+//   if (!cookies?.refreshToken) {
+//     return next(new AppError('Bạn hiện chưa đăng nhập', 401));
+//   }
+
+//   const user = await User.findOne({ refreshToken: cookies.refreshToken });
+
+//   if (user) {
+//     await User.findOneAndUpdate(
+//       { refreshToken: cookies.refreshToken },
+//       { refreshToken: '' }
+//     );
+//   }
+
+//   res.clearCookie('refreshToken', {
+//     httpOnly: true,
+//     secure: true,
+//   });
+
+//   res.status(200).json({
+//     status: 'Đăng xuất thành công',
+//   });
+// });
+
 exports.logout = catchAsync(async (req, res, next) => {
-  const { cookies } = req;
-
-  if (!cookies?.refreshToken) {
-    return next(new AppError('Bạn hiện chưa đăng nhập', 401));
-  }
-
-  const user = await User.findOne({ refreshToken: cookies.refreshToken });
-
-  if (user) {
-    await User.findOneAndUpdate(
-      { refreshToken: cookies.refreshToken },
-      { refreshToken: '' }
-    );
-  }
-
-  res.clearCookie('refreshToken', {
+  // xóa cookie jwt và cho nó hết hạn ngay lập tức
+  res.cookie('jwt', 'loggedout', {
+    expires: new Date(Date.now() - 3 * 1000),
     httpOnly: true,
-    secure: true,
   });
 
   res.status(200).json({

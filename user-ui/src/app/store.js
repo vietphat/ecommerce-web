@@ -5,6 +5,7 @@ import productSlice from '../features/products/productSlice';
 import wishlistSlice from '../features/wishlist/wishlistSlice';
 import blogSlice from '../features/blogs/blogSlice';
 import cartSlice from '../features/cart/cartSlice';
+import orderSlice from '../features/order/orderSlice';
 
 export const store = configureStore({
   reducer: {
@@ -13,6 +14,7 @@ export const store = configureStore({
     wishlist: wishlistSlice,
     blog: blogSlice,
     cart: cartSlice,
+    order: orderSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ serializableCheck: false }),

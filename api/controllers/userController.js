@@ -169,92 +169,47 @@ exports.emptyUserCart = catchAsync(async (req, res, next) => {
   });
 });
 
-// Apply coupon
-exports.applyCoupon = catchAsync(async (req, res, next) => {
-  const { _id: userId } = req.user;
-  const { coupon } = req.body;
+// ĐẶT HÀNG
+// Create Order
+exports.createOrder = catchAsync(async (req, res, next) => {
+  const {
+    shippingInfo,
+    paymentMethod,
+    orderItems,
+    totalPrice,
+    totalPriceAfterDiscount,
+    paid,
+  } = req.body;
+  const { _id } = req.user;
 
-  // Kiểm tra xem coupon có và còn hạn hay không
-  const couponIsValid = await Coupon.findOne({
-    name: coupon,
-    expiry: { $gt: new Date(Date.now()).toISOString() },
+  const order = await Order.create({
+    user: _id,
+    shippingInfo,
+    orderItems,
+    totalPrice,
+    totalPriceAfterDiscount,
+    paymentMethod,
+    paid,
   });
 
-  if (!couponIsValid) {
-    return next(
-      new AppError(
-        'Coupon đã hết hạn hoặc không hợp lệ. Vui lòng thử lại sau.',
-        400
-      )
-    );
-  }
-
-  // Lấy giỏ hàng trong db ra để tính giá sau khi áp dụng phiếu giảm giá
-  const cart = await Cart.findOne({ createdBy: userId });
-
-  if (!cart) {
-    return next(new AppError('Không tìm thấy giỏ hàng', 400));
-  }
-
-  const totalAfterDiscount =
-    cart.cartTotal - (cart.cartTotal * couponIsValid.discount) / 100;
-  cart.totalAfterDiscount = totalAfterDiscount;
-  await cart.save();
+  const data = await order.populate('orderItems.product orderItems.color');
 
   res.status(200).json({
     status: 'Thành công',
-    data: cart,
+    data,
   });
 });
 
-// Create Order
-exports.createOrder = catchAsync(async (req, res, next) => {
-  const { COD, couponApplied } = req.body;
-  const { _id: userId } = req.user;
+exports.deleteCartsAfterOrder = catchAsync(async (req, res, next) => {
+  const { cartIds } = req.body;
 
-  if (!COD) {
-    return next(new AppError('Không thể tạo đơn hàng', 400));
-  }
+  console.log(cartIds);
 
-  const cart = await Cart.findOne({ createdBy: userId });
-
-  let amount;
-  if (couponApplied && cart.totalAfterDiscount) {
-    amount = cart.totalAfterDiscount;
-  } else {
-    amount = cart.cartTotal;
-  }
-
-  // lưu hóa đơn
-  const order = await new Order({
-    products: cart.products,
-    paymentIntent: {
-      id: uniqid(),
-      method: 'COD',
-      amount,
-      status: 'Chưa xử lý',
-      createdAt: Date.now(),
-      currency: 'VND',
-    },
-    orderStatus: 'Chưa xử lý',
-    orderBy: userId,
-  }).save();
-
-  // giảm số lượng sản phẩm, tăng số lượng đã bán
-  const update = cart.products.map((item) => {
-    return {
-      updateOne: {
-        filter: { _id: item.product._id },
-        update: { $inc: { quantity: -item.count, sold: +item.count } },
-      },
-    };
-  });
-
-  await Product.bulkWrite(update, {});
+  const data = await Cart.deleteMany({ _id: { $in: cartIds } });
 
   res.status(200).json({
     status: 'Thành công',
-    data: order,
+    data,
   });
 });
 

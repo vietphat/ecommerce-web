@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, createAction } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 
 import { cartServices } from './cartServices';
@@ -11,6 +11,8 @@ const initialState = {
   isError: false,
   message: '',
 };
+
+export const resetCart = createAction('cart/reset');
 
 export const getCart = createAsyncThunk('cart/get-cart', async (thunkAPI) => {
   try {
@@ -47,6 +49,17 @@ export const deleteCartItem = createAsyncThunk(
   async (cartId, thunkAPI) => {
     try {
       return await cartServices.deleteCartItem(cartId);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const deleteCartAfterOrder = createAsyncThunk(
+  'cart/delete-cart-after-order',
+  async (cartIds, thunkAPI) => {
+    try {
+      return await cartServices.deleteCartsAfterOrder(cartIds);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -156,7 +169,28 @@ export const cartSlice = createSlice({
         state.isError = true;
         state.message = action.error;
         toast.error('Xóa giỏ hàng thất bại!');
-      });
+      })
+      // XÓA CART ITEMS SAU KHI ĐẶT HÀNG
+      .addCase(deleteCartAfterOrder.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteCartAfterOrder.fulfilled, (state, action) => {
+        state.cart = [];
+        state.totalPrice = 0;
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.isError = false;
+        state.message = '';
+      })
+      .addCase(deleteCartAfterOrder.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.isError = true;
+        state.message = action.error;
+        toast.error('Có lỗi!');
+      })
+      // RESET STATE
+      .addCase(resetCart, () => initialState);
   },
 });
 

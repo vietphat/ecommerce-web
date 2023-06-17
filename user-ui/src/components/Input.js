@@ -1,10 +1,18 @@
 import React from 'react';
 
 const Input = (props) => {
-  const { type, name, placeholder, classNames, onChange, onBlur, value } =
-    props;
+  const {
+    type,
+    name,
+    placeholder,
+    classNames,
+    onChange,
+    onBlur,
+    value,
+    containerClassnames,
+  } = props;
   return (
-    <div>
+    <div className={containerClassnames ? containerClassnames : ''}>
       <input
         type={type}
         name={name}

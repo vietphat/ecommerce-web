@@ -5,15 +5,14 @@ import { authServices } from './authServices';
 
 const userFromLocalStorage = localStorage.getItem('user')
   ? JSON.parse(localStorage.getItem('user'))
-  : {};
+  : null;
 
 const initialState = {
   user: userFromLocalStorage,
-  cart: [],
   isLoading: false,
   isSuccess: false,
   isError: false,
-  isLoggedIn: false,
+  isLoggedIn: !!userFromLocalStorage,
   message: '',
 };
 
@@ -38,6 +37,14 @@ export const login = createAsyncThunk(
     }
   }
 );
+
+export const logout = createAsyncThunk('auth/lgout', async (thunkAPI) => {
+  try {
+    return await authServices.logout();
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error);
+  }
+});
 
 export const addEnquiry = createAsyncThunk(
   'auth/add-enquiry',
@@ -95,6 +102,24 @@ export const authSlice = createSlice({
         state.isError = true;
         state.message = action.error;
         toast.error('Đăng nhập thất bại!');
+      })
+      // ĐĂNG XUẤT
+      .addCase(logout.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(logout.fulfilled, (state, action) => {
+        state.user = null;
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.isError = false;
+        state.isLoggedIn = false;
+        localStorage.removeItem('user');
+      })
+      .addCase(logout.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.isError = true;
+        state.message = action.error;
       })
       // THÊM LIÊN HỆ/THẮC MẮC
       .addCase(addEnquiry.pending, (state) => {

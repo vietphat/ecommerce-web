@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, createAction } from '@reduxjs/toolkit';
 
 import { wishlistServices } from './wishlistServices';
 
@@ -9,6 +9,8 @@ const initialState = {
   isError: false,
   message: '',
 };
+
+export const resetWishlist = createAction('wishlist/reset');
 
 export const addToWishlist = createAsyncThunk(
   'wishlist/add',
@@ -69,7 +71,9 @@ export const wishlistSlice = createSlice({
         state.isSuccess = false;
         state.isError = true;
         state.message = action.error;
-      });
+      })
+      // RESET STATE
+      .addCase(resetWishlist, () => initialState);
   },
 });
 

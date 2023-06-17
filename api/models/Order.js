@@ -2,32 +2,70 @@ const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema(
   {
-    products: [
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+    shippingInfo: {
+      firstName: {
+        type: String,
+        required: true,
+      },
+      lastName: {
+        type: String,
+        required: true,
+      },
+      address: {
+        type: String,
+        required: true,
+      },
+      notes: {
+        type: String,
+      },
+    },
+    paymentMethod: {
+      type: String,
+      enum: ['online', 'cod'],
+      default: 'cod',
+    },
+    orderItems: [
       {
         product: {
           type: mongoose.Schema.Types.ObjectId,
           ref: 'Product',
+          required: true,
         },
-        count: Number,
-        color: String,
+        color: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Color',
+          required: true,
+        },
+        quantity: {
+          type: Number,
+          required: true,
+        },
+        price: {
+          type: Number,
+          required: true,
+        },
       },
     ],
-    paymentIntent: {},
+    totalPrice: {
+      type: Number,
+      required: true,
+    },
+    totalPriceAfterDiscount: {
+      type: Number,
+      required: true,
+    },
+    paid: {
+      type: Boolean,
+      default: false,
+    },
     orderStatus: {
       type: String,
-      default: 'Chưa xử lý',
-      enum: [
-        'Chưa xử lý',
-        'COD',
-        'Đang xử lý',
-        'Đã xuất kho',
-        'Đã nhận hàng',
-        'Đã hủy đơn hàng',
-      ],
-    },
-    orderBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+      default: 'ordered',
     },
   },
   {

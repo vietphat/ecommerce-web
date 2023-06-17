@@ -137,13 +137,17 @@ const Cart = () => {
                 <Link to='/products' className='button'>
                   Tiếp tục mua sắm
                 </Link>
-                <div className='d-flex flex-column align-items-end'>
-                  <h4>Tổng cộng: {formatCurrency(totalPrice)}</h4>
-                  <p>Khách được quyền yêu cầu người vận chuyển cho xem hàng</p>
-                  <Link to='/checkout' className='button'>
-                    Thanh toán
-                  </Link>
-                </div>
+                {cart?.length !== 0 && (
+                  <div className='d-flex flex-column align-items-end'>
+                    <h4>Tổng cộng: {formatCurrency(totalPrice)}</h4>
+                    <p>
+                      Khách được quyền yêu cầu người vận chuyển cho xem hàng
+                    </p>
+                    <Link to='/checkout' className='button'>
+                      Thanh toán
+                    </Link>
+                  </div>
+                )}
               </div>
             </div>
           </div>

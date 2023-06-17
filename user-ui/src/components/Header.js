@@ -3,11 +3,28 @@ import { Link, NavLink } from 'react-router-dom';
 import { BsSearch } from 'react-icons/bs';
 import { useSelector } from 'react-redux';
 import { AiOutlineLogout } from 'react-icons/ai';
+import { useDispatch } from 'react-redux';
 
 import formatCurrency from '../utils/format_currency';
+import { logout } from '../features/auth/authSlice';
+import { resetCart } from '../features/cart/cartSlice';
+import { resetOrder } from '../features/order/orderSlice';
+import { resetWishlist } from '../features/wishlist/wishlistSlice';
 
 const Header = () => {
+  const dispatch = useDispatch();
+
   const { cart, auth } = useSelector((state) => state);
+
+  const handleLogout = async () => {
+    const logoutResult = await dispatch(logout());
+
+    if (logoutResult.meta.requestStatus === 'fulfilled') {
+      dispatch(resetWishlist());
+      dispatch(resetCart());
+      dispatch(resetOrder());
+    }
+  };
 
   return (
     <>
@@ -33,7 +50,7 @@ const Header = () => {
             <div className='col-2'>
               <h2>
                 <Link to='/' className='text-white'>
-                  Developers
+                  Ecommerce
                 </Link>
               </h2>
             </div>
@@ -82,7 +99,7 @@ const Header = () => {
                   </Link>
                 </div>
                 <div>
-                  {auth.isLoggedIn ? (
+                  {!auth.isLoggedIn ? (
                     <Link
                       to='/login'
                       className='d-flex align-items-center gap-10 text-white'
@@ -94,7 +111,7 @@ const Header = () => {
                     </Link>
                   ) : (
                     <button
-                      onClick={() => alert('đăng xuất')}
+                      onClick={handleLogout}
                       className='d-flex align-items-center gap-10 text-white bg-transparent border-0'
                     >
                       {/* <img src='/images/user.svg' alt='user' /> */}

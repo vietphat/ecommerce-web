@@ -34,12 +34,12 @@ router.patch('/cart/:id', userController.updateCartQuantity);
 // Xóa giỏ hàng
 router.delete('/cart/:id', userController.emptyUserCart);
 
-// Sử dụng phiếu giảm giá
-router.patch('/cart/apply-coupon', userController.applyCoupon);
-
-/// HÓA ĐƠN
-// Tạo hóa đơn
+/// ĐẶT HÀNG
+// Tạo đơn đặt hàng
 router.post('/order', userController.createOrder);
+
+// Xóa giỏ hàng sau khi đặt hàng
+router.post('/cart/order', userController.deleteCartsAfterOrder);
 
 // Lấy thông tin hóa đơn
 router.get('/order', userController.getOrders);

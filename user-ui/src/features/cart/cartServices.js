@@ -4,7 +4,7 @@ import { base_url } from '../../utils/base_url';
 import { config } from '../../utils/axios_config';
 
 const getCart = async () => {
-  const response = await axios.get(`${base_url}/users/cart`, config);
+  const response = await axios.get(`${base_url}/users/cart`, config());
 
   if (response.data) {
     return response.data;
@@ -12,7 +12,11 @@ const getCart = async () => {
 };
 
 const addToCart = async (cartData) => {
-  const response = await axios.post(`${base_url}/users/cart`, cartData, config);
+  const response = await axios.post(
+    `${base_url}/users/cart`,
+    cartData,
+    config()
+  );
 
   if (response.data) {
     return response.data;
@@ -23,7 +27,7 @@ const updateQuantity = async (cartData) => {
   const response = await axios.patch(
     `${base_url}/users/cart/${cartData.id}`,
     { quantity: cartData.quantity },
-    config
+    config()
   );
 
   if (response.data) {
@@ -34,7 +38,19 @@ const updateQuantity = async (cartData) => {
 const deleteCartItem = async (cartId) => {
   const response = await axios.delete(
     `${base_url}/users/cart/${cartId}`,
-    config
+    config()
+  );
+
+  if (response.data) {
+    return response.data;
+  }
+};
+
+const deleteCartsAfterOrder = async (cartIds) => {
+  const response = await axios.post(
+    `${base_url}/users/cart/order`,
+    { cartIds },
+    config()
   );
 
   if (response.data) {
@@ -47,4 +63,5 @@ export const cartServices = {
   addToCart,
   updateQuantity,
   deleteCartItem,
+  deleteCartsAfterOrder,
 };

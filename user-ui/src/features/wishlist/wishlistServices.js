@@ -7,14 +7,14 @@ const addToWishlist = async (productId) => {
   const response = await axios.patch(
     `${base_url}/products/wishlist/${productId}`,
     null,
-    config
+    config()
   );
 
   return response.data;
 };
 
 const getWishlist = async () => {
-  const response = await axios.get(`${base_url}/users/wishlist`, config);
+  const response = await axios.get(`${base_url}/users/wishlist`, config());
 
   return response.data;
 };

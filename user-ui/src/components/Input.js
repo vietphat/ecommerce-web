@@ -10,10 +10,12 @@ const Input = (props) => {
     onBlur,
     value,
     containerClassnames,
+    disabled,
   } = props;
   return (
     <div className={containerClassnames ? containerClassnames : ''}>
       <input
+        disabled={disabled}
         type={type}
         name={name}
         placeholder={placeholder}

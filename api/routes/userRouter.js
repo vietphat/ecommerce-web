@@ -41,15 +41,8 @@ router.post('/order', userController.createOrder);
 // Xóa giỏ hàng sau khi đặt hàng
 router.post('/cart/order', userController.deleteCartsAfterOrder);
 
-// Lấy thông tin hóa đơn
-router.get('/order', userController.getOrders);
-
-// Cập nhật thông tin hóa đơn
-router.patch(
-  '/order/:id',
-  restrictTo('admin'),
-  userController.updateOrderStatus
-);
+// Lấy thông tin các đơn đặt hàng
+router.get('/my-orders', userController.getMyOrders);
 
 /// CÁC ROUTE SAU CẦN QUYỀN TRUY CẬP ADMIN
 router.use(restrictTo('admin'));

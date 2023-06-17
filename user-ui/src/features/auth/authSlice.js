@@ -57,6 +57,39 @@ export const addEnquiry = createAsyncThunk(
   }
 );
 
+export const updateMyData = createAsyncThunk(
+  'auth/update-my-data',
+  async (userData, thunkAPI) => {
+    try {
+      return await authServices.updateMyData(userData);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const forgotPassword = createAsyncThunk(
+  'auth/forgot-password',
+  async (email, thunkAPI) => {
+    try {
+      return await authServices.forgotPassword(email);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const resetPassword = createAsyncThunk(
+  'auth/reset-password',
+  async (data, thunkAPI) => {
+    try {
+      return await authServices.resetPassword(data);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -137,6 +170,71 @@ export const authSlice = createSlice({
         state.isError = true;
         state.message = action.error;
         toast.error('Gửi thắc mắc thất bại!');
+      })
+      // CẬP NHẬT THÔNG TIN CÁ NHÂN
+      .addCase(updateMyData.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateMyData.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.isError = false;
+
+        const newUser = {
+          ...state.user,
+          firstName: action.payload.data.firstName,
+          lastName: action.payload.data.lastName,
+          phoneNumber: action.payload.data.phoneNumber,
+        };
+
+        state.user = newUser;
+
+        localStorage.setItem('user', JSON.stringify(newUser));
+
+        toast.success('Cập nhật thông tin thành công!');
+      })
+      .addCase(updateMyData.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.isError = true;
+        state.message = action.error;
+        toast.error('Cập nhật thông tin thất bại!');
+      })
+      // QUÊN MẬT KHẨU
+      .addCase(forgotPassword.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(forgotPassword.fulfilled, (state, action) => {
+        toast.success('Vui lòng kiểm tra email để lấy lại mật khẩu mới!');
+      })
+      .addCase(forgotPassword.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.isError = true;
+        state.message = action.error;
+        toast.error('Gửi yêu cầu thất bại!');
+      })
+      // CÀI LẠI MẬT KHẨU
+      .addCase(resetPassword.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(resetPassword.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.isError = false;
+        state.isLoggedIn = true;
+        localStorage.setItem('user', JSON.stringify(action.payload));
+        state.user = action.payload;
+        toast.success('Tạo lại mật khẩu thành công!');
+      })
+      .addCase(resetPassword.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.isError = true;
+        state.message = action.error;
+        toast.error(
+          'Đường dẫn không chính xác hoặc đã hết thời gian hiệu lực. Vui lòng thử lại!'
+        );
       });
   },
 });

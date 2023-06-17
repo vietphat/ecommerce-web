@@ -36,9 +36,45 @@ const addEnquiry = async (enquiryData) => {
   }
 };
 
+const updateMyData = async (userData) => {
+  const response = await axios.patch(
+    `${base_url}/users/update-my-data`,
+    userData,
+    config()
+  );
+
+  if (response.data) {
+    return response.data;
+  }
+};
+
+const forgotPassword = async (email) => {
+  const response = await axios.post(`${base_url}/auth/forgot-password`, {
+    email,
+  });
+
+  if (response.data) {
+    return response.data;
+  }
+};
+
+const resetPassword = async (data) => {
+  const response = await axios.patch(
+    `${base_url}/auth/reset-password/${data.resetPasswordToken}`,
+    data.passwords
+  );
+
+  if (response.data) {
+    return response.data;
+  }
+};
+
 export const authServices = {
   register,
   login,
   logout,
   addEnquiry,
+  updateMyData,
+  forgotPassword,
+  resetPassword,
 };

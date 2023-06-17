@@ -1,9 +1,8 @@
 import React from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { BsSearch } from 'react-icons/bs';
-import { useSelector } from 'react-redux';
 import { AiOutlineLogout } from 'react-icons/ai';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import formatCurrency from '../utils/format_currency';
 import { logout } from '../features/auth/authSlice';
@@ -13,6 +12,7 @@ import { resetWishlist } from '../features/wishlist/wishlistSlice';
 
 const Header = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { cart, auth } = useSelector((state) => state);
 
@@ -23,6 +23,7 @@ const Header = () => {
       dispatch(resetWishlist());
       dispatch(resetCart());
       dispatch(resetOrder());
+      navigate('/');
     }
   };
 
@@ -190,6 +191,14 @@ const Header = () => {
                     <NavLink to='/products'>Sản phẩm</NavLink>
                     <NavLink to='/blog'>Blog</NavLink>
                     <NavLink to='/contact'>Liên hệ</NavLink>
+                    {auth?.isLoggedIn ? (
+                      <>
+                        <NavLink to='/orders'>Đơn hàng</NavLink>
+                        <NavLink to='/profile'>Thông tin cá nhân</NavLink>
+                      </>
+                    ) : (
+                      <></>
+                    )}
                   </div>
                 </div>
               </div>

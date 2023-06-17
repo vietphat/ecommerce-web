@@ -32,7 +32,7 @@ exports.updateMyData = catchAsync(async (req, res, next) => {
     );
   }
 
-  const { firstName, lastName, avatarUrl, phoneNumber } = req.body;
+  const { firstName, lastName, phoneNumber } = req.body;
 
   // Cập nhật và lưu vào db
   const user = await User.findByIdAndUpdate(
@@ -40,10 +40,6 @@ exports.updateMyData = catchAsync(async (req, res, next) => {
     {
       firstName,
       lastName,
-      avatarUrl:
-        avatarUrl === ''
-          ? 'https://firebasestorage.googleapis.com/v0/b/social-media-web-1648d.appspot.com/o/users%2Favatars%2Fdefault-avatar.jpg?alt=media&token=fe149b52-bf43-4711-ad59-5b1745d6f0ef'
-          : avatarUrl,
       phoneNumber,
     },
     {
@@ -203,8 +199,6 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 exports.deleteCartsAfterOrder = catchAsync(async (req, res, next) => {
   const { cartIds } = req.body;
 
-  console.log(cartIds);
-
   const data = await Cart.deleteMany({ _id: { $in: cartIds } });
 
   res.status(200).json({
@@ -213,47 +207,15 @@ exports.deleteCartsAfterOrder = catchAsync(async (req, res, next) => {
   });
 });
 
-// Get orders
-exports.getOrders = catchAsync(async (req, res, next) => {
-  const orders = await Order.find({ orderBy: req.user._id }).populate(
-    'products.product',
-    'title price'
-  );
+exports.getMyOrders = catchAsync(async (req, res, next) => {
+  const { _id } = req.user;
 
-  if (!orders) {
-    return next(new AppError('Không có đơn hàng', 400));
-  }
+  const data = await Order.find({ user: _id });
 
   res.status(200).json({
     status: 'Thành công',
-    length: orders.length,
-    data: orders,
-  });
-});
-
-// Update Order Status
-exports.updateOrderStatus = catchAsync(async (req, res, next) => {
-  const { id: orderId } = req.params;
-  const { status } = req.body;
-
-  if (!status) {
-    return next(new AppError('Vui lòng điền trạng thái đơn hàng', 400));
-  }
-
-  const order = await Order.findByIdAndUpdate(
-    orderId,
-    {
-      orderStatus: status,
-      paymentIntent: {
-        status,
-      },
-    },
-    { new: true }
-  );
-
-  res.status(200).json({
-    status: 'Thành công',
-    data: order,
+    length: data.length,
+    data,
   });
 });
 

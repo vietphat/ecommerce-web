@@ -10,6 +10,8 @@ import BreadCrumb from '../components/BreadCrumb';
 import Container from '../components/Container';
 import Input from '../components/Input';
 import { getCart } from '../features/cart/cartSlice';
+import { getMyOrders } from '../features/order/orderSlice';
+import { getWishlist } from '../features/wishlist/wishlistSlice';
 
 const loginSchema = Yup.object({
   email: Yup.string().required('Email không được để trống'),
@@ -31,7 +33,9 @@ const Login = () => {
       const loginResult = await dispatch(login(values));
 
       if (loginResult.meta.requestStatus === 'fulfilled') {
+        dispatch(getWishlist());
         dispatch(getCart());
+        dispatch(getMyOrders());
         navigate('/');
       }
     },

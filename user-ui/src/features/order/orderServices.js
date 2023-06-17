@@ -15,6 +15,15 @@ const createOrder = async (orderData) => {
   }
 };
 
+const getMyOrders = async () => {
+  const response = await axios.get(`${base_url}/users/my-orders`, config());
+
+  if (response.data) {
+    return response.data;
+  }
+};
+
 export const orderServices = {
   createOrder,
+  getMyOrders,
 };

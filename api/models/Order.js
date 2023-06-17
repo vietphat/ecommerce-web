@@ -73,4 +73,8 @@ const orderSchema = new mongoose.Schema(
   }
 );
 
+orderSchema.pre(/^find/, function () {
+  this.populate('orderItems.product orderItems.color');
+});
+
 module.exports = mongoose.model('Order', orderSchema);

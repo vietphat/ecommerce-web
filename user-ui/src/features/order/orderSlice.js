@@ -24,6 +24,17 @@ export const createOrder = createAsyncThunk(
   }
 );
 
+export const getMyOrders = createAsyncThunk(
+  'order/get-my-orders',
+  async (thunkAPI) => {
+    try {
+      return await orderServices.getMyOrders();
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
 export const orderSlice = createSlice({
   name: 'order',
   initialState,
@@ -47,6 +58,22 @@ export const orderSlice = createSlice({
         state.isError = true;
         state.message = action.error;
         toast.success('Thanh toán thất bại');
+      })
+      // LẤY THÔNG TIN CÁC ĐƠN HÀNG
+      .addCase(getMyOrders.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getMyOrders.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.isError = false;
+        state.orders = action.payload.data;
+      })
+      .addCase(getMyOrders.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.isError = true;
+        state.orders = action.error;
       })
       .addCase(resetOrder, () => initialState);
   },

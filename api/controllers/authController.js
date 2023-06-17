@@ -323,6 +323,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     });
     // await createAndSendToken(user, res, req, 200);
   } catch (error) {
+    console.log(error);
     res.status(500).json({
       status: 'Lấy lại mật khẩu thất bại',
       message: error.message,

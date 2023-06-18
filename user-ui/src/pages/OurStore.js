@@ -1,23 +1,41 @@
 import React, { useState, useEffect } from 'react';
 import ReactStars from 'react-rating-stars-component';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 import BreadCrumb from '../components/BreadCrumb';
 import Meta from '../components/Meta';
 import ProductCard from '../components/ProductCard';
-import Colors from '../components/Colors';
 import Container from '../components/Container';
 import { getAllProducts } from '../features/products/productSlice';
+import { getBrands } from '../features/brands/brandSlice';
+import { getProductCategories } from '../features/productCategories/productCategorySlice';
+import formatCurrency from '../utils/format_currency';
 
 const OurStore = () => {
-  const dispatch = useDispatch();
   const [grid, setGrid] = useState(4);
 
+  const [brand, setBrand] = useState('');
+  const [category, setCategory] = useState('');
+  const [tag, setTag] = useState('');
+  const [from, setFrom] = useState(0);
+  const [to, setTo] = useState(0);
+  const [sort, setSort] = useState('createdAt');
+
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    dispatch(getAllProducts());
+    dispatch(getProductCategories());
+    dispatch(getBrands());
   }, [dispatch]);
 
+  useEffect(() => {
+    dispatch(getAllProducts({ brand, category, tag, from, to, sort }));
+  }, [brand, category, tag, from, to, sort, dispatch]);
+
   const { products } = useSelector((state) => state.product);
+  const { categories } = useSelector((state) => state.productCategory);
+  const { brands } = useSelector((state) => state.brand);
 
   return (
     <>
@@ -31,10 +49,14 @@ const OurStore = () => {
               <h3 className='filter-title'>Loại sản phẩm</h3>
               <div>
                 <ul className='ps-0'>
-                  <li>Đồng hồ</li>
-                  <li>TV</li>
-                  <li>Camera</li>
-                  <li>Laptop</li>
+                  {categories &&
+                    categories.map((c) => {
+                      return (
+                        <li onClick={() => setCategory(c._id)} key={c._id}>
+                          {c.title}
+                        </li>
+                      );
+                    })}
                 </ul>
               </div>
             </div>
@@ -43,195 +65,114 @@ const OurStore = () => {
             <div className='filter-card mb-3'>
               <h3 className='filter-title'>Bộ lọc tìm kiếm</h3>
               <div>
-                {/* Avalabilities */}
-                <h5 className='sub-title'>Availabilities</h5>
-                <div>
-                  <div className='form-check'>
-                    <input
-                      className='form-check-input'
-                      type='checkbox'
-                      value=''
-                      id=''
-                    />
-                    <label className='form-check-label' htmlFor=''>
-                      In Stock (1 )
-                    </label>
-                  </div>
-
-                  <div className='form-check'>
-                    <input
-                      className='form-check-input'
-                      type='checkbox'
-                      value=''
-                      id=''
-                    />
-                    <label className='form-check-label' htmlFor=''>
-                      Out Of Stock (0)
-                    </label>
-                  </div>
-                </div>
-
                 {/* Giá */}
                 <h5 className='sub-title'>Giá</h5>
                 <div className='d-flex align-items-center gap-10'>
-                  <div className='form-floating'>
+                  <div className='form-floating flex-grow-1'>
                     <input
-                      className='form-control'
-                      type='email'
                       id='floatingInput'
-                      placeholder='name@example.com'
-                    />
-                    <label htmlFor='floatingInput'>From</label>
-                  </div>
-
-                  <div className='form-floating'>
-                    <input
                       className='form-control'
-                      type='email'
+                      type='number'
+                      min={0}
+                      value={from}
+                      onChange={(e) => setFrom(e.target.value)}
+                    />
+                    <label htmlFor='floatingInput'>From (VNĐ)</label>
+                  </div>
+
+                  <div className='form-floating flex-grow-1'>
+                    <input
                       id='floatingInput1'
-                      placeholder='name@example.com'
+                      className='form-control'
+                      type='number'
+                      min={0}
+                      value={to}
+                      onChange={(e) => setTo(e.target.value)}
                     />
-                    <label htmlFor='floatingInput1'>To</label>
-                  </div>
-                </div>
-
-                {/* Màu sắc */}
-                <h5 className='sub-title'>Màu sắc</h5>
-                <div>
-                  <div className='d-flex flex-wrap'>
-                    <Colors colors={[]} />
-                  </div>
-                </div>
-
-                <h5 className='sub-title'>Kích thước</h5>
-                <div>
-                  <div className='form-check'>
-                    <input
-                      className='form-check-input'
-                      type='checkbox'
-                      value=''
-                      id='size-s'
-                    />
-                    <label className='form-check-label' htmlFor='size-s'>
-                      S (2)
-                    </label>
-                  </div>
-
-                  <div className='form-check'>
-                    <input
-                      className='form-check-input'
-                      type='checkbox'
-                      value=''
-                      id='size-m'
-                    />
-                    <label className='form-check-label' htmlFor='size-m'>
-                      M (6)
-                    </label>
-                  </div>
-
-                  <div className='form-check'>
-                    <input
-                      className='form-check-input'
-                      type='checkbox'
-                      value=''
-                      id='size-l'
-                    />
-                    <label className='form-check-label' htmlFor='size-l'>
-                      L (10)
-                    </label>
-                  </div>
-
-                  <div className='form-check'>
-                    <input
-                      className='form-check-input'
-                      type='checkbox'
-                      value=''
-                      id='size-l'
-                    />
-                    <label className='form-check-label' htmlFor='size-l'>
-                      XL (4)
-                    </label>
+                    <label htmlFor='floatingInput1'>To (VNĐ)</label>
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* Product Tags */}
-            <div className='filter-card mb-3'>
-              <h3 className='filter-title'>Tags thịnh hành</h3>
-
+              {/* Product Tags */}
+              <h3 className='filter-title mt-4 mb-3'>Tags thịnh hành</h3>
               <div>
                 <div className='product-tags d-flex flex-wrap align-items-center gap-10'>
-                  <span className='badge bg-light text-secondary rounded-3 py-2 px-3'>
-                    Tai nghe
-                  </span>
+                  {['featured', 'popular', 'special'].map((t, i) => {
+                    return (
+                      <span
+                        key={i}
+                        style={{ cursor: 'pointer' }}
+                        className='badge bg-light text-secondary rounded-3 py-2 px-3'
+                        onClick={(e) => {
+                          setTag(e.target.innerText);
+                        }}
+                      >
+                        {t}
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
 
-                  <span className='badge bg-light text-secondary rounded-3 py-2 px-3'>
-                    Laptop
-                  </span>
-
-                  <span className='badge bg-light text-secondary rounded-3 py-2 px-3'>
-                    Điện thoại
-                  </span>
-
-                  <span className='badge bg-light text-secondary rounded-3 py-2 px-3'>
-                    Sạc
-                  </span>
+              {/* Brands */}
+              <h3 className='filter-title mt-4 mb-3'>Thương hiệu</h3>
+              <div>
+                <div className='product-tags d-flex flex-wrap align-items-center gap-10'>
+                  {brands &&
+                    brands.map((b) => {
+                      return (
+                        <span
+                          key={b._id}
+                          style={{ cursor: 'pointer' }}
+                          className='badge bg-light text-secondary rounded-3 py-2 px-3'
+                          onClick={() => setBrand(b._id)}
+                        >
+                          {b.title}
+                        </span>
+                      );
+                    })}
                 </div>
               </div>
             </div>
 
             {/* Random Product */}
             <div className='filter-card mb-3'>
-              <h3 className='filter-title'>Sản phẩm ngẫu nhiên</h3>
+              <h3 className='filter-title mb-3'>Sản phẩm gợi ý</h3>
               <div>
-                <div className='random-products mb-3 d-flex'>
-                  <div className='w-50'>
-                    <img
-                      className='img-fluid'
-                      src='/images/watch.jpg'
-                      alt='watch'
-                    />
-                  </div>
+                {products &&
+                  [...products]
+                    .sort(() => Math.random() - 0.5)
+                    .slice(0, 2)
+                    .map((p) => {
+                      return (
+                        <div
+                          key={p._id}
+                          className='random-products mb-3 d-flex'
+                        >
+                          <div className='w-50'>
+                            <img
+                              className='img-fluid'
+                              src={p.images[0].url}
+                              width='90%'
+                              alt='product'
+                            />
+                          </div>
 
-                  <div className='w-50'>
-                    <h5>
-                      Kids Headphone Bulk 10 Pack Multi Color For Students
-                    </h5>
-                    <ReactStars
-                      count={5}
-                      size={24}
-                      value={4}
-                      edit={false}
-                      activeColor='#ffd700'
-                    />
-                    <b>$300</b>
-                  </div>
-                </div>
-
-                <div className='random-products d-flex'>
-                  <div className='w-50'>
-                    <img
-                      className='img-fluid'
-                      src='/images/watch.jpg'
-                      alt='watch'
-                    />
-                  </div>
-
-                  <div className='w-50'>
-                    <h5>
-                      Kids Headphone Bulk 10 Pack Multi Color For Students
-                    </h5>
-                    <ReactStars
-                      count={5}
-                      size={24}
-                      value={4}
-                      edit={false}
-                      activeColor='#ffd700'
-                    />
-                    <b>$300</b>
-                  </div>
-                </div>
+                          <div className='w-50'>
+                            <Link to={`/product/${p._id}`}>{p.title}</Link>
+                            <ReactStars
+                              count={5}
+                              size={24}
+                              value={p.ratingsAverage}
+                              edit={false}
+                              activeColor='#ffd700'
+                            />
+                            <b>{formatCurrency(p.price)}</b>
+                          </div>
+                        </div>
+                      );
+                    })}
               </div>
             </div>
           </div>
@@ -243,27 +184,16 @@ const OurStore = () => {
                   <p className='mb-0 d-block' style={{ width: '100px' }}>
                     Xếp theo:{' '}
                   </p>
-                  <select className='form-control form-select' name='' id=''>
-                    <option value='manual'>Sản phẩm nổi bật</option>
-                    <option value='best-selling'>Bán chạy</option>
-                    <option value='title-ascending'>
-                      Theo thứ tự chữ cái, A-Z
-                    </option>
-                    <option value='title-descending'>
-                      Theo thứ tự chữ cái, Z-A
-                    </option>
-                    <option value='price-ascending'>
-                      Theo giá, thấp đến cao
-                    </option>
-                    <option value='price-descending'>
-                      Theo giá, cao đến thấp
-                    </option>
-                    <option value='created-ascending'>
-                      Theo ngày, cũ đến mới
-                    </option>
-                    <option value='created-descending'>
-                      Theo ngày, mơi đến cũ
-                    </option>
+                  <select
+                    onChange={(e) => setSort(e.target.value)}
+                    className='form-control form-select'
+                  >
+                    <option value='title'>Theo thứ tự chữ cái, A-Z</option>
+                    <option value='-title'>Theo thứ tự chữ cái, Z-A</option>
+                    <option value='price'>Theo giá, thấp đến cao</option>
+                    <option value='-price'>Theo giá, cao đến thấp</option>
+                    <option value='createdAt'>Theo ngày, cũ đến mới</option>
+                    <option value='-createdAt'>Theo ngày, mơi đến cũ</option>
                   </select>
                 </div>
 

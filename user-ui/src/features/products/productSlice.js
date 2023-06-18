@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { toast } from 'react-toastify';
 
 import { productServices } from './productServices';
 
@@ -13,9 +14,9 @@ const initialState = {
 
 export const getAllProducts = createAsyncThunk(
   'product/get-all',
-  async (thunkAPI) => {
+  async (filters, thunkAPI) => {
     try {
-      return await productServices.getAllProducts();
+      return await productServices.getAllProducts(filters);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -27,6 +28,17 @@ export const getAProducts = createAsyncThunk(
   async (productId, thunkAPI) => {
     try {
       return await productServices.getAProduct(productId);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const createReview = createAsyncThunk(
+  'product/create-review',
+  async (data, thunkAPI) => {
+    try {
+      return await productServices.createReview(data);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -70,6 +82,29 @@ export const authSlice = createSlice({
         state.isSuccess = false;
         state.isError = true;
         state.message = action.error;
+      })
+      // THÊM ĐÁNH GIÁ SẢN PHẨM
+      .addCase(createReview.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(createReview.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.isError = false;
+        const reviewedProductIndex = state.products.findIndex(
+          (product) => product._id === action.payload.data._id
+        );
+        state.products[reviewedProductIndex] = action.payload.data;
+        state.currentProduct = action.payload.data;
+        toast.success('Đánh giá sản phẩm thành công!');
+      })
+      .addCase(createReview.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.isError = true;
+        state.message = action.error;
+
+        toast.error('Đánh giá sản phẩm thất bại!');
       });
   },
 });

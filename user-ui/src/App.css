@@ -730,7 +730,8 @@ footer .input-group-text {
 }
 
 .review-head p,
-.review-head a {
+.review-head a,
+.review-head button {
   font-size: 14px;
   color: var(--color-777777);
 }

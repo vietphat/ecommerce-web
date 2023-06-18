@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk, createAction } from '@reduxjs/toolkit';
+import { toast } from 'react-toastify';
 
 import { wishlistServices } from './wishlistServices';
 
@@ -49,6 +50,7 @@ export const wishlistSlice = createSlice({
         state.isSuccess = true;
         state.isError = false;
         state.wishlist = action.payload.data.wishlist;
+        toast.success(`Đã cập nhật danh sách yêu thích`);
       })
       .addCase(addToWishlist.rejected, (state, action) => {
         state.isLoading = false;

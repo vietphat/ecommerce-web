@@ -3,18 +3,39 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { BsSearch } from 'react-icons/bs';
 import { AiOutlineLogout } from 'react-icons/ai';
 import { useDispatch, useSelector } from 'react-redux';
+import { Typeahead } from 'react-bootstrap-typeahead';
+import 'react-bootstrap-typeahead/css/Typeahead.css';
 
 import formatCurrency from '../utils/format_currency';
 import { logout } from '../features/auth/authSlice';
 import { resetCart } from '../features/cart/cartSlice';
 import { resetOrder } from '../features/order/orderSlice';
 import { resetWishlist } from '../features/wishlist/wishlistSlice';
+import { useState } from 'react';
+import { useEffect } from 'react';
 
 const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [paginate, setPaginate] = useState(true);
+  const [searchOptions, setSearchOptions] = useState([]);
 
   const { cart, auth } = useSelector((state) => state);
+  const { products } = useSelector((state) => state.product);
+
+  useEffect(() => {
+    if (products?.length > 0) {
+      setSearchOptions((state) => {
+        return products.map((product, index) => {
+          return {
+            id: product._id,
+            productId: product._id,
+            title: product.title,
+          };
+        });
+      });
+    }
+  }, [products]);
 
   const handleLogout = async () => {
     const logoutResult = await dispatch(logout());
@@ -58,12 +79,17 @@ const Header = () => {
 
             <div className='col-5'>
               <div className='input-group'>
-                <input
-                  type='text'
-                  className='form-control py-2'
-                  placeholder='Tìm kiếm sản phẩm...'
-                  aria-label='Tìm kiếm sản phẩm...'
-                  aria-describedby='basic-addon2'
+                <Typeahead
+                  id='pagination-example'
+                  onPaginate={() => console.log('Results paginated')}
+                  options={searchOptions}
+                  onChange={(selected) => {
+                    if (selected.length === 0) return;
+                    navigate(`/product/${selected[0].productId}`);
+                  }}
+                  paginate={paginate}
+                  labelKey={'title'}
+                  placeholder='Nhập tên sản phẩm...'
                 />
                 <span className='input-group-text p-3' id='basic-addon2'>
                   <BsSearch className='fs-6' />

@@ -188,10 +188,9 @@ exports.ratingAProduct = catchAsync(async (req, res, next) => {
   }
 
   const alreadyRatedIndex = product.ratings.findIndex(
-    (ratingObj) => ratingObj.postedBy.toString() === userId.toString()
+    (ratingObj) => ratingObj.postedBy._id.toString() === userId.toString()
   );
 
-  let updatedProduct;
   // nếu đã đánh giá rồi
   // => chỉ thay thế star
   if (alreadyRatedIndex !== -1) {
@@ -212,9 +211,10 @@ exports.ratingAProduct = catchAsync(async (req, res, next) => {
   );
 
   await product.save();
+  const data = await product.populate('brand category colors ratings.postedBy');
 
   res.status(200).json({
     status: 'Thành công',
-    data: product,
+    data,
   });
 });

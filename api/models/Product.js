@@ -66,8 +66,7 @@ const productSchema = new mongoose.Schema(
       default: 0,
     },
     ratingsAverage: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Brand',
+      type: Number,
       default: 0,
     },
     brand: {
@@ -82,7 +81,10 @@ const productSchema = new mongoose.Schema(
 );
 
 productSchema.pre(/^find/, function () {
-  this.populate('brand').populate('category').populate('colors'); // Populate thông tin brand
+  this.populate('brand')
+    .populate('category')
+    .populate('colors')
+    .populate('ratings.postedBy'); // Populate thông tin brand
 });
 
 module.exports = mongoose.model('Product', productSchema);

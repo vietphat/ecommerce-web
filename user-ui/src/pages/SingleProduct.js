@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import ReactStars from 'react-rating-stars-component';
 import ReactImageZoom from 'react-image-zoom';
-import { TbGitCompare } from 'react-icons/tb';
 import { AiOutlineHeart } from 'react-icons/ai';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useLocation } from 'react-router-dom';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 
 import Meta from '../components/Meta';
 import BreadCrumb from '../components/BreadCrumb';
@@ -12,6 +13,7 @@ import Colors from '../components/Colors';
 import ProductCard from '../components/ProductCard';
 import Container from '../components/Container';
 import {
+  createReview,
   getAProducts,
   getAllProducts,
 } from '../features/products/productSlice';
@@ -23,9 +25,15 @@ const copyToClipboard = (text) => {
   navigator.clipboard.writeText(text);
 };
 
+const reviewSchema = Yup.object({
+  star: Yup.number().required('Số sao là bắt buộc'),
+  comment: Yup.string(),
+});
+
 const SingleProduct = () => {
   const [color, setColor] = useState();
   const [quantity, setQuantity] = useState(1);
+  const commentRef = useRef();
   const dispatch = useDispatch();
   const location = useLocation();
   const { id } = useParams();
@@ -39,6 +47,23 @@ const SingleProduct = () => {
   const { currentProduct } = useSelector((state) => state.product);
   const { products } = useSelector((state) => state.product);
   const { cart } = useSelector((state) => state.cart);
+  const { wishlist } = useSelector((state) => state.wishlist);
+
+  const formik = useFormik({
+    initialValues: {
+      star: 5,
+      comment: '',
+    },
+    validationSchema: reviewSchema,
+    onSubmit: async (values) => {
+      const data = {
+        productId: currentProduct._id,
+        review: values,
+      };
+
+      dispatch(createReview(data));
+    },
+  });
 
   const props = {
     width: 400,
@@ -48,8 +73,6 @@ const SingleProduct = () => {
       ? currentProduct?.images[0]?.url
       : '/images/default-image.webp',
   };
-
-  const [orderedProduct, setOrderedProduct] = useState(true);
 
   const handleAddToWishlist = (productId) => {
     dispatch(addToWishlist(productId));
@@ -102,6 +125,11 @@ const SingleProduct = () => {
         quantity,
       })
     );
+  };
+
+  const handleFocusCommentInput = (e) => {
+    e.preventDefault();
+    commentRef.current.focus();
   };
 
   return (
@@ -163,9 +191,13 @@ const SingleProduct = () => {
                       </p>
                     </div>
 
-                    <a className='review-btn' href='#review'>
+                    <button
+                      className='review-btn border-0 bg-transparent'
+                      onClick={(e) => handleFocusCommentInput(e)}
+                      type='button'
+                    >
                       Viết đánh giá
-                    </a>
+                    </button>
                   </div>
 
                   <div className='py-3'>
@@ -202,24 +234,6 @@ const SingleProduct = () => {
                           ? 'Hết hàng'
                           : currentProduct.quantity}
                       </p>
-                    </div>
-
-                    <div className='d-flex gap-10 flex-column mt-2 mb-3'>
-                      <h3 className='product-heading'>Kích thước: </h3>
-                      <div className='d-flex flex-wrap gap-15'>
-                        <span className='badge border border-1 bg-white text-dark border-secondary'>
-                          S
-                        </span>
-                        <span className='badge border border-1 bg-white text-dark border-secondary'>
-                          M
-                        </span>
-                        <span className='badge border border-1 bg-white text-dark border-secondary'>
-                          XL
-                        </span>
-                        <span className='badge border border-1 bg-white text-dark border-secondary'>
-                          XXL
-                        </span>
-                      </div>
                     </div>
 
                     <div className='d-flex gap-10 flex-column mt-2 mb-3'>
@@ -268,20 +282,28 @@ const SingleProduct = () => {
 
                     <div className='d-flex align-items-center gap-15'>
                       <div>
-                        <a href='/'>
-                          <TbGitCompare className='fs-5 me-2' />
-                          So sánh
-                        </a>
-                      </div>
-                      <div>
                         <button
                           className='border-0 bg-transparent like-btn'
                           onClick={() =>
                             handleAddToWishlist(currentProduct._id)
                           }
                         >
-                          <AiOutlineHeart className='fs-5 me-2' />
-                          Thích
+                          {wishlist
+                            .map((product) => product._id)
+                            .includes(currentProduct._id) ? (
+                            <div className='text-danger fs-6'>
+                              <AiOutlineHeart
+                                color='red'
+                                className='fs-5 me-2'
+                              />
+                              Gỡ khỏi danh sách yêu thích
+                            </div>
+                          ) : (
+                            <div className=' fs-6'>
+                              <AiOutlineHeart className='fs-5 me-2' />
+                              Thêm vào danh sách yêu thích
+                            </div>
+                          )}
                         </button>
                       </div>
                     </div>
@@ -358,66 +380,85 @@ const SingleProduct = () => {
                       </div>
                     </div>
 
-                    {orderedProduct && (
-                      <div>
-                        <a
-                          className='text-dark text-decoration-underline'
-                          href=''
-                        >
-                          Viết đánh giá
-                        </a>
-                      </div>
-                    )}
+                    <div>
+                      <button
+                        className='text-dark text-decoration-underline border-0 bg-transparent'
+                        type='button'
+                        onClick={(e) => handleFocusCommentInput(e)}
+                      >
+                        Viết đánh giá
+                      </button>
+                    </div>
                   </div>
 
                   <div className='review-form py-4'>
                     <h4 className='mb-2'>Viết đánh giá</h4>
-                    <form action='' className='d-flex flex-column gap-15'>
+                    <form
+                      onSubmit={formik.handleSubmit}
+                      className='d-flex flex-column gap-15'
+                    >
                       <div>
                         <ReactStars
                           count={5}
                           size={24}
-                          value={5}
+                          value={formik.values.star}
                           edit={true}
                           activeColor='#ffd700'
+                          onChange={(star) =>
+                            formik.setFieldValue('star', star)
+                          }
                         />
                       </div>
+
                       <div>
                         <textarea
+                          ref={commentRef}
                           className='w-100 form-control'
                           cols={30}
                           rows={5}
                           placeholder='Nội dung'
+                          value={formik.values.comment}
+                          onChange={formik.handleChange('comment')}
+                          onBlur={formik.handleBlur('comment')}
                         ></textarea>
                       </div>
+
                       <div className='d-flex justify-content-end'>
-                        <button className='button border-0'>
-                          Gửi đánh giá
+                        <button type='submit' className='button border-0'>
+                          Đăng đánh giá
                         </button>
                       </div>
                     </form>
                   </div>
 
                   <div className='reviews mt-4'>
-                    <div className='review'>
-                      <div className='d-flex gap-10 align-items-center'>
-                        <h6 className='mb-0'>Cabral</h6>
-                        <ReactStars
-                          count={5}
-                          size={24}
-                          value={4}
-                          edit={false}
-                          activeColor='#ffd700'
-                        />
+                    {currentProduct.ratings.length > 0 ? (
+                      currentProduct.ratings.map((review) => {
+                        return (
+                          <div key={review._id} className='review'>
+                            <div className='d-flex gap-10 align-items-center'>
+                              <h6 className='mb-0'>
+                                {review.postedBy.firstName +
+                                  ' ' +
+                                  review.postedBy.lastName}
+                              </h6>
+                              <ReactStars
+                                count={5}
+                                size={24}
+                                value={review.star}
+                                edit={false}
+                                activeColor='#ffd700'
+                              />
+                            </div>
+                            <p className='mt-3'>{review.comment}</p>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <div className='text-center fs-5'>
+                        - Chưa có đánh giá -
                       </div>
-                      <p className='mt-3'>
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                        Nam iusto molestias voluptatibus maiores voluptas
-                        accusamus aliquid repellendus expedita quae ab eius
-                        numquam odit autem impedit incidunt ratione, animi
-                        architecto soluta.
-                      </p>
-                    </div>
+                    )}
                   </div>
                 </div>
               </div>

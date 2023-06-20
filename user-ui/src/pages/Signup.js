@@ -45,7 +45,7 @@ const Signup = () => {
 
   return (
     <>
-      <Meta title='Đăng ký tài khoản' />
+      <Meta title='Techzone | Đăng ký tài khoản' />
       <BreadCrumb title='Đăng ký tài khoản' />
       <Container class1='login-wrapper home-wrapper-2 py-5'>
         <div className='row'>

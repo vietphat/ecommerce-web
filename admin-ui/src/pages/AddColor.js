@@ -1,9 +1,10 @@
 import { useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
+import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 
 import Input from '../components/Input';
-import { createColor, resetState } from '../features/color/colorSlice';
+import { createColor } from '../features/color/colorSlice';
 
 let colorSchema = Yup.object({
   title: Yup.string().required('Màu không được để trống'),
@@ -11,6 +12,7 @@ let colorSchema = Yup.object({
 
 const AddColor = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: {
@@ -18,12 +20,12 @@ const AddColor = () => {
     },
     validationSchema: colorSchema,
     // SUBMIT
-    onSubmit: (values) => {
-      dispatch(createColor(values));
-      formik.resetForm();
-      setTimeout(() => {
-        dispatch(resetState());
-      }, 3000);
+    onSubmit: async (values) => {
+      const result = await dispatch(createColor(values));
+      if (result.meta.requestStatus === 'fulfilled') {
+        formik.resetForm();
+        navigate('/admin/colors-list');
+      }
     },
   });
 

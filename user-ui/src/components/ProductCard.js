@@ -52,7 +52,10 @@ const ProductCard = (props) => {
 
           <div className='product-details'>
             <h6 className='brand'>{data?.brand?.title}</h6>
-            <Link to={`/product/${data?._id}`}>
+            <Link
+              to={`/product/${data?._id}`}
+              onClick={() => window.scrollTo(0, 0)}
+            >
               <h5 className='product-title'>{data?.title}</h5>
             </Link>
             <ReactStarts
@@ -76,6 +79,7 @@ const ProductCard = (props) => {
               </button>
               <Link
                 to={`/product/${data?._id}`}
+                onClick={() => window.scrollTo(0, 0)}
                 className='border-0 bg-transparent'
               >
                 <img src={view} alt='view' />

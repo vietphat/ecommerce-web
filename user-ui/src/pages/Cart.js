@@ -39,7 +39,7 @@ const Cart = () => {
 
   return (
     <>
-      <Meta title='Giỏ hàng' />
+      <Meta title='Techzone | Giỏ hàng' />
       <BreadCrumb title='Giỏ hàng' />
 
       <Container class1='cart-wrapper home-wrapper-2 py-5'>
@@ -75,6 +75,7 @@ const Cart = () => {
                         <Link
                           className='cart-item-link'
                           to={`/product/${item?.product?._id}`}
+                          onClick={() => window.scrollTo(0, 0)}
                         >
                           {item?.product?.title}
                         </Link>
@@ -134,7 +135,11 @@ const Cart = () => {
 
             <div className='col-12 py-2 mt-4'>
               <div className='d-flex justify-content-between align-items-baseline'>
-                <Link to='/products' className='button'>
+                <Link
+                  to='/products'
+                  className='button'
+                  onClick={() => window.scrollTo(0, 0)}
+                >
                   Tiếp tục mua sắm
                 </Link>
                 {cart?.length !== 0 && (
@@ -143,7 +148,11 @@ const Cart = () => {
                     <p>
                       Khách được quyền yêu cầu người vận chuyển cho xem hàng
                     </p>
-                    <Link to='/checkout' className='button'>
+                    <Link
+                      to='/checkout'
+                      className='button'
+                      onClick={() => window.scrollTo(0, 0)}
+                    >
                       Thanh toán
                     </Link>
                   </div>

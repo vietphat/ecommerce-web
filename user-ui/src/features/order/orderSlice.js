@@ -57,7 +57,7 @@ export const orderSlice = createSlice({
         state.isSuccess = false;
         state.isError = true;
         state.message = action.error;
-        toast.success('Thanh toán thất bại');
+        toast.error(action.payload.data.message);
       })
       // LẤY THÔNG TIN CÁC ĐƠN HÀNG
       .addCase(getMyOrders.pending, (state) => {
@@ -73,7 +73,7 @@ export const orderSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = false;
         state.isError = true;
-        state.orders = action.error;
+        toast.error(action.payload.data.message);
       })
       .addCase(resetOrder, () => initialState);
   },

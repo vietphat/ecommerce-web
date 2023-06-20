@@ -66,6 +66,19 @@ const orderSchema = new mongoose.Schema(
     orderStatus: {
       type: String,
       default: 'ordered',
+      enum: [
+        'ordered',
+        'approved',
+        'processing',
+        'shipped',
+        'completed',
+        'canceled',
+        'returned',
+      ],
+    },
+    month: {
+      type: String,
+      default: new Date().getMonth(),
     },
   },
   {

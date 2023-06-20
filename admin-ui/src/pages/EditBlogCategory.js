@@ -33,10 +33,14 @@ const EditBlogCategory = () => {
     },
     validationSchema: blogCategorySchema,
     // SUBMIT
-    onSubmit: (values) => {
-      dispatch(editABlogCategory({ _id: id, blogCategory: values }));
-      formik.resetForm();
-      navigate('/admin/blog-categories-list');
+    onSubmit: async (values) => {
+      const result = await dispatch(
+        editABlogCategory({ _id: id, blogCategory: values })
+      );
+      if (result.meta.requestStatus === 'fulfilled') {
+        formik.resetForm();
+        navigate('/admin/blog-categories-list');
+      }
     },
   });
 

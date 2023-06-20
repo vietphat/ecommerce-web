@@ -104,7 +104,7 @@ export const authSlice = createSlice({
         state.isError = true;
         state.message = action.error;
 
-        toast.error('Đánh giá sản phẩm thất bại!');
+        toast.error('Vui lòng đăng nhập để có thể thêm đánh giá');
       });
   },
 });

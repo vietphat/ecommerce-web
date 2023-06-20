@@ -11,6 +11,11 @@ router.use(isAuthenticated, restrictTo('admin'));
 
 router.route('/').get(orderController.getAllOrders);
 
+router
+  .route('/:id')
+  .get(orderController.getOrdersById)
+  .patch(orderController.updateOrderStatus);
+
 // router
 //   .route('/:id')
 //   .get(enquiryController.getAnEnquiry)

@@ -39,7 +39,7 @@ const OurStore = () => {
 
   return (
     <>
-      <Meta title='Sản phẩm' />
+      <Meta title='Techzone | Sản phẩm' />
       <BreadCrumb title='Sản phẩm' />
       <Container class1='store-wrapper home-wrapper-2 py-5'>
         <div className='row'>
@@ -52,8 +52,22 @@ const OurStore = () => {
                   {categories &&
                     categories.map((c) => {
                       return (
-                        <li onClick={() => setCategory(c._id)} key={c._id}>
-                          {c.title}
+                        <li
+                          onClick={() => {
+                            setCategory((state) => {
+                              if (state === c._id) return '';
+                              else return c._id;
+                            });
+                          }}
+                          key={c._id}
+                        >
+                          <span
+                            className={
+                              c._id === category && `fw-bold bg-dark p-1 border`
+                            }
+                          >
+                            {c.title}
+                          </span>
                         </li>
                       );
                     })}
@@ -103,9 +117,14 @@ const OurStore = () => {
                       <span
                         key={i}
                         style={{ cursor: 'pointer' }}
-                        className='badge bg-light text-secondary rounded-3 py-2 px-3'
+                        className={`badge bg-${
+                          tag === t ? 'dark' : 'light'
+                        } text-secondary rounded-3 py-2 px-3`}
                         onClick={(e) => {
-                          setTag(e.target.innerText);
+                          setTag((state) => {
+                            if (state === t) return '';
+                            else return e.target.innerText;
+                          });
                         }}
                       >
                         {t}
@@ -125,8 +144,15 @@ const OurStore = () => {
                         <span
                           key={b._id}
                           style={{ cursor: 'pointer' }}
-                          className='badge bg-light text-secondary rounded-3 py-2 px-3'
-                          onClick={() => setBrand(b._id)}
+                          className={`badge bg-${
+                            brand === b._id ? 'dark' : 'light'
+                          } text-secondary rounded-3 py-2 px-3`}
+                          onClick={() => {
+                            setBrand((state) => {
+                              if (state === b._id) return '';
+                              else return b._id;
+                            });
+                          }}
                         >
                           {b.title}
                         </span>
@@ -160,7 +186,12 @@ const OurStore = () => {
                           </div>
 
                           <div className='w-50'>
-                            <Link to={`/product/${p._id}`}>{p.title}</Link>
+                            <Link
+                              to={`/product/${p._id}`}
+                              onClick={() => window.scrollTo(0, 0)}
+                            >
+                              {p.title}
+                            </Link>
                             <ReactStars
                               count={5}
                               size={24}

@@ -53,7 +53,7 @@ const ResetPassword = () => {
 
   return (
     <>
-      <Meta title='Tạo lại mật khẩu mới' />
+      <Meta title='Techzone | Tạo lại mật khẩu mới' />
       <BreadCrumb title='Tạo lại mật khẩu mới' />
 
       <Container class1='login-wrapper home-wrapper-2 py-5'>
@@ -100,7 +100,9 @@ const ResetPassword = () => {
                     >
                       Gửi
                     </button>
-                    <Link to='/login'>Hủy bỏ</Link>
+                    <Link to='/login' onClick={() => window.scrollTo(0, 0)}>
+                      Hủy bỏ
+                    </Link>
                   </div>
                 </div>
               </form>

@@ -9,6 +9,7 @@ import {
   getBlogCategories,
   deleteABlogCategory,
 } from '../features/blog-category/blogCategorySlice';
+import format_date from '../utils/format_date';
 import Modal from '../components/Modal';
 
 const columns = [
@@ -23,6 +24,12 @@ const columns = [
     dataIndex: 'title',
     defaultSortOrder: 'descend',
     sorter: (a, b) => a.title.length - b.title.length,
+  },
+  {
+    title: 'Ngày tạo',
+    dataIndex: 'createdAt',
+    defaultSortOrder: 'descend',
+    sorter: (a, b) => a.createdAt - b.createdAt,
   },
   {
     title: 'Hành động',
@@ -70,6 +77,7 @@ const BlogCategories = () => {
                   <Link
                     to={`/admin/blog-category/${blogCategory._id}`}
                     className='fs-3'
+                    onClick={() => window.scrollTo(0, 0)}
                   >
                     <BiEdit />
                   </Link>
@@ -84,6 +92,7 @@ const BlogCategories = () => {
                 </>
               ),
               ...blogCategory,
+              createdAt: format_date(blogCategory.createdAt),
             };
           })}
         />

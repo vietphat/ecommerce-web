@@ -57,6 +57,7 @@ export const wishlistSlice = createSlice({
         state.isSuccess = false;
         state.isError = true;
         state.message = action.error;
+        toast.error(action.payload.response.data.message);
       })
       // LẤY DANH SÁCH YÊU THÍCH
       .addCase(getWishlist.pending, (state, action) => {

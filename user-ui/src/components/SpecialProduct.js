@@ -54,8 +54,12 @@ const SpecialProduct = ({ data }) => {
                   ></div>
                 </div>
               </div>
-              <Link to={`/product/${data?._id}`} className='button'>
-                Xem
+              <Link
+                to={`/product/${data?._id}`}
+                className='button'
+                onClick={() => window.scrollTo(0, 0)}
+              >
+                Xem chi tiết
               </Link>
             </div>
           </div>

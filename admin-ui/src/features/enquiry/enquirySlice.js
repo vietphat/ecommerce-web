@@ -110,6 +110,8 @@ export const enquirySlice = createSlice({
         );
         state.enquiries[updatedEnquiryIndex] = updatedEnquiry;
 
+        state.currentEnquiry = updatedEnquiry;
+
         toast.success('Cập nhật trạng thái thành công!');
       })
       .addCase(editAnEnquiry.rejected, (state, action) => {

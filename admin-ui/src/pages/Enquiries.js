@@ -10,6 +10,7 @@ import {
   editAnEnquiry,
 } from '../features/enquiry/enquirySlice';
 import Modal from '../components/Modal';
+import format_date from '../utils/format_date';
 
 const columns = [
   {
@@ -35,6 +36,10 @@ const columns = [
     dataIndex: 'mobile',
     defaultSortOrder: 'descend',
     sorter: (a, b) => a.mobile.length - b.mobile.length,
+  },
+  {
+    title: 'Ngày tạo',
+    dataIndex: 'createdAt',
   },
   {
     title: 'Trạng thái',
@@ -91,6 +96,7 @@ const Enquiries = () => {
                   <Link
                     to={`/admin/enquiry-details/${enquiry._id}`}
                     className='ms-3 fs-3 text-primary'
+                    onClick={() => window.scrollTo(0, 0)}
                   >
                     <AiOutlineEye />
                   </Link>
@@ -107,10 +113,8 @@ const Enquiries = () => {
               setStatus: (
                 <>
                   <select
-                    name=''
                     defaultValue={enquiry.status}
                     className='form-control form-select'
-                    id=''
                     onChange={(e) =>
                       handleEditStatus(e.target.value, enquiry._id)
                     }
@@ -123,6 +127,7 @@ const Enquiries = () => {
                 </>
               ),
               ...enquiry,
+              createdAt: format_date(enquiry.createdAt),
             };
           })}
         />

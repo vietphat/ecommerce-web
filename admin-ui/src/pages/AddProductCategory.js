@@ -1,12 +1,10 @@
 import { useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
+import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 
 import Input from '../components/Input';
-import {
-  createProductCategory,
-  resetState,
-} from '../features/product-category/productCategorySlice';
+import { createProductCategory } from '../features/product-category/productCategorySlice';
 
 let productCategorySchema = Yup.object({
   title: Yup.string().required('Loại sản phẩm không được để trống'),
@@ -14,6 +12,7 @@ let productCategorySchema = Yup.object({
 
 const AddProductCategory = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: {
@@ -21,12 +20,12 @@ const AddProductCategory = () => {
     },
     validationSchema: productCategorySchema,
     // SUBMIT
-    onSubmit: (values) => {
-      dispatch(createProductCategory(values));
-      formik.resetForm();
-      setTimeout(() => {
-        dispatch(resetState());
-      }, 3000);
+    onSubmit: async (values) => {
+      const result = await dispatch(createProductCategory(values));
+      if (result.meta.requestStatus === 'fulfilled') {
+        formik.resetForm();
+        navigate('/admin/product-categories-list');
+      }
     },
   });
 

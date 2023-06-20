@@ -9,7 +9,7 @@ const getEnquiries = async (jwt) => {
 };
 
 const getAnEnquiry = async (id) => {
-  const response = await axios.get(`${base_url}/enquiries/${id}`, config);
+  const response = await axios.get(`${base_url}/enquiries/${id}`, config());
 
   return response.data;
 };
@@ -18,14 +18,14 @@ const editAnEnquiry = async (enquiryData) => {
   const response = await axios.patch(
     `${base_url}/enquiries/${enquiryData._id}`,
     enquiryData.enquiry,
-    config
+    config()
   );
 
   return response.data;
 };
 
 const deleteAnEnquiry = async (id) => {
-  const response = await axios.delete(`${base_url}/enquiries/${id}`, config);
+  const response = await axios.delete(`${base_url}/enquiries/${id}`, config());
 
   return { ...response.data, deletedEnquiryId: id };
 };

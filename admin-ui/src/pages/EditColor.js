@@ -30,10 +30,13 @@ const EditColor = () => {
     },
     validationSchema: colorSchema,
     // SUBMIT
-    onSubmit: (values) => {
-      dispatch(editAColor({ _id: id, color: values }));
-      formik.resetForm();
-      navigate('/admin/colors-list');
+    onSubmit: async (values) => {
+      const result = await dispatch(editAColor({ _id: id, color: values }));
+
+      if (result.meta.requestStatus === 'fulfilled') {
+        formik.resetForm();
+        navigate('/admin/colors-list');
+      }
     },
   });
 

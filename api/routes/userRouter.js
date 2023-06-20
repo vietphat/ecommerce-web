@@ -54,6 +54,12 @@ router
   // Tạo người dùng
   .post(userController.createAUser);
 
+// Lấy thông tin thu nhập 12 tháng qua
+router.get('/monthly-income-report', userController.getMonthlyIncomeReport);
+
+// Lấy thông tin thu nhập 12 tháng qua
+router.get('/yearly-income-report', userController.getYearlyIncomeReport);
+
 // Lấy thông tin tất cả khách hàng
 router.get('/customers', userController.getAllCustomers);
 

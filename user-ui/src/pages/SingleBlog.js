@@ -25,14 +25,18 @@ const SingleBlog = () => {
         <div className='text-center fs-5'>Loading...</div>
       ) : (
         <>
-          <Meta title={currentBlog?.title} />
+          <Meta title={`Techzone | ${currentBlog?.title}`} />
           <BreadCrumb title={currentBlog?.title} />
 
           <Container class1='blog-wrapper home-wrapper-2 py-5'>
             <div className='row'>
               <div className='col-12'>
                 <div className='single-blog-card'>
-                  <Link to='/blog' className='d-flex align-items-center gap-10'>
+                  <Link
+                    to='/blog'
+                    className='d-flex align-items-center gap-10'
+                    onClick={() => window.scrollTo(0, 0)}
+                  >
                     <HiOutlineArrowLeft className='fs-4' />
                     Trở lại
                   </Link>

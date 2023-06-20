@@ -101,6 +101,7 @@ exports.updateAProduct = catchAsync(async (req, res, next) => {
     id,
     {
       title,
+      slug,
       description,
       price,
       quantity,

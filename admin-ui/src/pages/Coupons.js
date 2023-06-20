@@ -7,6 +7,7 @@ import { AiFillDelete } from 'react-icons/ai';
 
 import { getCoupons, deleteACoupon } from '../features/coupon/couponSlice';
 import Modal from '../components/Modal';
+import formatDate from '../utils/format_date';
 
 const columns = [
   {
@@ -28,10 +29,12 @@ const columns = [
     sorter: (a, b) => a.discount - b.discount,
   },
   {
+    title: 'Ngày tạo',
+    dataIndex: 'createdAt',
+  },
+  {
     title: 'Ngày hết hạn',
     dataIndex: 'expiry',
-    defaultSortOrder: 'descend',
-    sorter: (a, b) => a.expiry - b.expiry,
   },
   {
     title: 'Hành động',
@@ -76,7 +79,11 @@ const Coupons = () => {
               key: i + 1,
               actions: (
                 <>
-                  <Link to={`/admin/coupon/${coupon._id}`} className='fs-3'>
+                  <Link
+                    to={`/admin/coupon/${coupon._id}`}
+                    className='fs-3'
+                    onClick={() => window.scrollTo(0, 0)}
+                  >
                     <BiEdit />
                   </Link>
 
@@ -90,6 +97,7 @@ const Coupons = () => {
                 </>
               ),
               ...coupon,
+              createdAt: formatDate(coupon.createdAt),
               expiry: new Date(coupon.expiry).toLocaleString('en-GB'),
             };
           })}

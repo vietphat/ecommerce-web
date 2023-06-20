@@ -138,7 +138,7 @@ const SingleProduct = () => {
         <div className='text-center fs-5 my-5'>Loading...</div>
       ) : (
         <>
-          <Meta title={currentProduct?.title} />
+          <Meta title={`Techzone | ${currentProduct?.title}`} />
           <BreadCrumb title={currentProduct?.title} />
 
           {/* Phần thông tin sản phẩm */}

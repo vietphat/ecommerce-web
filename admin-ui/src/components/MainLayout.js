@@ -2,13 +2,18 @@ import { useState } from 'react';
 import { useNavigate, Outlet, Link } from 'react-router-dom';
 import { Button, Layout, Menu, theme } from 'antd';
 import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
-import { AiOutlineDashboard, AiOutlineUser } from 'react-icons/ai';
+import {
+  AiOutlineDashboard,
+  AiOutlineUser,
+  AiOutlineLogout,
+} from 'react-icons/ai';
 import { FaClipboardList, FaBloggerB, FaQuestionCircle } from 'react-icons/fa';
 import { MdOutlineManageSearch } from 'react-icons/md';
 import { IoIosNotifications } from 'react-icons/io';
 import { RiCouponLine } from 'react-icons/ri';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { logout } from '../features/auth/authSlice';
 
 const { Header, Sider, Content } = Layout;
 
@@ -19,14 +24,25 @@ const MainLayout = () => {
   } = theme.useToken();
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const { user } = useSelector((state) => state.auth);
+
+  const handleLogout = async () => {
+    const logoutResult = await dispatch(logout());
+
+    if (logoutResult.meta.requestStatus === 'fulfilled') {
+      navigate('/');
+    }
+  };
 
   return (
     <Layout>
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className='logo'>
           <h2 className='text-white fs-5 text-center py-4 mb-0'>
-            <span className='sm-logo'>EW</span>
-            <span className='lg-logo'>Ecommerce Web</span>
+            <span className='sm-logo'>TZ</span>
+            <span className='lg-logo'>Techzone</span>
           </h2>
         </div>
         <Menu
@@ -34,7 +50,8 @@ const MainLayout = () => {
           mode='inline'
           defaultSelectedKeys={['']}
           onClick={({ key }) => {
-            if (key === 'signout') {
+            if (key === 'logout') {
+              handleLogout();
             } else {
               navigate(key);
             }
@@ -49,8 +66,8 @@ const MainLayout = () => {
             {
               key: 'customers',
               icon: <AiOutlineUser className='fs-4' />,
-              label: 'Khách hàng',
-              title: 'Khách hàng',
+              label: 'Người dùng',
+              title: 'Người dùng',
             },
             {
               key: 'management',
@@ -171,6 +188,12 @@ const MainLayout = () => {
               label: 'Phản hồi của khách hàng',
               title: 'Phản hồi của khách hàng',
             },
+            {
+              key: 'logout',
+              icon: <AiOutlineLogout className='fs-4' />,
+              label: 'Đăng xuất',
+              title: 'Đăng xuất',
+            },
           ]}
         />
       </Sider>
@@ -203,9 +226,9 @@ const MainLayout = () => {
             <div className='d-flex gap-3 align-items-center dropdown'>
               <div>
                 <img
-                  width={32}
-                  height={32}
-                  src='https://laughingsquid.com/wp-content/uploads/walt.jpg'
+                  width={35}
+                  height={35}
+                  src='/admin.png'
                   alt=''
                   className='img-fluid'
                 />
@@ -217,28 +240,30 @@ const MainLayout = () => {
                 data-bs-toggle='dropdown'
                 aria-expanded='false'
               >
-                <h5 className='mb-0'>PhatLe</h5>
-                <p className='mb-0'>vietphatt1909@gmail.com</p>
+                <h5 className='mb-0 fs-5'>{user?.firstName}</h5>
+                <p className='mb-0 fs-5'>{user?.email}</p>
               </div>
 
               <div className='dropdown-menu' aria-labelledby='dropdownMenuLink'>
                 <li>
                   <Link
-                    to='/'
+                    to='/admin/profile'
                     className='dropdown-item py-1 mb-1'
                     style={{ height: 'auto', lineHeight: '20px' }}
+                    onClick={() => window.scrollTo(0, 0)}
                   >
                     Trang cá nhân
                   </Link>
                 </li>
                 <li>
-                  <Link
-                    to='/'
+                  <button
+                    type='button'
                     className='dropdown-item py-1 mb-1'
                     style={{ height: 'auto', lineHeight: '20px' }}
+                    onClick={handleLogout}
                   >
                     Đăng xuất
-                  </Link>
+                  </button>
                 </li>
               </div>
             </div>
@@ -252,17 +277,6 @@ const MainLayout = () => {
             background: colorBgContainer,
           }}
         >
-          <ToastContainer
-            position='top-right'
-            autoClose={1000}
-            hideProgressBar={false}
-            newestOnTop={true}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            theme='light'
-          />
           <Outlet />
         </Content>
       </Layout>

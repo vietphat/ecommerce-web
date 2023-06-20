@@ -3,7 +3,8 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
 import Input from '../components/Input';
-import { createCoupon, resetState } from '../features/coupon/couponSlice';
+import { createCoupon } from '../features/coupon/couponSlice';
+import { useNavigate } from 'react-router-dom';
 
 let couponSchema = Yup.object({
   name: Yup.string().required('Mã giảm giá không được để trống'),
@@ -16,6 +17,7 @@ let couponSchema = Yup.object({
 
 const AddCoupon = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: {
@@ -25,12 +27,12 @@ const AddCoupon = () => {
     },
     validationSchema: couponSchema,
     // SUBMIT
-    onSubmit: (values) => {
-      dispatch(createCoupon(values));
-      formik.resetForm();
-      setTimeout(() => {
-        dispatch(resetState());
-      }, 3000);
+    onSubmit: async (values) => {
+      const result = await dispatch(createCoupon(values));
+      if (result.meta.requestStatus === 'fulfilled') {
+        formik.resetForm();
+        navigate('/admin/coupons-list');
+      }
     },
   });
 

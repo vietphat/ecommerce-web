@@ -24,17 +24,26 @@
 .section-heading {
   font-size: 26px;
   line-height: 32px;
-  font-weight: 500;
+  font-weight: bold;
   margin-bottom: 30px;
 }
 
 body {
-  font-family: 'Rubik', sans-serif;
+  font-family: 'Nunito Sans', sans-serif;
 }
 
 a {
   text-decoration: none;
   display: inline-block;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: bold;
 }
 
 .form-control:focus {
@@ -105,7 +114,7 @@ a {
   color: #fff;
   font-size: 14px;
   line-height: 18px;
-  font-weight: 400;
+  font-weight: bold;
   letter-spacing: 0.3;
   text-transform: uppercase;
 }
@@ -160,7 +169,7 @@ footer .input-group-text {
 
 .main-banner-content h4 {
   font-size: 16px;
-  font-weight: 400;
+  font-weight: bold;
   line-height: 24px;
   color: var(--color-bf4800);
   margin: 0 0 12px;
@@ -172,7 +181,7 @@ footer .input-group-text {
   font-size: 42px;
   line-height: 54px;
   letter-spacing: -2px;
-  font-weight: 500;
+  font-weight: bold;
   padding: 0;
   text-transform: none;
 }
@@ -191,7 +200,7 @@ footer .input-group-text {
 
 .small-banner-content h4 {
   font-size: 14px;
-  font-weight: 400;
+  font-weight: bold;
   line-height: 24px;
   color: var(--color-bf4800);
   margin: 0 0 12px;
@@ -203,7 +212,7 @@ footer .input-group-text {
   font-size: 22px;
   line-height: 34px;
   letter-spacing: -2px;
-  font-weight: 500;
+  font-weight: bold;
   padding: 0;
   text-transform: none;
 }
@@ -289,7 +298,7 @@ footer .input-group-text {
   line-height: 24px;
   text-transform: uppercase;
   letter-spacing: 0;
-  font-weight: 400;
+  font-weight: bold;
   color: var(--color-777777);
   padding: 0;
 }
@@ -313,7 +322,7 @@ footer .input-group-text {
 
 .single-blog-card h3 {
   font-size: 24px;
-  font-weight: 600;
+  font-weight: bold;
   color: var(--color-1c1c1b);
 }
 
@@ -416,7 +425,7 @@ footer .input-group-text {
 .famous-content h5 {
   font-size: 13px;
   line-height: 20px;
-  font-weight: 400;
+  font-weight: bold;
   color: #fff;
   margin-bottom: 7px;
   text-transform: uppercase;
@@ -425,7 +434,7 @@ footer .input-group-text {
 .famous-content h6 {
   font-size: 28px;
   line-height: 38px;
-  font-weight: 500;
+  font-weight: bold;
   color: #fff;
 }
 
@@ -449,7 +458,7 @@ footer .input-group-text {
 .filter-title {
   font-size: 16px;
   line-height: 20px;
-  font-weight: 600;
+  font-weight: bold;
   color: var(--color-1c1c1b);
 }
 
@@ -474,7 +483,7 @@ footer .input-group-text {
 
 .sub-title {
   font-size: 14px;
-  font-weight: 600;
+  font-weight: bold;
   color: var(--color-1c1c1b);
   margin-bottom: 15px;
   margin-top: 25px;
@@ -575,7 +584,7 @@ footer .input-group-text {
 
 .contact-title {
   font-size: 26px;
-  font-weight: 500;
+  font-weight: bold;
   line-height: 35px;
   text-align: left;
   margin-top: 0;
@@ -621,7 +630,7 @@ footer .input-group-text {
 .wishlist-card h5.title {
   font-size: 15px;
   line-height: 22px;
-  font-weight: 500;
+  font-weight: bold;
   color: var(--color-1c1c1b);
 }
 
@@ -629,7 +638,7 @@ footer .input-group-text {
 .wishlist-card h6.price {
   font-size: 15px;
   line-height: 22px;
-  font-weight: 400;
+  font-weight: bold;
 }
 
 .compare-product-card .product-detail {
@@ -654,7 +663,7 @@ footer .input-group-text {
 
 .auth-card h3 {
   font-size: 19px;
-  font-weight: 500;
+  font-weight: bold;
   color: var(--color-777777);
 }
 
@@ -674,7 +683,7 @@ footer .input-group-text {
 
 .auth-card a {
   font-size: 14px;
-  font-weight: 400;
+  font-weight: bold;
   color: var(--color-1c1c1b);
 }
 
@@ -801,7 +810,7 @@ footer .input-group-text {
 
 .main-product-details h3.title {
   font-size: 18px;
-  font-weight: 600;
+  font-weight: bold;
   color: var(--color-1c1c1b);
   margin-bottom: 10px;
 }
@@ -809,7 +818,7 @@ footer .input-group-text {
 .main-product-details p.price {
   font-size: 16px;
   line-height: 20px;
-  font-weight: 600;
+  font-weight: bold;
   margin-top: 10px;
 }
 

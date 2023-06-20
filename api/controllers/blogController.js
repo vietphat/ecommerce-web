@@ -5,6 +5,7 @@ const AppError = require('../utils/AppError');
 const catchAsync = require('./../utils/catchAsync');
 const validateMongoDbId = require('./../config/validateMongoDbId');
 const { cloudinaryUploadImg } = require('../utils/cloudinary');
+const APIFeatures = require('../utils/APIFeatures');
 
 exports.createABlog = catchAsync(async (req, res, next) => {
   const { title, description, category, images } = req.body;
@@ -17,9 +18,20 @@ exports.createABlog = catchAsync(async (req, res, next) => {
     author: req.user._id,
   });
 
+  const data = await blog.populate([
+    {
+      path: 'likes',
+      select: 'firstName lastName avatarUrl',
+    },
+    {
+      path: 'dislikes',
+      select: 'firstName lastName avatarUrl',
+    },
+  ]);
+
   res.status(200).json({
     status: 'Thành công',
-    data: blog,
+    data,
   });
 });
 
@@ -45,9 +57,20 @@ exports.updateABlog = catchAsync(async (req, res, next) => {
     }
   );
 
+  const data = await blog.populate([
+    {
+      path: 'likes',
+      select: 'firstName lastName avatarUrl',
+    },
+    {
+      path: 'dislikes',
+      select: 'firstName lastName avatarUrl',
+    },
+  ]);
+
   res.status(200).json({
     status: 'Thành công',
-    data: blog,
+    data,
   });
 });
 
@@ -86,20 +109,13 @@ exports.getABlog = catchAsync(async (req, res, next) => {
 });
 
 exports.getAllBlog = catchAsync(async (req, res, next) => {
-  const blogs = await Blog.find().populate([
-    {
-      path: 'likes',
-      select: 'firstName lastName avatarUrl',
-    },
-    {
-      path: 'dislikes',
-      select: 'firstName lastName avatarUrl',
-    },
-  ]);
+  const features = new APIFeatures(Blog.find(), req.query)
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
 
-  if (!blogs) {
-    return next(new AppError(`Không tìm thấy blogs`, 400));
-  }
+  const blogs = await features.query;
 
   res.status(200).json({
     status: 'Thành công',

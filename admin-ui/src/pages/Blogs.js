@@ -24,8 +24,6 @@ const columns = [
   {
     title: 'Ngày tạo',
     dataIndex: 'createdAt',
-    defaultSortOrder: 'descend',
-    sorter: (a, b) => a.createdAt - b.createdAt,
   },
   {
     title: 'Hành động',
@@ -70,7 +68,11 @@ const Blogs = () => {
               key: i + 1,
               actions: (
                 <>
-                  <Link to={`/admin/blog/${blog._id}`} className='fs-3'>
+                  <Link
+                    to={`/admin/blog/${blog._id}`}
+                    className='fs-3'
+                    onClick={() => window.scrollTo(0, 0)}
+                  >
                     <BiEdit />
                   </Link>
 

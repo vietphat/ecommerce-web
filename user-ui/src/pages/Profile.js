@@ -46,7 +46,7 @@ const Profile = () => {
 
   return (
     <>
-      <Meta title='Trang cá nhân' />
+      <Meta title='Techzone | Trang cá nhân' />
       <BreadCrumb title='Trang cá nhân' />
       <Container class1='login-wrapper home-wrapper-2 py-5'>
         <div className='row'>

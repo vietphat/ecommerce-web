@@ -30,7 +30,7 @@ const ForgotPassword = () => {
 
   return (
     <>
-      <Meta title='Quên mật khẩu' />
+      <Meta title='Techzone | Quên mật khẩu' />
       <BreadCrumb title='Quên mật khẩu' />
 
       <Container class1='login-wrapper home-wrapper-2 py-5'>

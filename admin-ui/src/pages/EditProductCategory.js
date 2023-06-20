@@ -35,10 +35,14 @@ const EditProductCategory = () => {
     },
     validationSchema: productCategorySchema,
     // SUBMIT
-    onSubmit: (values) => {
-      dispatch(editAProductCategory({ _id: id, productCategory: values }));
-      formik.resetForm();
-      navigate('/admin/product-categories-list');
+    onSubmit: async (values) => {
+      const result = await dispatch(
+        editAProductCategory({ _id: id, productCategory: values })
+      );
+      if (result.meta.requestStatus === 'fulfilled') {
+        formik.resetForm();
+        navigate('/admin/product-categories-list');
+      }
     },
   });
 

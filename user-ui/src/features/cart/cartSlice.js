@@ -112,7 +112,7 @@ export const cartSlice = createSlice({
         state.isSuccess = false;
         state.isError = true;
         state.message = action.error;
-        toast.error('Thêm vào giỏ hàng thất bại!');
+        toast.error(action.payload.data.message);
       })
       // CẬP NHẬT SỐ LƯỢNG SẢN PHẨM TRONG GIỎ HÀNG
       .addCase(updateQuantity.pending, (state) => {
@@ -140,7 +140,7 @@ export const cartSlice = createSlice({
         state.isSuccess = false;
         state.isError = true;
         state.message = action.error;
-        toast.error('Cập nhật giỏ hàng thất bại!');
+        toast.error(action.payload.data.message);
       })
       // XÓA MỘT CART ITEM
       .addCase(deleteCartItem.pending, (state) => {
@@ -168,7 +168,7 @@ export const cartSlice = createSlice({
         state.isSuccess = false;
         state.isError = true;
         state.message = action.error;
-        toast.error('Xóa giỏ hàng thất bại!');
+        toast.error(action.payload.data.message);
       })
       // XÓA CART ITEMS SAU KHI ĐẶT HÀNG
       .addCase(deleteCartAfterOrder.pending, (state) => {
@@ -187,7 +187,7 @@ export const cartSlice = createSlice({
         state.isSuccess = false;
         state.isError = true;
         state.message = action.error;
-        toast.error('Có lỗi!');
+        toast.error(action.payload.data.message);
       })
       // RESET STATE
       .addCase(resetCart, () => initialState);

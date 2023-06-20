@@ -21,7 +21,7 @@ const Wishlist = () => {
 
   return (
     <>
-      <Meta title='Danh sách yêu thích' />
+      <Meta title={`Techzone | Danh sách yêu thích`} />
       <BreadCrumb title='Danh sách yêu thích' />
       <Container class1='wishlist-wrapper home-wrapper-2 py-5'>
         <div className='row'>

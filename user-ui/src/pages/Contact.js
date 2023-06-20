@@ -37,7 +37,7 @@ const Contact = () => {
 
   return (
     <>
-      <Meta title='Liên hệ' />
+      <Meta title='Techzone | Liên hệ' />
       <BreadCrumb title='Liên hệ' />
 
       <Container class1='contact-wrapper py-5 home-wrapper-2'>

@@ -5,6 +5,7 @@ import blogServices from './blogServices';
 
 const initialState = {
   blogs: [],
+  currentBlog: null,
   isError: false,
   isLoading: false,
   isSuccess: false,
@@ -129,6 +130,16 @@ export const blogSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
+
+        const newBlog = action.payload.data;
+
+        const updatedBlogIndex = state.blogs.findIndex(
+          (b) => b._id === newBlog._id
+        );
+
+        state.currentBlog = newBlog;
+        state.products[updatedBlogIndex] = newBlog;
+
         toast.success('Sửa bài viết thành công!');
       })
       .addCase(editABlog.rejected, (state, action) => {
@@ -138,7 +149,7 @@ export const blogSlice = createSlice({
         state.message = action.error;
         toast.error('Sửa bài viết thất bại!');
       })
-      // DELETE A PRODUCT CATEGORY
+      // DELETE A BLOG
       .addCase(deleteABlog.pending, (state) => {
         state.isLoading = true;
       })

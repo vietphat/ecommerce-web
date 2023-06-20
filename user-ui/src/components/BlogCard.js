@@ -4,7 +4,11 @@ import moment from 'moment';
 
 const BlogCard = ({ blog }) => {
   return (
-    <Link to={`/blog/${blog?._id}`} className='blog-card'>
+    <Link
+      to={`/blog/${blog?._id}`}
+      className='blog-card'
+      onClick={() => window.scrollTo(0, 0)}
+    >
       <div className='card-image'>
         <img
           src={blog?.images[0]?.url}
@@ -21,9 +25,9 @@ const BlogCard = ({ blog }) => {
             __html: blog?.description.substr(0, 150) + '...',
           }}
         ></p>
-        <Link to='/blog/:id' className='button '>
+        <button to={`/blog/${blog?._id}`} className='button border-0'>
           Đọc thêm
-        </Link>
+        </button>
       </div>
     </Link>
   );

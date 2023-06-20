@@ -9,7 +9,11 @@ const BreadCrumb = (props) => {
         <div className='row'>
           <div className='col-12'>
             <p className='text-center mb-0'>
-              <Link to='/' className='text-dark'>
+              <Link
+                to='/'
+                className='text-dark'
+                onClick={() => window.scrollTo(0, 0)}
+              >
                 Trang chủ&nbsp;
               </Link>
               / {title}

@@ -6,7 +6,7 @@ import Container from '../components/Container';
 const PrivacyPolicy = () => {
   return (
     <>
-      <Meta title='Chính sách riêng tư' />
+      <Meta title='Techzone | Chính sách riêng tư' />
       <BreadCrumb title='Chính sách riêng tư' />
 
       <Container class1='policy-wrapper py-5 home-wrapper-2'>

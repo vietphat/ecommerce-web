@@ -44,51 +44,71 @@ const Footer = () => {
                   Đường 30/4, phường Hưng Lợi, <br />
                   Quận Ninh Kiều, TP Cần Thơ
                 </address>
-                <a
-                  href='tel:0947773536'
+                <Link
                   className='mt-3 d-block mb-2 text-white'
+                  onClick={() => window.scrollTo(0, 0)}
                 >
                   094 777 3536
-                </a>
-                <a
-                  href='mailto:vietphatt1909@gmail.com'
+                </Link>
+                <Link
                   className='mt-2 d-block mb-2 text-white'
+                  onClick={() => window.scrollTo(0, 0)}
                 >
-                  vietphatt1909@gmail.com
-                </a>
+                  techzone@gmail.com
+                </Link>
 
                 <div className='social_icons d-flex align-items-center gap-30 mt-4'>
-                  <a className='text-white' href='/#'>
+                  <Link className='text-white' href='/#'>
                     <BsLinkedin className='fs-4' />
-                  </a>
-                  <a className='text-white' href='/#'>
+                  </Link>
+                  <Link className='text-white' href='/#'>
                     <BsInstagram className='fs-4' />
-                  </a>
-                  <a className='text-white' href='/#'>
+                  </Link>
+                  <Link className='text-white' href='/#'>
                     <BsGithub className='fs-4' />
-                  </a>
-                  <a className='text-white' href='/#'>
+                  </Link>
+                  <Link className='text-white' href='/#'>
                     <BsYoutube className='fs-4' />
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
             <div className='col-3'>
               <h4 className='text-white mb-4'>Thông tin</h4>
               <div className='footer-links d-flex flex-column'>
-                <Link to='/privacy-policy' className='text-white py-2 mb-1'>
+                <Link
+                  onClick={() => window.scrollTo(0, 0)}
+                  to='/privacy-policy'
+                  className='text-white py-2 mb-1'
+                >
                   Chính sách riêng tư
                 </Link>
-                <Link to='/refund-policy' className='text-white py-2 mb-1'>
+                <Link
+                  onClick={() => window.scrollTo(0, 0)}
+                  to='/refund-policy'
+                  className='text-white py-2 mb-1'
+                >
                   Chính sách hoàn trả
                 </Link>
-                <Link to='/shipping-policy' className='text-white py-2 mb-1'>
+                <Link
+                  onClick={() => window.scrollTo(0, 0)}
+                  to='/shipping-policy'
+                  className='text-white py-2 mb-1'
+                >
                   Chính sách vận chuyển
                 </Link>
-                <Link to='/terms-conditions' className='text-white py-2 mb-1'>
+                <Link
+                  onClick={() => window.scrollTo(0, 0)}
+                  to='/terms-conditions'
+                  className='text-white py-2 mb-1'
+                >
                   Các điều khoản và điều kiện
                 </Link>
-                <Link to='/blog' className='text-white py-2 mb-1'>
+                <Link
+                  onClick={() => window.scrollTo(0, 0)}
+                  to='/blog'
+                  className='text-white py-2 mb-1'
+                >
                   Blogs
                 </Link>
               </div>
@@ -96,18 +116,48 @@ const Footer = () => {
             <div className='col-3'>
               <h4 className='text-white mb-4'>Tài khoản</h4>
               <div className='footer-links d-flex flex-column'>
-                <Link className='text-white py-2 mb-1'>Về chúng tôi</Link>
-                <Link className='text-white py-2 mb-1'>FAQ</Link>
+                <Link
+                  className='text-white py-2 mb-1'
+                  onClick={() => window.scrollTo(0, 0)}
+                >
+                  Về chúng tôi
+                </Link>
+                <Link
+                  className='text-white py-2 mb-1'
+                  onClick={() => window.scrollTo(0, 0)}
+                >
+                  FAQ
+                </Link>
                 <Link className='text-white py-2 mb-1'>Liên hệ</Link>
               </div>
             </div>
             <div className='col-2'>
               <h4 className='text-white mb-4'>Tham khảo</h4>
               <div className='footer-links d-flex flex-column'>
-                <Link className='text-white py-2 mb-1'>Laptop</Link>
-                <Link className='text-white py-2 mb-1'>Tai nghe</Link>
-                <Link className='text-white py-2 mb-1'>Tablets</Link>
-                <Link className='text-white py-2 mb-1'>Đồng hồ thông minh</Link>
+                <Link
+                  className='text-white py-2 mb-1'
+                  onClick={() => window.scrollTo(0, 0)}
+                >
+                  Laptop
+                </Link>
+                <Link
+                  className='text-white py-2 mb-1'
+                  onClick={() => window.scrollTo(0, 0)}
+                >
+                  Tai nghe
+                </Link>
+                <Link
+                  className='text-white py-2 mb-1'
+                  onClick={() => window.scrollTo(0, 0)}
+                >
+                  Tablets
+                </Link>
+                <Link
+                  className='text-white py-2 mb-1'
+                  onClick={() => window.scrollTo(0, 0)}
+                >
+                  Đồng hồ thông minh
+                </Link>
               </div>
             </div>
           </div>

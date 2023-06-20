@@ -263,9 +263,7 @@ exports.getAUser = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: 'Thành công',
-    data: {
-      user,
-    },
+    data: user,
   });
 });
 
@@ -325,7 +323,6 @@ exports.updateAUser = catchAsync(async (req, res, next) => {
   if (!validateMongoDbId(id)) {
     return next(new AppError('Id không hợp lệ hoặc không tim thấy người dùng'));
   }
-
   const {
     firstName,
     lastName,
@@ -363,9 +360,7 @@ exports.updateAUser = catchAsync(async (req, res, next) => {
 
   return res.status(200).json({
     status: 'Cập nhật thông tin thành công',
-    data: {
-      user,
-    },
+    data: user,
   });
 });
 
@@ -424,5 +419,109 @@ exports.unblockAUser = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: 'Bỏ chặn người dùng thành công',
     data: user,
+  });
+});
+
+// lấy thu nhập hàng tháng
+exports.getMonthlyIncomeReport = catchAsync(async (req, res, next) => {
+  const monthsArr = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
+
+  let date = new Date();
+  let endDate = '';
+  date.setDate(1);
+
+  for (let i = 0; i < 11; i++) {
+    date.setMonth(date.getMonth() - 1);
+    endDate = monthsArr[date.getMonth()] + ' ' + date.getFullYear();
+  }
+
+  const data = await Order.aggregate([
+    {
+      $match: {
+        createdAt: {
+          $lte: new Date(),
+          $gte: new Date(endDate),
+        },
+      },
+    },
+    {
+      $group: {
+        _id: {
+          month: '$month',
+        },
+        amount: {
+          $sum: '$totalPriceAfterDiscount',
+        },
+        totalOrders: { $sum: 1 },
+      },
+    },
+  ]);
+
+  res.status(200).json({
+    status: 'Thành công',
+    data,
+  });
+});
+
+// lấy tổng hóa đơn hàng năm
+exports.getYearlyIncomeReport = catchAsync(async (req, res, next) => {
+  const monthsArr = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
+
+  let date = new Date();
+  let endDate = '';
+  date.setDate(1);
+
+  for (let i = 0; i < 11; i++) {
+    date.setMonth(date.getMonth() - 1);
+    endDate = monthsArr[date.getMonth()] + ' ' + date.getFullYear();
+  }
+
+  const data = await Order.aggregate([
+    {
+      $match: {
+        createdAt: {
+          $lte: new Date(),
+          $gte: new Date(endDate),
+        },
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        totalOrders: { $sum: 1 },
+        totalAmountEarned: { $sum: '$totalPriceAfterDiscount' },
+      },
+    },
+  ]);
+
+  res.status(200).json({
+    status: 'Thành công',
+    data,
   });
 });

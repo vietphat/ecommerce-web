@@ -8,7 +8,7 @@ import Container from '../components/Container';
 const CompareProducts = () => {
   return (
     <>
-      <Meta title='So sánh sản phẩm' />
+      <Meta title='Techzone | So sánh sản phẩm' />
       <BreadCrumb title='So sánh sản phẩm' />
       <Container class1='compare-products-wrapper py-5 home-wrapper-2'>
         <div className='row'>

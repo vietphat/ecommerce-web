@@ -6,7 +6,7 @@ import Container from '../components/Container';
 const TermsAndConditions = () => {
   return (
     <>
-      <Meta title='Các điều khoản và điều kiện' />
+      <Meta title={`Techzone | Các điều khoản và điều kiện`} />
       <BreadCrumb title='Các điều khoản và điều kiện' />
 
       <Container class1='policy-wrapper py-5 home-wrapper-2'>

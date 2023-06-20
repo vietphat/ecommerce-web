@@ -21,7 +21,7 @@ const isAuthenticated = catchAsync(async (req, res, next) => {
 
   if (!token) {
     return next(
-      new AppError('Vui lòng đăng nhập để có quyền truy cập vào route này', 401)
+      new AppError('Bạn chưa đăng nhập không thể thực hiện hành động này', 401)
     );
   }
 

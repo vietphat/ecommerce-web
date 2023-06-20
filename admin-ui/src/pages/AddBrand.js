@@ -1,9 +1,10 @@
 import { useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
+import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 
 import Input from '../components/Input';
-import { createBrand, resetState } from '../features/brand/brandSlice';
+import { createBrand } from '../features/brand/brandSlice';
 
 let brandSchema = Yup.object({
   title: Yup.string().required('Tên thương hiệu không được để trống'),
@@ -11,6 +12,7 @@ let brandSchema = Yup.object({
 
 const AddBrand = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: {
@@ -18,12 +20,13 @@ const AddBrand = () => {
     },
     validationSchema: brandSchema,
     // SUBMIT
-    onSubmit: (values) => {
-      dispatch(createBrand(values));
-      formik.resetForm();
-      setTimeout(() => {
-        dispatch(resetState());
-      }, 3000);
+    onSubmit: async (values) => {
+      const result = await dispatch(createBrand(values));
+
+      if (result.meta.requestStatus === 'fulfilled') {
+        formik.resetForm();
+        navigate('/admin/brands-list');
+      }
     },
   });
 

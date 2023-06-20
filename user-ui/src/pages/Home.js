@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
 import Marquee from 'react-fast-marquee';
 
 import Meta from '../components/Meta';
@@ -25,91 +24,91 @@ const Home = () => {
 
   return (
     <>
-      <Meta title='Trang chủ' />
+      <Meta title='Techzone | Trang chủ' />
       {/* BANNER */}
       <Container class1='home-wrapper-1 py-5'>
         <div className='row'>
           <div className='col-6'>
             <div className='main-banner position-relative'>
               <img
-                src='images/main-banner-1.jpg'
+                src='/images/main-banner-1.jpg'
                 alt='main banner'
                 className='img-fluid rounded-3'
               />
 
-              <div className='main-banner-content position-absolute'>
+              {/* <div className='main-banner-content position-absolute'>
                 <h4>SUPERCHARGED FOR PROS.</h4>
                 <h5>iPad S13+ Pro.</h5>
                 <p>From $999.00 or $41.62/mo.</p>
                 <Link className='button'>MUA NGAY</Link>
-              </div>
+              </div> */}
             </div>
           </div>
 
           <div className='col-6'>
-            <div className='d-flex gap-10 flex-wrap justify-content-between align-items-center'>
+            <div className='d-flex gap-10 flex-wrap justify-content-between align-items-center h-100'>
               <div className='small-banner position-relative'>
                 <img
-                  src='images/catbanner-01.jpg'
+                  src='/images/catbanner-01.jpg'
                   alt='small banner'
                   className='img-fluid rounded-3'
                 />
 
-                <div className='small-banner-content position-absolute'>
+                {/* <div className='small-banner-content position-absolute'>
                   <h4>BEST SALES</h4>
                   <h5>iPad S13+ Pro.</h5>
                   <p>
                     From $999.00 <br /> or $41.62/mo.
                   </p>
-                </div>
+                </div> */}
               </div>
 
               <div className='small-banner position-relative'>
                 <img
-                  src='images/catbanner-02.jpg'
+                  src='/images/catbanner-02.jpg'
                   alt='small banner'
                   className='img-fluid rounded-3'
                 />
 
-                <div className='small-banner-content position-absolute'>
+                {/* <div className='small-banner-content position-absolute'>
                   <h4>NEW ARRIAL</h4>
                   <h5>Buy IPad Air</h5>
                   <p>
                     From $999.00 <br /> or $41.62/mo.
                   </p>
-                </div>
+                </div> */}
               </div>
 
               <div className='small-banner position-relative'>
                 <img
-                  src='images/catbanner-03.jpg'
+                  src='/images/catbanner-03.jpg'
                   alt='small banner'
                   className='img-fluid rounded-3'
                 />
 
-                <div className='small-banner-content position-absolute'>
+                {/* <div className='small-banner-content position-absolute'>
                   <h4>SUPERCHARGED FOR PROS.</h4>
                   <h5>iPad S13+ Pro.</h5>
                   <p>
                     From $999.00 <br /> or $41.62/mo.
                   </p>
-                </div>
+                </div> */}
               </div>
 
               <div className='small-banner position-relative'>
                 <img
-                  src='images/catbanner-04.jpg'
+                  src='/images/catbanner-04.jpg'
                   alt='small banner'
                   className='img-fluid rounded-3'
                 />
 
-                <div className='small-banner-content position-absolute'>
+                {/* <div className='small-banner-content position-absolute'>
                   <h4>SUPERCHARGED FOR PROS.</h4>
                   <h5>iPad S13+ Pro.</h5>
                   <p>
                     From $999.00 <br /> or $41.62/mo.
                   </p>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
@@ -142,66 +141,101 @@ const Home = () => {
             <div className='categories d-flex flex-wrap justify-content-between align-items-center'>
               <div className='d-flex gap align-items-center'>
                 <div>
-                  <h6>Music & Gaming</h6>
+                  <h6>Điện thoại di động</h6>
                   <p>10 items</p>
                 </div>
-                <img src='images/camera.jpg' alt='camera' />
+                <img
+                  width={110}
+                  height={110}
+                  src='/images/mobile.jpg'
+                  alt='mobile'
+                />
               </div>
 
               <div className='d-flex gap align-items-center'>
                 <div>
-                  <h6>Cameras</h6>
+                  <h6>Máy tính xách tay</h6>
                   <p>10 items</p>
                 </div>
-                <img src='images/camera.jpg' alt='camera' />
+                <img
+                  width={110}
+                  height={110}
+                  src='/images/laptop.jpg'
+                  alt='laptop'
+                />
               </div>
 
               <div className='d-flex gap align-items-center'>
                 <div>
-                  <h6>Smart TV</h6>
+                  <h6>Máy tính để bàn</h6>
                   <p>10 items</p>
                 </div>
-                <img src='images/tv.jpg' alt='camera' />
+                <img width={110} height={110} src='/images/pc.jpg' alt='pc' />
               </div>
 
               <div className='d-flex gap align-items-center'>
                 <div>
-                  <h6>Headphone</h6>
+                  <h6>Máy tính bảng</h6>
                   <p>10 items</p>
                 </div>
-                <img src='images/headphone.jpg' alt='camera' />
+                <img
+                  width={110}
+                  height={110}
+                  src='/images/tablet.jpg'
+                  alt='tablet'
+                />
               </div>
 
               <div className='d-flex gap align-items-center'>
                 <div>
-                  <h6>Music & Gaming</h6>
+                  <h6>Thiết bị âm thanh</h6>
                   <p>10 items</p>
                 </div>
-                <img src='images/camera.jpg' alt='camera' />
+                <img
+                  width={110}
+                  height={110}
+                  src='/images/sound.jpg'
+                  alt='sound'
+                />
               </div>
 
               <div className='d-flex gap align-items-center'>
                 <div>
-                  <h6>Cameras</h6>
+                  <h6>Thiết bị gia đình thông minh</h6>
                   <p>10 items</p>
                 </div>
-                <img src='images/camera.jpg' alt='camera' />
+                <img
+                  width={110}
+                  height={110}
+                  src='/images/camera.jpg'
+                  alt='camera'
+                />
               </div>
 
               <div className='d-flex gap align-items-center'>
                 <div>
-                  <h6>Smart TV</h6>
+                  <h6>Thiết bị ngoại vi</h6>
                   <p>10 items</p>
                 </div>
-                <img src='images/tv.jpg' alt='camera' />
+                <img
+                  width={110}
+                  height={110}
+                  src='/images/screen.jpg'
+                  alt='screen'
+                />
               </div>
 
               <div className='d-flex gap align-items-center'>
                 <div>
-                  <h6>Headphone</h6>
+                  <h6>Phụ kiện điện tử</h6>
                   <p>10 items</p>
                 </div>
-                <img src='images/headphone.jpg' alt='camera' />
+                <img
+                  width={110}
+                  height={110}
+                  src='/images/keyboard.jpg'
+                  alt='keyboard'
+                />
               </div>
             </div>
           </div>
@@ -226,7 +260,7 @@ const Home = () => {
       </Container>
 
       {/* FAMOUS PRODUCTS */}
-      <Container class1='famous-warpper py-5 home-wrapper-2'>
+      {/* <Container class1='famous-warpper py-5 home-wrapper-2'>
         <div className='row'>
           <div className='col-3'>
             <div className='famous-card position-relative'>
@@ -292,7 +326,7 @@ const Home = () => {
             </div>
           </div>
         </div>
-      </Container>
+      </Container> */}
 
       {/* SPECIAL PRODUCTS */}
       <Container class1='special-wrapper py-5 home-wrapper-2'>

@@ -114,7 +114,7 @@ export const authSlice = createSlice({
         state.isSuccess = false;
         state.isError = true;
         state.message = action.error;
-        toast.error('Đăng ký tài khoản thất bại!');
+        toast.error(action.payload.response.data.message);
       })
       // ĐĂNG NHẬP
       .addCase(login.pending, (state, action) => {
@@ -134,7 +134,7 @@ export const authSlice = createSlice({
         state.isSuccess = false;
         state.isError = true;
         state.message = action.error;
-        toast.error('Đăng nhập thất bại!');
+        toast.error(action.payload.response.data.message);
       })
       // ĐĂNG XUẤT
       .addCase(logout.pending, (state, action) => {
@@ -169,7 +169,7 @@ export const authSlice = createSlice({
         state.isSuccess = false;
         state.isError = true;
         state.message = action.error;
-        toast.error('Gửi thắc mắc thất bại!');
+        toast.error(action.payload.response.data.message);
       })
       // CẬP NHẬT THÔNG TIN CÁ NHÂN
       .addCase(updateMyData.pending, (state) => {
@@ -198,7 +198,7 @@ export const authSlice = createSlice({
         state.isSuccess = false;
         state.isError = true;
         state.message = action.error;
-        toast.error('Cập nhật thông tin thất bại!');
+        toast.error(action.payload.response.data.message);
       })
       // QUÊN MẬT KHẨU
       .addCase(forgotPassword.pending, (state) => {
@@ -212,7 +212,7 @@ export const authSlice = createSlice({
         state.isSuccess = false;
         state.isError = true;
         state.message = action.error;
-        toast.error('Gửi yêu cầu thất bại!');
+        toast.error(action.payload.response.data.message);
       })
       // CÀI LẠI MẬT KHẨU
       .addCase(resetPassword.pending, (state) => {
@@ -232,9 +232,7 @@ export const authSlice = createSlice({
         state.isSuccess = false;
         state.isError = true;
         state.message = action.error;
-        toast.error(
-          'Đường dẫn không chính xác hoặc đã hết thời gian hiệu lực. Vui lòng thử lại!'
-        );
+        toast.error(action.payload.response.data.message);
       });
   },
 });

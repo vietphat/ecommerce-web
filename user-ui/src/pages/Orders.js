@@ -20,7 +20,7 @@ const Orders = () => {
 
   return (
     <>
-      <BreadCrumb title='Đơn hàng' />
+      <BreadCrumb title='Techzone | Đơn hàng' />
       <Container class1='cart-wrapper home-wrapper-2 py-5'>
         {orders.length > 0 ? (
           <div className='row'>

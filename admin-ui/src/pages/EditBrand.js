@@ -30,10 +30,12 @@ const EditBrand = () => {
     },
     validationSchema: brandSchema,
     // SUBMIT
-    onSubmit: (values) => {
-      dispatch(editABrand({ _id: id, brand: values }));
-      formik.resetForm();
-      navigate('/admin/brands-list');
+    onSubmit: async (values) => {
+      const result = await dispatch(editABrand({ _id: id, brand: values }));
+      if (result.meta.requestStatus === 'fulfilled') {
+        formik.resetForm();
+        navigate('/admin/brands-list');
+      }
     },
   });
 

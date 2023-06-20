@@ -9,6 +9,7 @@ import {
   deleteAProductCategory,
   getProductCategories,
 } from '../features/product-category/productCategorySlice';
+import format_date from '../utils/format_date';
 import Modal from '../components/Modal';
 
 const columns = [
@@ -23,6 +24,10 @@ const columns = [
     dataIndex: 'title',
     defaultSortOrder: 'descend',
     sorter: (a, b) => a.title.length - b.title.length,
+  },
+  {
+    title: 'Ngày tạo',
+    dataIndex: 'createdAt',
   },
   {
     title: 'Hành động',
@@ -70,6 +75,7 @@ const ProductCategories = () => {
                   <Link
                     to={`/admin/product-category/${productCategory._id}`}
                     className='fs-3'
+                    onClick={() => window.scrollTo(0, 0)}
                   >
                     <BiEdit />
                   </Link>
@@ -84,6 +90,7 @@ const ProductCategories = () => {
                 </>
               ),
               ...productCategory,
+              createdAt: format_date(productCategory.createdAt),
             };
           })}
         />

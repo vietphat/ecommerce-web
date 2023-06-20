@@ -3,7 +3,7 @@ import axios from 'axios';
 import { base_url } from '../../utils/base_url';
 import { config } from '../../utils/axios_config';
 
-const getAllProducts = async (filters) => {
+const getAllProducts = async (filters = {}) => {
   const { brand, category, tag, from, to, sort } = filters;
 
   let queryString = '';
@@ -16,8 +16,6 @@ const getAllProducts = async (filters) => {
       tag ? '&tag=' + encodeURI(tag) : ''
     }${from ? '&price[gte]=' + from : ''}${to ? '&price[lte]=' + to : ''}`;
   }
-
-  console.log(queryString);
 
   const response = await axios.get(`${base_url}/products${queryString}`);
 

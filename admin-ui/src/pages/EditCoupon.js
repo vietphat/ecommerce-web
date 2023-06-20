@@ -39,10 +39,13 @@ const EditBrand = () => {
     },
     validationSchema: couponSchema,
     // SUBMIT
-    onSubmit: (values) => {
-      dispatch(editACoupon({ _id: id, coupon: values }));
-      formik.resetForm();
-      navigate('/admin/coupons-list');
+    onSubmit: async (values) => {
+      const result = await dispatch(editACoupon({ _id: id, coupon: values }));
+
+      if (result.meta.requestStatus === 'fulfilled') {
+        formik.resetForm();
+        navigate('/admin/coupons-list');
+      }
     },
   });
 

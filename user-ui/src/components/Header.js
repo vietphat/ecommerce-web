@@ -17,10 +17,10 @@ import { useEffect } from 'react';
 const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [paginate, setPaginate] = useState(true);
   const [searchOptions, setSearchOptions] = useState([]);
 
-  const { cart, auth } = useSelector((state) => state);
+  const auth = useSelector((state) => state.auth);
+  const cart = useSelector((state) => state.cart);
   const { products } = useSelector((state) => state.product);
 
   useEffect(() => {
@@ -56,7 +56,7 @@ const Header = () => {
           <div className='row'>
             <div className='col-6'>
               <p className='text-white mb-0'>
-                Giao hàng miễn phí cho các đơn hàng trên 1.000.000 đồng
+                Giao hàng miễn phí cho các đơn hàng trên 3.000.000 đồng
               </p>
             </div>
             <div className='col-6 '>
@@ -71,8 +71,12 @@ const Header = () => {
           <div className='row align-items-center'>
             <div className='col-2'>
               <h2>
-                <Link to='/' className='text-white'>
-                  Ecommerce
+                <Link
+                  to='/'
+                  className='text-white'
+                  onClick={() => window.scrollTo(0, 0)}
+                >
+                  Techzone
                 </Link>
               </h2>
             </div>
@@ -81,13 +85,13 @@ const Header = () => {
               <div className='input-group'>
                 <Typeahead
                   id='pagination-example'
-                  onPaginate={() => console.log('Results paginated')}
+                  onPaginate={() => {}}
                   options={searchOptions}
                   onChange={(selected) => {
                     if (selected.length === 0) return;
                     navigate(`/product/${selected[0].productId}`);
                   }}
-                  paginate={paginate}
+                  paginate={true}
                   labelKey={'title'}
                   placeholder='Nhập tên sản phẩm...'
                 />
@@ -103,6 +107,7 @@ const Header = () => {
                   <Link
                     className='d-flex align-items-center gap-10 text-white'
                     to='/compare-products'
+                    onClick={() => window.scrollTo(0, 0)}
                   >
                     <img src='/images/compare.svg' alt='compare' />
                     <p className='mb-0'>
@@ -116,6 +121,7 @@ const Header = () => {
                   <Link
                     to='/wishlist'
                     className='d-flex align-items-center gap-10 text-white'
+                    onClick={() => window.scrollTo(0, 0)}
                   >
                     <img src='/images/wishlist.svg' alt='wishlist' />
                     <p className='mb-0'>
@@ -130,6 +136,7 @@ const Header = () => {
                     <Link
                       to='/login'
                       className='d-flex align-items-center gap-10 text-white'
+                      onClick={() => window.scrollTo(0, 0)}
                     >
                       <img src='/images/user.svg' alt='user' />
                       <p className='mb-0'>
@@ -153,6 +160,7 @@ const Header = () => {
                   <Link
                     to='/cart'
                     className='d-flex align-items-center gap-10 text-white'
+                    onClick={() => window.scrollTo(0, 0)}
                   >
                     <img src='/images/cart.svg' alt='cart' />
                     <div className='d-flex flex-column gap-10'>
@@ -193,17 +201,29 @@ const Header = () => {
                       aria-labelledby='dropdownMenuButton1'
                     >
                       <li>
-                        <Link className='dropdown-item text-white' to=''>
+                        <Link
+                          className='dropdown-item text-white'
+                          to=''
+                          onClick={() => window.scrollTo(0, 0)}
+                        >
                           Action
                         </Link>
                       </li>
                       <li>
-                        <Link className='dropdown-item text-white' to=''>
+                        <Link
+                          className='dropdown-item text-white'
+                          to=''
+                          onClick={() => window.scrollTo(0, 0)}
+                        >
                           Another action
                         </Link>
                       </li>
                       <li>
-                        <Link className='dropdown-item text-white' to=''>
+                        <Link
+                          className='dropdown-item text-white'
+                          to=''
+                          onClick={() => window.scrollTo(0, 0)}
+                        >
                           Something else here
                         </Link>
                       </li>

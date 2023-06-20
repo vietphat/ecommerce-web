@@ -4,6 +4,7 @@ import { blogServices } from './blogServices';
 
 const initialState = {
   blogs: [],
+  blogCategories: [],
   currentBlog: null,
   isLoading: false,
   isSuccess: false,
@@ -11,19 +12,33 @@ const initialState = {
   message: '',
 };
 
-export const getBlogs = createAsyncThunk('blog/get-all', async (thunkAPI) => {
-  try {
-    return await blogServices.getBlogs();
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error);
+export const getBlogs = createAsyncThunk(
+  'blog/get-all',
+  async (filter, thunkAPI) => {
+    try {
+      return await blogServices.getBlogs(filter);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
   }
-});
+);
 
 export const getABlog = createAsyncThunk(
   'blog/get',
   async (blogId, thunkAPI) => {
     try {
       return await blogServices.getABlog(blogId);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const getBlogCategories = createAsyncThunk(
+  'blog/get-blog-categories',
+  async (thunkAPI) => {
+    try {
+      return await blogServices.getBlogCategories();
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -63,6 +78,22 @@ export const wishlistSlice = createSlice({
         state.currentBlog = action.payload.data;
       })
       .addCase(getABlog.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.isError = true;
+        state.message = action.error;
+      })
+      // LẤY DANH MỤC BÀI VIẾT
+      .addCase(getBlogCategories.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(getBlogCategories.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.isError = false;
+        state.blogCategories = action.payload.data;
+      })
+      .addCase(getBlogCategories.rejected, (state, action) => {
         state.isLoading = false;
         state.isSuccess = false;
         state.isError = true;

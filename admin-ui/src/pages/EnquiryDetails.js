@@ -2,11 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 
-import {
-  getAnEnquiry,
-  resetState,
-  editAnEnquiry,
-} from '../features/enquiry/enquirySlice';
+import { getAnEnquiry, editAnEnquiry } from '../features/enquiry/enquirySlice';
 import { BiArrowBack } from 'react-icons/bi';
 
 const EnquiryDetails = () => {

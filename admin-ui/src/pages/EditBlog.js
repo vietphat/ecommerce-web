@@ -33,8 +33,6 @@ const EditBlog = () => {
   const { currentBlog } = useSelector((state) => state.blog);
   const { images } = useSelector((state) => state.upload);
 
-  console.log(images);
-
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -45,10 +43,13 @@ const EditBlog = () => {
     },
     validationSchema: blogSchema,
     // SUBMIT
-    onSubmit: (values) => {
-      dispatch(editABlog({ _id: id, blog: values }));
-      formik.resetForm();
-      navigate('/admin/blogs-list');
+    onSubmit: async (values) => {
+      const result = await dispatch(editABlog({ _id: id, blog: values }));
+
+      if (result.meta.requestStatus === 'fulfilled') {
+        formik.resetForm();
+        navigate('/admin/blogs-list');
+      }
     },
   });
 

@@ -30,24 +30,65 @@ import EditCoupon from './pages/EditCoupon';
 import EditBlogCategory from './pages/EditBlogCategory';
 import EditBlog from './pages/EditBlog';
 import EnquiryDetails from './pages/EnquiryDetails';
+import OrderDetails from './pages/OrderDetails';
+import { OpenRoutes } from './routing/OpenRoutes';
+import { PrivateRoutes } from './routing/PrivateRoutes';
+import Profile from './pages/Profile';
+import ProductDetails from './pages/ProductDetails';
+import EditProduct from './pages/EditProduct';
+import UserDetails from './pages/UserDetails';
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path='/' element={<Login />} />
-        <Route path='/reset-password' element={<ResetPassword />} />
-        <Route path='/forgot-password' element={<ForgotPassword />} />
-        <Route path='/admin' element={<MainLayout />}>
+        <Route
+          path='/'
+          element={
+            <OpenRoutes>
+              <Login />
+            </OpenRoutes>
+          }
+        />
+
+        <Route
+          path='/reset-password/:token'
+          element={
+            <OpenRoutes>
+              <ResetPassword />
+            </OpenRoutes>
+          }
+        />
+
+        <Route
+          path='/forgot-password'
+          element={
+            <OpenRoutes>
+              <ForgotPassword />
+            </OpenRoutes>
+          }
+        />
+        <Route
+          path='/admin'
+          element={
+            <PrivateRoutes>
+              <MainLayout />
+            </PrivateRoutes>
+          }
+        >
           {/* DASHBOARD */}
           <Route index element={<Dashboard />} />
+          <Route path='profile' element={<Profile />} />
 
           {/* CUSTOMERS */}
           <Route path='customers' element={<Customers />} />
+          <Route path='user-details/:id' element={<UserDetails />} />
 
           {/* PRODUCTS */}
           <Route path='add-product' element={<AddProduct />} />
           <Route path='products-list' element={<Products />} />
+          <Route path='product-details/:id' element={<ProductDetails />} />
+          <Route path='product/:id' element={<EditProduct />} />
 
           {/* BRANDS */}
           <Route path='add-brand' element={<AddBrand />} />
@@ -72,6 +113,7 @@ function App() {
 
           {/* ORDERS */}
           <Route path='orders' element={<Orders />} />
+          <Route path='order-details/:id' element={<OrderDetails />} />
 
           {/* COUPONS */}
           <Route path='add-coupon' element={<AddCoupon />} />

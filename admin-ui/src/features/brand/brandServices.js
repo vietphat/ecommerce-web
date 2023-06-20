@@ -9,13 +9,13 @@ const getBrands = async () => {
 };
 
 const getABrand = async (id) => {
-  const response = await axios.get(`${base_url}/brands/${id}`, config);
+  const response = await axios.get(`${base_url}/brands/${id}`, config());
 
   return response.data;
 };
 
 const createBrand = async (brand) => {
-  const response = await axios.post(`${base_url}/brands`, brand, config);
+  const response = await axios.post(`${base_url}/brands`, brand, config());
 
   return response.data;
 };
@@ -24,14 +24,14 @@ const editABrand = async (brandData) => {
   const response = await axios.patch(
     `${base_url}/brands/${brandData._id}`,
     brandData.brand,
-    config
+    config()
   );
 
   return response.data;
 };
 
 const deleteABrand = async (id) => {
-  const response = await axios.delete(`${base_url}/brands/${id}`, config);
+  const response = await axios.delete(`${base_url}/brands/${id}`, config());
 
   return { ...response.data, deletedBrandId: id };
 };

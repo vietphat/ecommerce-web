@@ -9,7 +9,10 @@ const getBlogCategories = async (jwt) => {
 };
 
 const getABlogCategory = async (id) => {
-  const response = await axios.get(`${base_url}/blog-categories/${id}`, config);
+  const response = await axios.get(
+    `${base_url}/blog-categories/${id}`,
+    config()
+  );
 
   return response.data;
 };
@@ -18,7 +21,7 @@ const createBlogCategory = async (color) => {
   const response = await axios.post(
     `${base_url}/blog-categories`,
     color,
-    config
+    config()
   );
 
   return response.data;
@@ -28,7 +31,7 @@ const editABlogCategory = async (blogCategoryData) => {
   const response = await axios.patch(
     `${base_url}/blog-categories/${blogCategoryData._id}`,
     blogCategoryData.blogCategory,
-    config
+    config()
   );
 
   return response.data;
@@ -37,7 +40,7 @@ const editABlogCategory = async (blogCategoryData) => {
 const deleteABlogCategory = async (id) => {
   const response = await axios.delete(
     `${base_url}/blog-categories/${id}`,
-    config
+    config()
   );
 
   return { ...response.data, deletedBlogCategoryId: id };

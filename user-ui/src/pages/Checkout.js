@@ -11,6 +11,7 @@ import { deleteCartAfterOrder, getCart } from '../features/cart/cartSlice';
 import Input from '../components/Input';
 import { createOrder } from '../features/order/orderSlice';
 import PaypalButton from '../components/PaypalButton';
+import Meta from '../components/Meta';
 
 const orderSchema = Yup.object({
   firstName: Yup.string().required('Tên không được để trống'),
@@ -85,18 +86,23 @@ const Checkout = () => {
 
   return (
     <>
+      <Meta title='Techzone | Thanh toán' />
       <Container class1='checkout-wrapper py-5 home-wrapper-2'>
         <div className='row'>
           <div className='col-7'>
             <div className='checkout-left-data'>
-              <h3 className='website-name'>Ecommerce</h3>
+              <h3 className='website-name'>Techzone</h3>
               <nav
                 style={{ '--bs-breadcrumb-divider': '>' }}
                 aria-label='breadcrumb'
               >
                 <ol className='breadcrumb'>
                   <li className='breadcrumb-item'>
-                    <Link className='text-dark total-price' to='/cart'>
+                    <Link
+                      className='text-dark total-price'
+                      to='/cart'
+                      onClick={() => window.scrollTo(0, 0)}
+                    >
                       Giỏ hàng
                     </Link>
                   </li>
@@ -224,7 +230,11 @@ const Checkout = () => {
 
                 <div className='w-100'>
                   <div className='d-flex justify-content-between align-items-center'>
-                    <Link to='/cart' className='text-dark'>
+                    <Link
+                      to='/cart'
+                      className='text-dark'
+                      onClick={() => window.scrollTo(0, 0)}
+                    >
                       <BiArrowBack className='me-2' />
                       Quay về giỏ hàng
                     </Link>
@@ -329,14 +339,18 @@ const Checkout = () => {
 
               <div className='d-flex justify-content-between align-items-center'>
                 <p className='mb-0 total'>Vận chuyển</p>
-                <p className='mb-0 total-price'>{formatCurrency(25000)}</p>
+                <p className='mb-0 total-price'>
+                  {formatCurrency(totalPrice < 3000000 ? 25000 : 0)}
+                </p>
               </div>
             </div>
 
             <div className='d-flex justify-content-between align-items-center border-bottom py-4'>
               <h4 className='total'>Tổng</h4>
               <h5 className='total-price'>
-                {formatCurrency(totalPrice + 25000)}
+                {formatCurrency(
+                  totalPrice + (totalPrice < 3000000 ? 25000 : 0)
+                )}
               </h5>
             </div>
           </div>

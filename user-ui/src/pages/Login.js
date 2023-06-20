@@ -43,7 +43,7 @@ const Login = () => {
 
   return (
     <>
-      <Meta title='Đăng nhập' />
+      <Meta title='Techzone | Đăng nhập' />
       <BreadCrumb title='Đăng nhập' />
 
       <Container class1='login-wrapper home-wrapper-2 py-5'>
@@ -81,13 +81,22 @@ const Login = () => {
                 </div>
 
                 <div>
-                  <Link to='/forgot-password'>Quên mật khẩu?</Link>
+                  <Link
+                    to='/forgot-password'
+                    onClick={() => window.scrollTo(0, 0)}
+                  >
+                    Quên mật khẩu?
+                  </Link>
 
                   <div className='mt-3 d-flex justify-content-center gap-15 align-items-center'>
                     <button className='button border-0' type='submit'>
                       Đăng nhập
                     </button>
-                    <Link to='/signup' className='button signup'>
+                    <Link
+                      to='/signup'
+                      className='button signup'
+                      onClick={() => window.scrollTo(0, 0)}
+                    >
                       Đăng ký
                     </Link>
                   </div>

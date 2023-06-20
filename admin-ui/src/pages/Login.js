@@ -1,4 +1,3 @@
-import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
@@ -24,18 +23,16 @@ const Login = () => {
       password: '',
     },
     validationSchema: loginSchema,
-    onSubmit: (values) => {
-      dispatch(login(values));
+    onSubmit: async (values) => {
+      const result = await dispatch(login(values));
+
+      if (result.meta.requestStatus === 'fulfilled') {
+        navigate('/admin');
+      }
     },
   });
 
-  const { user, isSuccess, message } = useSelector((state) => state.auth);
-
-  useEffect(() => {
-    if (isSuccess) {
-      navigate('admin');
-    }
-  }, [user, isSuccess, navigate]);
+  const { message } = useSelector((state) => state.auth);
 
   return (
     <div className='py-5' style={{ background: '#ffd333', minHeight: '100vh' }}>
@@ -78,7 +75,9 @@ const Login = () => {
           </div>
 
           <div className='mb-3 text-end'>
-            <Link to='/forgot-password'>Quên mật khẩu?</Link>
+            <Link to='/forgot-password' onClick={() => window.scrollTo(0, 0)}>
+              Quên mật khẩu?
+            </Link>
           </div>
           <button
             className='d-block border-0 px-3 py-2 text-white fw-bold w-100 text-center text-decoration-none fs-5'

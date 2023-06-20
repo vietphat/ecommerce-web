@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { BiEdit } from 'react-icons/bi';
 import { AiFillDelete } from 'react-icons/ai';
 
+import format_date from '../utils/format_date';
 import { getBrands, deleteABrand } from '../features/brand/brandSlice';
 import Modal from '../components/Modal';
 
@@ -20,6 +21,10 @@ const columns = [
     dataIndex: 'title',
     defaultSortOrder: 'descend',
     sorter: (a, b) => a.title.length - b.title.length,
+  },
+  {
+    title: 'Ngày tạo',
+    dataIndex: 'createdAt',
   },
   {
     title: 'Hành động',
@@ -64,7 +69,11 @@ const Brands = () => {
               key: i + 1,
               actions: (
                 <>
-                  <Link to={`/admin/brand/${brand._id}`} className='fs-3'>
+                  <Link
+                    to={`/admin/brand/${brand._id}`}
+                    className='fs-3'
+                    onClick={() => window.scrollTo(0, 0)}
+                  >
                     <BiEdit />
                   </Link>
 
@@ -78,6 +87,7 @@ const Brands = () => {
                 </>
               ),
               ...brand,
+              createdAt: format_date(brand.createdAt),
             };
           })}
         />

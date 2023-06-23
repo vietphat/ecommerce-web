@@ -229,7 +229,9 @@ const OurStore = () => {
                 </div>
 
                 <div className='d-flex align-items-center gap-10'>
-                  <p className='totalproducts mb-0'>21 sản phẩm</p>
+                  <p className='totalproducts mb-0'>
+                    {products?.length} sản phẩm
+                  </p>
                   <div className='d-flex align-items-center gap-10 grid'>
                     <img
                       onClick={() => setGrid(3)}

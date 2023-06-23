@@ -112,7 +112,7 @@ export const cartSlice = createSlice({
         state.isSuccess = false;
         state.isError = true;
         state.message = action.error;
-        toast.error(action.payload.data.message);
+        toast.error('Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng!');
       })
       // CẬP NHẬT SỐ LƯỢNG SẢN PHẨM TRONG GIỎ HÀNG
       .addCase(updateQuantity.pending, (state) => {

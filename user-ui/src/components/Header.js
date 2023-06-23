@@ -44,7 +44,7 @@ const Header = () => {
       dispatch(resetWishlist());
       dispatch(resetCart());
       dispatch(resetOrder());
-      navigate('/');
+      navigate('/login');
     }
   };
 

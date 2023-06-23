@@ -65,10 +65,7 @@ const ProductCard = (props) => {
               edit={false}
               activeColor='#ffd700'
             />
-            <p
-              className={`description ${grid === 12 ? 'd-block' : 'd-none'}`}
-              dangerouslySetInnerHTML={{ __html: data?.description }}
-            ></p>
+
             <p className='price'>{formatCurrency(data?.price)}</p>
           </div>
 

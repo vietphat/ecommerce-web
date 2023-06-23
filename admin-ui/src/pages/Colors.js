@@ -19,8 +19,21 @@ const columns = [
   {
     title: 'Màu',
     dataIndex: 'title',
-    defaultSortOrder: 'descend',
-    sorter: (a, b) => a.title.length - b.title.length,
+    render: (text, record) => (
+      <div className='d-flex align-items-center'>
+        <span
+          style={{
+            backgroundColor: record.title,
+            display: 'inline-block',
+            width: '20px',
+            height: '20px',
+            marginRight: '5px',
+            borderRadius: '5px',
+          }}
+        ></span>
+        {text}
+      </div>
+    ),
   },
   {
     title: 'Ngày tạo',

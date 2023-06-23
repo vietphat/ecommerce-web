@@ -49,7 +49,7 @@ const EditColor = () => {
           {/* MÃ MÀU */}
           <div className='mt-4'>
             <Input
-              type='color'
+              type='text'
               label='Mã màu'
               name='title'
               onChange={formik.handleChange('title')}

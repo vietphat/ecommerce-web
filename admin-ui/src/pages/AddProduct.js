@@ -6,13 +6,18 @@ import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import Dropzone from 'react-dropzone';
 import { Select } from 'antd';
+import { useNavigate } from 'react-router-dom';
 
 import Input from '../components/Input';
 import { getBrands } from '../features/brand/brandSlice';
 import { getProductCategories } from '../features/product-category/productCategorySlice';
 import { getColors } from '../features/color/colorSlice';
-import { uploadImg, deleteImg } from '../features/upload/uploadSlice';
-import { createProduct, resetState } from '../features/product/productSlice';
+import {
+  uploadImg,
+  deleteImg,
+  resetState as resetUploadState,
+} from '../features/upload/uploadSlice';
+import { createProduct } from '../features/product/productSlice';
 
 let productSchema = Yup.object({
   title: Yup.string().required('Tên sản phẩm không được để trống'),
@@ -29,6 +34,7 @@ let productSchema = Yup.object({
 
 const AddProduct = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [selectedColors, setSelectedColors] = useState([]);
 
   const formik = useFormik({
@@ -45,13 +51,15 @@ const AddProduct = () => {
     },
     validationSchema: productSchema,
     // SUBMIT
-    onSubmit: (values) => {
-      dispatch(createProduct(values));
-      formik.resetForm();
-      setSelectedColors(null);
-      setTimeout(() => {
-        dispatch(resetState());
-      }, 3000);
+    onSubmit: async (values) => {
+      const result = await dispatch(createProduct(values));
+
+      if (result.meta.requestStatus === 'fulfilled') {
+        formik.resetForm();
+        setSelectedColors(null);
+        dispatch(resetUploadState());
+        navigate('/admin/products-list');
+      }
     },
   });
 
@@ -64,7 +72,7 @@ const AddProduct = () => {
   const { brands } = useSelector((state) => state.brand);
   const { productCategories } = useSelector((state) => state.productCategory);
   const { colors } = useSelector((state) => state.color);
-  const { images } = useSelector((state) => state.upload);
+  const { images, isLoading } = useSelector((state) => state.upload);
 
   useEffect(() => {
     formik.values.colors = selectedColors;
@@ -99,17 +107,6 @@ const AddProduct = () => {
             {formik.touched.title && formik.errors.title}
           </div>
 
-          {/* MÔ TẢ */}
-          <div>
-            <ReactQuill
-              theme='snow'
-              name='description'
-              onChange={formik.handleChange('description')}
-              value={formik.values.description}
-            />
-          </div>
-          <div className='error'>{formik.errors.description}</div>
-
           {/* GIÁ */}
           <Input
             type='number'
@@ -125,7 +122,7 @@ const AddProduct = () => {
 
           {/* LOẠI SẢN PHẨM */}
           <select
-            className='form-control py-3 mb-3'
+            className='form-control form-select py-3 mb-3'
             name='category'
             onChange={formik.handleChange('category')}
             onBlur={formik.handleBlur('category')}
@@ -146,7 +143,7 @@ const AddProduct = () => {
 
           {/* TAG */}
           <select
-            className='form-control py-3 mb-3'
+            className='form-control form-select py-3 mb-3'
             name='tags'
             onChange={formik.handleChange('tag')}
             onBlur={formik.handleBlur('tag')}
@@ -167,9 +164,24 @@ const AddProduct = () => {
             placeholder='Chọn màu'
             defaultValue={selectedColors}
             onChange={(i) => handleColors(i)}
+            // options={colors.map((c) => {
+            //   return { label: c.title, value: c._id };
+            // })}
             options={colors.map((c) => {
-              return { label: c.title, value: c._id };
+              return {
+                value: c._id,
+                label: (
+                  <div className='color-option'>
+                    <div
+                      className='color-option-color'
+                      style={{ backgroundColor: c.title }}
+                    ></div>
+                    <span className='color-option-label'>{c.title}</span>
+                  </div>
+                ),
+              };
             })}
+            optionLabelProp='label'
           />
           <div className='error'>
             {formik.touched.colors && formik.errors.colors}
@@ -177,7 +189,7 @@ const AddProduct = () => {
 
           {/* THƯƠNG HIỆU */}
           <select
-            className='form-control py-3 mb-3'
+            className='form-control form-select py-3 mb-3'
             name='brand'
             onChange={formik.handleChange('brand')}
             onBlur={formik.handleBlur('brand')}
@@ -209,6 +221,17 @@ const AddProduct = () => {
             {formik.touched.quantity && formik.errors.quantity}
           </div>
 
+          {/* MÔ TẢ */}
+          <div>
+            <ReactQuill
+              theme='snow'
+              name='description'
+              onChange={formik.handleChange('description')}
+              value={formik.values.description}
+            />
+          </div>
+          <div className='error'>{formik.errors.description}</div>
+
           {/* HÌNH ẢNH */}
           <div className='bg-white border-1 p-5 text-center'>
             <Dropzone
@@ -228,30 +251,34 @@ const AddProduct = () => {
           </div>
 
           <div className='showimages d-flex flex-wrap gap-3'>
-            {images.map((img) => {
-              return (
-                <div className='position-relative' key={img.public_id}>
-                  <button
-                    className='btn-close position-absolute'
-                    style={{ top: '10px', right: '10px' }}
-                    onClick={() => dispatch(deleteImg(img.public_id))}
-                    type='button'
-                  />
-                  <img
-                    className='img-fluid'
-                    src={img.url}
-                    alt='product'
-                    width={200}
-                    height={200}
-                  />
-                </div>
-              );
-            })}
+            {isLoading ? (
+              <div className='text-center fs-5'>Đang tải ảnh lên...</div>
+            ) : (
+              images.map((img) => {
+                return (
+                  <div className='position-relative' key={img.public_id}>
+                    <button
+                      className='btn-close position-absolute'
+                      style={{ top: '10px', right: '10px' }}
+                      onClick={() => dispatch(deleteImg(img.public_id))}
+                      type='button'
+                    />
+                    <img
+                      className='img-fluid'
+                      src={img.url}
+                      alt='product'
+                      width={200}
+                      height={200}
+                    />
+                  </div>
+                );
+              })
+            )}
           </div>
 
           <button
             type='submit'
-            className='btn btn-success border-0 rounded-3 my-5'
+            className='btn btn-success border-0 rounded-3 my-3'
           >
             Thêm sản phẩm
           </button>

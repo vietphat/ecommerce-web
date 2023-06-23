@@ -78,7 +78,7 @@ const orderSchema = new mongoose.Schema(
     },
     month: {
       type: String,
-      default: new Date().getMonth(),
+      default: new Date().getMonth() + 1,
     },
   },
   {

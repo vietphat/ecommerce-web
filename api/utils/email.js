@@ -42,14 +42,29 @@ module.exports = class Email {
   async sendResetPassword() {
     await this.send(
       'Tạo lại mật khẩu',
-      `Xin chào ${this.firstName}. Có phải bạn vừa gửi yêu cầu lấy lại mật khẩu không? Nếu bạn vừa gửi yêu cầu hãy nhấp vào <a href="${this.url}">đây</a> để tạo mật khẩu mới.`
+      `<p>Xin chào ${this.firstName}. Có phải bạn vừa gửi yêu cầu lấy lại mật khẩu không? Nếu bạn vừa gửi yêu cầu hãy nhấp vào <a href="${this.url}">đây</a> để tạo mật khẩu mới.</p>`
     );
   }
 
   async sendChangePasswordSuccessfully() {
     await this.send(
       'Đổi mật khẩu thành công',
-      `Xin chào ${this.firstName}. Bạn đã thay đổi mật khẩu thành công.`
+      `<p>Xin chào ${this.firstName}. Bạn đã thay đổi mật khẩu thành công.</p>`
+    );
+  }
+
+  async sendCreateOrderSuccessfully() {
+    await this.send(
+      `Xin chào ${this.firstName}. Bạn đã đặt hàng tại TechZone thành công.`,
+      `<p>Kiểm tra thông tin đơn hàng <a href="${this.url}">tại đây</a></p>`
+    );
+  }
+
+  async sendOrderStatusChange() {
+    await this.send(
+      `Xin chào ${this.firstName}. Đơn hàng của bạn vừa được thay đổi trạng thái giao hàng.`,
+      `<p>Đơn hàng của bạn vừa được thay đổi trạng thái giao hàng.
+      Kiểm tra thông tin đơn hàng <a href="${this.url}">tại đây</a></p>`
     );
   }
 };

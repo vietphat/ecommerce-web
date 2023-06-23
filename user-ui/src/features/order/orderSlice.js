@@ -50,7 +50,7 @@ export const orderSlice = createSlice({
         state.isSuccess = true;
         state.isError = false;
         state.orders = [...state.orders, action.payload.data];
-        toast.success('Thanh toán thành công. Vui lòng kiểm tra mail');
+        toast.success('Đặt hàng thành công. Vui lòng kiểm tra mail');
       })
       .addCase(createOrder.rejected, (state, action) => {
         state.isLoading = false;

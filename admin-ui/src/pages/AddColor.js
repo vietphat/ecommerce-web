@@ -38,7 +38,7 @@ const AddColor = () => {
           {/* MÀU SẢN PHẨM */}
           <div className='mt-4'>
             <Input
-              type='color'
+              type='text'
               label='Màu sản phẩm'
               name='title'
               onChange={formik.handleChange('title')}

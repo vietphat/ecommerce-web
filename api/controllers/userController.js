@@ -2,12 +2,11 @@ const uniqid = require('uniqid');
 
 const User = require('./../models/User');
 const Cart = require('./../models/Cart');
-const Product = require('./../models/Product');
-const Coupon = require('./../models/Coupon');
 const Order = require('../models/Order');
 const AppError = require('../utils/AppError');
 const catchAsync = require('./../utils/catchAsync');
 const validateMongoDbId = require('./../config/validateMongoDbId');
+const Email = require('../utils/email');
 
 /// A. Client
 // Update my data
@@ -189,6 +188,10 @@ exports.createOrder = catchAsync(async (req, res, next) => {
   });
 
   const data = await order.populate('orderItems.product orderItems.color');
+
+  const url = `${process.env.DEV_CLIENT_DOMAIN}/orders`;
+
+  await new Email(req.user, url).sendCreateOrderSuccessfully();
 
   res.status(200).json({
     status: 'Thành công',

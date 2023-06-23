@@ -67,10 +67,6 @@ const userSchema = new mongoose.Schema(
     resetPasswordTokenExpiresIn: {
       type: Date,
     },
-    isBlocked: {
-      type: Boolean,
-      default: false,
-    },
     refreshToken: {
       type: String,
     },

@@ -408,7 +408,7 @@ const Home = () => {
             <></>
           ) : (
             blogs?.map((blog, index) => {
-              if (index === 3) {
+              if (index === 4) {
                 return null;
               }
 

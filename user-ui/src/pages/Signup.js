@@ -8,6 +8,10 @@ import Meta from '../components/Meta';
 import BreadCrumb from '../components/BreadCrumb';
 import Container from '../components/Container';
 import Input from '../components/Input';
+import { getWishlist } from '../features/wishlist/wishlistSlice';
+import { getCart } from '../features/cart/cartSlice';
+import { getMyOrders } from '../features/order/orderSlice';
+import { useNavigate } from 'react-router-dom';
 
 const signUpSchema = Yup.object({
   firstName: Yup.string().required('Tên không được để trống'),
@@ -25,6 +29,7 @@ const signUpSchema = Yup.object({
 
 const Signup = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: {
@@ -36,9 +41,15 @@ const Signup = () => {
       confirmPassword: '',
     },
     validationSchema: signUpSchema,
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       // alert(JSON.stringify(values));
-      dispatch(register(values));
+      const result = await dispatch(register(values));
+      if (result.meta.requestStatus === 'fulfilled') {
+        dispatch(getWishlist());
+        dispatch(getCart());
+        dispatch(getMyOrders());
+        navigate('/');
+      }
       // navigate('/');
     },
   });

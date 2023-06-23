@@ -20,7 +20,6 @@ const login = async (userData) => {
 };
 
 const logout = async () => {
-  console.log(config());
   const response = await axios.get(`${base_url}/auth/logout`, config());
 
   if (response.data) {

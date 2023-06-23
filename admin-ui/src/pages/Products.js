@@ -94,7 +94,7 @@ const Products = () => {
           dataSource={products.map((product, i) => {
             return {
               key: i + 1,
-              title: product.title,
+              title: product.title.substr(0, 30) + '...',
               price: format_currency(product.price),
               category: product.category.title,
               brand: product.brand.title,

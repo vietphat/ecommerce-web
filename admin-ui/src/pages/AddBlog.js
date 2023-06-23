@@ -9,7 +9,11 @@ import { useNavigate } from 'react-router-dom';
 
 import Input from '../components/Input';
 import { getBlogCategories } from '../features/blog-category/blogCategorySlice';
-import { deleteImg, uploadImg } from '../features/upload/uploadSlice';
+import {
+  deleteImg,
+  uploadImg,
+  resetState as resetUploadState,
+} from '../features/upload/uploadSlice';
 import { createBlog } from '../features/blog/blogSlice';
 
 let blogSchema = Yup.object({
@@ -35,6 +39,7 @@ const AddBlog = () => {
       const result = await dispatch(createBlog(values));
       if (result.meta.requestStatus === 'fulfilled') {
         formik.resetForm();
+        dispatch(resetUploadState());
         navigate('/admin/blogs-list');
       }
     },
@@ -45,7 +50,7 @@ const AddBlog = () => {
   }, [dispatch]);
 
   const { blogCategories } = useSelector((state) => state.blogCategory);
-  const { images } = useSelector((state) => state.upload);
+  const { images, isLoading } = useSelector((state) => state.upload);
 
   useEffect(() => {
     formik.values.images = images.map((img) => {
@@ -79,7 +84,7 @@ const AddBlog = () => {
 
           {/* DANH MỤC BÀI VIẾT */}
           <select
-            className='form-control py-3'
+            className='form-control form-select py-3'
             name='category'
             onChange={formik.handleChange('category')}
             onBlur={formik.handleBlur('category')}
@@ -128,25 +133,29 @@ const AddBlog = () => {
           </div>
 
           <div className='showimages d-flex flex-wrap gap-3'>
-            {images.map((img) => {
-              return (
-                <div className='position-relative' key={img.public_id}>
-                  <button
-                    className='btn-close position-absolute'
-                    style={{ top: '10px', right: '10px' }}
-                    onClick={() => dispatch(deleteImg(img.public_id))}
-                    type='button'
-                  />
-                  <img
-                    className='img-fluid'
-                    src={img.url}
-                    alt='product'
-                    width={200}
-                    height={200}
-                  />
-                </div>
-              );
-            })}
+            {isLoading ? (
+              <div>Đang tải ảnh...</div>
+            ) : (
+              images.map((img) => {
+                return (
+                  <div className='position-relative' key={img.public_id}>
+                    <button
+                      className='btn-close position-absolute'
+                      style={{ top: '10px', right: '10px' }}
+                      onClick={() => dispatch(deleteImg(img.public_id))}
+                      type='button'
+                    />
+                    <img
+                      className='img-fluid'
+                      src={img.url}
+                      alt='product'
+                      width={200}
+                      height={200}
+                    />
+                  </div>
+                );
+              })
+            )}
           </div>
 
           <button

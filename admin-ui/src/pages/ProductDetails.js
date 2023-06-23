@@ -20,21 +20,12 @@ const ProductDetails = () => {
     navigate(-1);
   };
 
-  // const handleEditRole = (value, id) => {
-  //   const enquiryData = { _id: id, enquiry: { status: value } };
-  //   dispatch(editAnEnquiry(enquiryData));
-  // };
-
-  console.log(currentProduct);
-
   return (
     <div>
       {currentProduct ? (
         <div className='p-3'>
           <div className='d-flex justify-content-between align-items-center'>
-            <h3 className='mb-3 title'>{`Chi tiết sản phẩm ${
-              currentProduct ? currentProduct.title : ''
-            }`}</h3>
+            <h3 className='mb-3 title'>{`Chi tiết sản phẩm`}</h3>
             <button
               className='bg-transpatent border-0 fs-6 mb-0 d-flex align-items-center gap-1'
               onClick={goBack}
@@ -110,6 +101,7 @@ const ProductDetails = () => {
                         borderRadius: 50,
                         display: 'inline-block',
                         marginRight: 10,
+                        border: '1px solid black',
                       }}
                     />
                   );
@@ -131,11 +123,6 @@ const ProductDetails = () => {
               {currentProduct.images.map((img) => {
                 return (
                   <div className='position-relative' key={img.public_id}>
-                    <button
-                      className='btn-close position-absolute'
-                      style={{ top: '10px', right: '10px' }}
-                      type='button'
-                    />
                     <img
                       className='img-fluid'
                       src={img.url}

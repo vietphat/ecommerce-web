@@ -31,10 +31,10 @@ const Checkout = () => {
 
   const formik = useFormik({
     initialValues: {
-      firstName: '',
-      lastName: '',
+      firstName: user?.firstName,
+      lastName: user?.lastName,
       address: '',
-      phoneNumber: '',
+      phoneNumber: user?.phoneNumber,
       notes: '',
       paymentMethod: '',
     },

@@ -53,7 +53,7 @@ const Orders = () => {
                   key={order._id}
                   className='col-12 my-3'
                   style={{
-                    backgroundColor: index % 2 === 0 ? '#d3d5d5' : '#c2a5a5',
+                    backgroundColor: index % 2 === 0 ? '#d3d5d5' : '#30111142',
                     borderRadius: '10px',
                   }}
                 >

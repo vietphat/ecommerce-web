@@ -84,7 +84,7 @@ const Enquiries = () => {
 
   return (
     <div>
-      <h3 className='mt-4 title'>Phản hồi của khách hàng</h3>
+      <h3 className='mt-4 title'>Thắc mắc của khách hàng</h3>
       <div>
         <Table
           columns={columns}

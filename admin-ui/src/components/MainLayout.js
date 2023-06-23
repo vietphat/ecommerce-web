@@ -185,8 +185,8 @@ const MainLayout = () => {
             {
               key: 'enquiries',
               icon: <FaQuestionCircle className='fs-4' />,
-              label: 'Phản hồi của khách hàng',
-              title: 'Phản hồi của khách hàng',
+              label: 'Thắc mắc của khách hàng',
+              title: 'Thắc mắc của khách hàng',
             },
             {
               key: 'logout',
@@ -240,7 +240,9 @@ const MainLayout = () => {
                 data-bs-toggle='dropdown'
                 aria-expanded='false'
               >
-                <h5 className='mb-0 fs-5'>{user?.firstName}</h5>
+                <h5 className='mb-0 fs-5'>
+                  {user?.lastName + ' ' + user?.firstName}
+                </h5>
                 <p className='mb-0 fs-5'>{user?.email}</p>
               </div>
 

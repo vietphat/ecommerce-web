@@ -31,7 +31,6 @@ const reviewSchema = Yup.object({
 });
 
 const SingleProduct = () => {
-  const [color, setColor] = useState();
   const [quantity, setQuantity] = useState(1);
   const commentRef = useRef();
   const dispatch = useDispatch();
@@ -112,15 +111,10 @@ const SingleProduct = () => {
       return;
     }
 
-    if (!color) {
-      alert('Vui lòng chọn màu');
-      return;
-    }
-
     dispatch(
       addToCart({
         product: currentProduct?._id,
-        color,
+        color: currentProduct.colors[0],
         price: currentProduct?.price,
         quantity,
       })
@@ -238,10 +232,7 @@ const SingleProduct = () => {
 
                     <div className='d-flex gap-10 flex-column mt-2 mb-3'>
                       <h3 className='product-heading'>Màu sắc: </h3>
-                      <Colors
-                        colors={currentProduct.colors}
-                        handleSetColor={setColor}
-                      />
+                      <Colors colors={currentProduct.colors} />
                     </div>
 
                     <div className='d-flex gap-10 flex-row align-items-center mt-2 mb-3 gap-15'>

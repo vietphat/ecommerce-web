@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import Dropzone from 'react-dropzone';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -9,7 +8,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 
 import Input from '../components/Input';
 import { getABlog, editABlog } from '../features/blog/blogSlice';
-import { deleteImg, uploadImg } from '../features/upload/uploadSlice';
 import { getBlogCategories } from '../features/blog-category/blogCategorySlice';
 
 let blogSchema = Yup.object({
@@ -31,7 +29,6 @@ const EditBlog = () => {
 
   const { blogCategories } = useSelector((state) => state.blogCategory);
   const { currentBlog } = useSelector((state) => state.blog);
-  const { images } = useSelector((state) => state.upload);
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -80,7 +77,7 @@ const EditBlog = () => {
 
           {/* DANH MỤC BÀI VIẾT */}
           <select
-            className='form-control py-3'
+            className='form-control form-select py-3'
             name='category'
             onChange={formik.handleChange('category')}
             onBlur={formik.handleBlur('category')}
@@ -109,53 +106,6 @@ const EditBlog = () => {
             />
           </div>
           <div className='error'>{formik.errors.description}</div>
-
-          {/* HÌNH ẢNH */}
-          <div className='bg-white border-1 p-5 text-center'>
-            <Dropzone
-              onDrop={(acceptedFiles) => {
-                dispatch(uploadImg(acceptedFiles));
-                formik.values.images = [...formik.values.images, ...images];
-              }}
-            >
-              {({ getRootProps, getInputProps }) => (
-                <section>
-                  <div {...getRootProps()}>
-                    <input {...getInputProps()} />
-                    <p>Kéo thả file hình ảnh hoặc click vào đây để thêm hình</p>
-                  </div>
-                </section>
-              )}
-            </Dropzone>
-          </div>
-
-          <div className='showimages d-flex flex-wrap gap-3'>
-            {currentBlog?.images.map((img) => {
-              return (
-                <div className='position-relative' key={img.public_id}>
-                  <button
-                    className='btn-close position-absolute'
-                    style={{ top: '10px', right: '10px' }}
-                    onClick={() => {
-                      dispatch(deleteImg(img.public_id));
-                      formik.values.images = formik.values.images.filter(
-                        (fi) => fi.public_id !== img.public_id
-                      );
-                    }}
-                    type='button'
-                  />
-
-                  <img
-                    className='img-fluid'
-                    src={img.url}
-                    alt='product'
-                    width={200}
-                    height={200}
-                  />
-                </div>
-              );
-            })}
-          </div>
 
           <button
             type='submit'

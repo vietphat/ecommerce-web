@@ -30,6 +30,7 @@ const EditProductCategory = () => {
 
   const formik = useFormik({
     enableReinitialize: true,
+    isInitialValid: false,
     initialValues: {
       title: currentProductCategory?.title ? currentProductCategory?.title : '',
     },
@@ -69,6 +70,7 @@ const EditProductCategory = () => {
 
           <button
             type='submit'
+            disabled={!formik.isValid}
             className='btn btn-success border-0 rounded-3 my-5'
           >
             Sửa loại sản phẩm

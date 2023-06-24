@@ -78,3 +78,26 @@ exports.deleteACoupon = catchAsync(async (req, res, next) => {
     data: null,
   });
 });
+
+exports.applyCoupon = catchAsync(async (req, res, next) => {
+  // lấy mã giảm giá và giá hiện tại
+  const { couponCode, price } = req.body;
+
+  // check mã giảm giá hợp lệ
+  const coupon = await Coupon.findOne({ name: couponCode.toUpperCase() });
+
+  if (coupon === null) {
+    return next(new AppError('Mã giảm giá không hợp lệ!', 400));
+  }
+
+  // tính toán giá sau giảm
+  const reducedPrice = (coupon.discount / 100) * price;
+
+  res.status(200).json({
+    status: 'Thành công',
+    data: {
+      coupon,
+      reducedPrice,
+    },
+  });
+});

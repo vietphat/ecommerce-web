@@ -32,6 +32,7 @@ const EditBlog = () => {
 
   const formik = useFormik({
     enableReinitialize: true,
+    isInitialValid: false,
     initialValues: {
       title: currentBlog?.title ? currentBlog?.title : '',
       description: currentBlog?.description ? currentBlog?.description : '',
@@ -109,6 +110,7 @@ const EditBlog = () => {
 
           <button
             type='submit'
+            disabled={!formik.isValid}
             className='btn btn-success border-0 rounded-3 my-5'
           >
             Sửa bài viết

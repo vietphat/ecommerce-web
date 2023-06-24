@@ -22,14 +22,18 @@ import { createProduct } from '../features/product/productSlice';
 let productSchema = Yup.object({
   title: Yup.string().required('Tên sản phẩm không được để trống'),
   description: Yup.string().required('Mô tả không được để trống'),
-  price: Yup.number().required('Giá sản phẩm không được để trống'),
+  price: Yup.number()
+    .min(1, 'Giá không hợp lệ')
+    .required('Giá  không được để trống'),
   category: Yup.string().required('Loại sản phẩm không được để trống'),
   tag: Yup.string().required('Tags không được để trống'),
   brand: Yup.string().required('Thương hiệu không được để trống'),
   colors: Yup.array()
     .min(1, 'Vui lòng chọn ít nhất 1 màu')
     .required('Màu sản phẩm không được để trống'),
-  quantity: Yup.number().required('Số lượng sản phẩm không được để trống'),
+  quantity: Yup.number()
+    .min(1, 'Số lượng không hợp lệ')
+    .required('Số lượng sản phẩm không được để trống'),
 });
 
 const AddProduct = () => {
@@ -49,6 +53,7 @@ const AddProduct = () => {
       quantity: '',
       images: [],
     },
+    isInitialValid: false,
     validationSchema: productSchema,
     // SUBMIT
     onSubmit: async (values) => {
@@ -278,6 +283,7 @@ const AddProduct = () => {
 
           <button
             type='submit'
+            disabled={!formik.isValid || images?.length < 1}
             className='btn btn-success border-0 rounded-3 my-3'
           >
             Thêm sản phẩm

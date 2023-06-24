@@ -7,6 +7,8 @@ const restrictTo = require('../middlewares/restrictTo');
 const router = express.Router();
 
 // routes
+router.post('/apply-coupon', couponController.applyCoupon);
+
 router.use(isAuthenticated, restrictTo('admin'));
 
 router

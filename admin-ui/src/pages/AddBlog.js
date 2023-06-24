@@ -33,6 +33,7 @@ const AddBlog = () => {
       category: '',
       images: [],
     },
+    isInitialValid: false,
     validationSchema: blogSchema,
     // SUBMIT
     onSubmit: async (values) => {
@@ -160,6 +161,7 @@ const AddBlog = () => {
 
           <button
             type='submit'
+            disabled={!formik.isValid || images?.length < 1}
             className='btn btn-success border-0 rounded-3 my-5'
           >
             Thêm bài viết

@@ -51,7 +51,7 @@ body {
 }
 
 .logo {
-  background-color: #ffd333;
+  background: radial-gradient(circle at center, #ff6b6b, #0a81ab);
   margin: 0;
   height: 64px;
 }

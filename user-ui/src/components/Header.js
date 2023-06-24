@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { BsSearch } from 'react-icons/bs';
 import { AiOutlineLogout } from 'react-icons/ai';
+import { CgProfile } from 'react-icons/cg';
 import { useDispatch, useSelector } from 'react-redux';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
@@ -103,21 +104,23 @@ const Header = () => {
 
             <div className='col-5'>
               <div className='header-upper-links d-flex align-items-center justify-content-between'>
-                <div>
-                  <Link
-                    className='d-flex align-items-center gap-10 text-white'
-                    to='/compare-products'
-                    onClick={() => window.scrollTo(0, 0)}
-                  >
-                    <img src='/images/compare.svg' alt='compare' />
-                    <p className='mb-0'>
-                      So sánh
-                      <br />
-                      sản phẩm
-                    </p>
-                  </Link>
+                <div className='flex-grow-1'>
+                  {auth.isLoggedIn && (
+                    <Link
+                      className='d-flex align-items-center gap-10 text-white'
+                      to='/profile'
+                      onClick={() => window.scrollTo(0, 0)}
+                    >
+                      <CgProfile fontSize={40} style={{ opacity: 0.8 }} />
+                      <p className='mb-0'>
+                        Xin chào,
+                        <br />
+                        {auth.user.firstName}
+                      </p>
+                    </Link>
+                  )}
                 </div>
-                <div>
+                <div className='flex-grow-1'>
                   <Link
                     to='/wishlist'
                     className='d-flex align-items-center gap-10 text-white'
@@ -131,7 +134,24 @@ const Header = () => {
                     </p>
                   </Link>
                 </div>
-                <div>
+
+                <div className='flex-grow-1'>
+                  <Link
+                    to='/cart'
+                    className='d-flex align-items-center gap-10 text-white'
+                    onClick={() => window.scrollTo(0, 0)}
+                  >
+                    <img src='/images/cart.svg' alt='cart' />
+                    <div className='d-flex flex-column gap-10'>
+                      <span className='badge bg-white text-dark'>
+                        {cart.cart.length}
+                      </span>
+                      <p className='mb-0'>{formatCurrency(cart.totalPrice)}</p>
+                    </div>
+                  </Link>
+                </div>
+
+                <div className='flex-grow-1'>
                   {!auth.isLoggedIn ? (
                     <Link
                       to='/login'
@@ -149,27 +169,12 @@ const Header = () => {
                       className='d-flex align-items-center gap-10 text-white bg-transparent border-0'
                     >
                       {/* <img src='/images/user.svg' alt='user' /> */}
-                      <AiOutlineLogout fontSize={40} fontWeight={100} />
+                      <AiOutlineLogout fontSize={40} style={{ opacity: 0.8 }} />
                       <p className='mb-0'>
                         Đăng <br /> xuất
                       </p>
                     </button>
                   )}
-                </div>
-                <div>
-                  <Link
-                    to='/cart'
-                    className='d-flex align-items-center gap-10 text-white'
-                    onClick={() => window.scrollTo(0, 0)}
-                  >
-                    <img src='/images/cart.svg' alt='cart' />
-                    <div className='d-flex flex-column gap-10'>
-                      <span className='badge bg-white text-dark'>
-                        {cart.cart.length}
-                      </span>
-                      <p className='mb-0'>{formatCurrency(cart.totalPrice)}</p>
-                    </div>
-                  </Link>
                 </div>
               </div>
             </div>
@@ -239,8 +244,7 @@ const Header = () => {
                     <NavLink to='/contact'>Liên hệ</NavLink>
                     {auth?.isLoggedIn ? (
                       <>
-                        <NavLink to='/orders'>Đơn hàng</NavLink>
-                        <NavLink to='/profile'>Thông tin cá nhân</NavLink>
+                        <NavLink to='/orders'>Đơn hàng của tôi</NavLink>
                       </>
                     ) : (
                       <></>

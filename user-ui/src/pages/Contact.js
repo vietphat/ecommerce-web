@@ -11,10 +11,21 @@ import Container from '../components/Container';
 import Input from '../components/Input';
 
 const enquirySchema = Yup.object({
-  name: Yup.string().required('Họ tên không được để trống'),
-  email: Yup.string().required('Email không được để trống'),
-  mobile: Yup.string().required('Số điện thoại không được để trống'),
-  comment: Yup.string().required('Nội dung không được để trống'),
+  name: Yup.string()
+    .matches(
+      /^[A-Za-z\sàáạãảâầấậẫẩăằắặẵẳèéẹẽẻêềếệễểìíịĩỉòóọõỏôồốộỗổơờớợỡởùúụũủưừứựữửỳýỵỹỷđÀÁẠÃẢÂẦẤẬẪẨĂẰẮẶẴẲÈÉẸẼẺÊỀẾỆỄỂÌÍỊĨỈÒÓỌÕỎÔỒỐỘỖỔƠỜỚỢỠỞÙÚỤŨỦƯỪỨỰỮỬỲÝỴỸỶĐ]+$/,
+      'Họ tên không hợp lệ'
+    )
+    .required('Họ tên không được để trống'),
+  email: Yup.string()
+    .email('Email không hợp lệ')
+    .required('Email không được để trống'),
+  mobile: Yup.string()
+    .matches(/^\d{10}$/, 'Số điện thoại không hợp lệ')
+    .required('Số điện thoại không được để trống'),
+  comment: Yup.string()
+    .min(10, 'Nội dung không được ít hơn 10 kí tự')
+    .required('Nội dung không được để trống'),
 });
 
 const Contact = () => {
@@ -118,7 +129,15 @@ const Contact = () => {
                   </div>
 
                   <div>
-                    <button className='button border-0'>Gửi</button>
+                    <button
+                      disabled={!formik.isValid}
+                      className={`button border-0 ${
+                        formik.isValid ? '' : 'invalid-button'
+                      }`}
+                      type='submit'
+                    >
+                      Gửi
+                    </button>
                   </div>
                 </form>
               </div>

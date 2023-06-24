@@ -2,6 +2,7 @@ import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch } from 'react-redux';
+import axios from 'axios';
 
 import { register } from '../features/auth/authSlice';
 import Meta from '../components/Meta';
@@ -11,14 +12,47 @@ import Input from '../components/Input';
 import { getWishlist } from '../features/wishlist/wishlistSlice';
 import { getCart } from '../features/cart/cartSlice';
 import { getMyOrders } from '../features/order/orderSlice';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const signUpSchema = Yup.object({
-  firstName: Yup.string().required('Tên không được để trống'),
-  lastName: Yup.string().required('Họ không được để trống'),
-  phoneNumber: Yup.string().required('Số điện thoại không được để trống'),
-  email: Yup.string().required('Email không được để trống'),
-  password: Yup.string().required('Mật khẩu không được để trống'),
+  firstName: Yup.string()
+    .matches(
+      /^[A-Za-z\sàáạãảâầấậẫẩăằắặẵẳèéẹẽẻêềếệễểìíịĩỉòóọõỏôồốộỗổơờớợỡởùúụũủưừứựữửỳýỵỹỷđÀÁẠÃẢÂẦẤẬẪẨĂẰẮẶẴẲÈÉẸẼẺÊỀẾỆỄỂÌÍỊĨỈÒÓỌÕỎÔỒỐỘỖỔƠỜỚỢỠỞÙÚỤŨỦƯỪỨỰỮỬỲÝỴỸỶĐ]+$/,
+      'Tên không hợp lệ'
+    )
+    .required('Tên không được để trống'),
+  lastName: Yup.string()
+    .matches(
+      /^[A-Za-z\sàáạãảâầấậẫẩăằắặẵẳèéẹẽẻêềếệễểìíịĩỉòóọõỏôồốộỗổơờớợỡởùúụũủưừứựữửỳýỵỹỷđÀÁẠÃẢÂẦẤẬẪẨĂẰẮẶẴẲÈÉẸẼẺÊỀẾỆỄỂÌÍỊĨỈÒÓỌÕỎÔỒỐỘỖỔƠỜỚỢỠỞÙÚỤŨỦƯỪỨỰỮỬỲÝỴỸỶĐ]+$/,
+      'Họ không hợp lệ'
+    )
+    .required('Họ không được để trống'),
+  phoneNumber: Yup.string()
+    .matches(/^\d{10}$/, 'Số điện thoại không hợp lệ')
+    .test('unique-phone-number', 'Số điện thoại đã tồn tại', async (value) => {
+      // Gửi request kiểm tra số điện thoại không trùng
+      const response = await axios(
+        `http://localhost:5000/api/auth/check-phone-number/${value}`
+      );
+      const isExisted = await response.data.data.isExisted;
+
+      return !isExisted;
+    })
+    .required('Số điện thoại không được để trống'),
+  email: Yup.string()
+    .test('unique-email', 'Email đã tồn tại', async (value) => {
+      // Gửi request kiểm tra số điện thoại không trùng
+      const response = await axios(
+        `http://localhost:5000/api/auth/check-email/${value}`
+      );
+      const isExisted = await response.data.data.isExisted;
+
+      return !isExisted;
+    })
+    .required('Email không được để trống'),
+  password: Yup.string()
+    .min(4, 'Mật khẩu phải có ít nhất 4 kí tự')
+    .required('Mật khẩu không được để trống'),
   confirmPassword: Yup.string()
     .required('Mật khẩu xác nhận không được để trống')
     .oneOf(
@@ -40,6 +74,7 @@ const Signup = () => {
       password: '',
       confirmPassword: '',
     },
+    isInitialValid: false,
     validationSchema: signUpSchema,
     onSubmit: async (values) => {
       // alert(JSON.stringify(values));
@@ -141,8 +176,22 @@ const Signup = () => {
                 </div>
 
                 <div>
+                  <Link
+                    to='/login'
+                    className='text-decoration-underline'
+                    onClick={() => window.scrollTo(0, 0)}
+                  >
+                    Đã có tài khoản? Đăng nhập ngay!
+                  </Link>
+
                   <div className='mt-3 d-flex justify-content-center gap-15 align-items-center'>
-                    <button type='submit' className='button border-0'>
+                    <button
+                      type='submit'
+                      disabled={!formik.isValid}
+                      className={`button border-0 ${
+                        formik.isValid ? '' : 'invalid-button'
+                      }`}
+                    >
                       Đăng ký ngay
                     </button>
                   </div>

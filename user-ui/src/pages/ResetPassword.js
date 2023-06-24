@@ -14,9 +14,12 @@ import { getCart } from '../features/cart/cartSlice';
 import { getMyOrders } from '../features/order/orderSlice';
 
 const resetPasswordSchema = Yup.object({
-  password: Yup.string().required('Mật khẩu không được để trống'),
+  password: Yup.string()
+    .min(4, 'Mật khẩu phải có ít nhất 4 kí tự')
+    .required('Mật khẩu không được để trống'),
   confirmPassword: Yup.string()
     .required('Mật khẩu xác nhận không được để trống')
+
     .oneOf(
       [Yup.ref('password'), null],
       'Mật khẩu xác nhận phải giống với mật khẩu'
@@ -33,6 +36,7 @@ const ResetPassword = () => {
       password: '',
       confirmPassword: '',
     },
+    isInitialValid: false,
     validationSchema: resetPasswordSchema,
     onSubmit: async (values) => {
       // alert(JSON.stringify(values));
@@ -95,12 +99,18 @@ const ResetPassword = () => {
                   <div className='mt-3 d-flex justify-content-center flex-column gap-15 align-items-center'>
                     <button
                       disabled={!formik.isValid}
-                      className='button border-0'
+                      className={`button border-0 ${
+                        formik.isValid ? '' : 'invalid-button'
+                      }`}
                       type='submit'
                     >
                       Gửi
                     </button>
-                    <Link to='/login' onClick={() => window.scrollTo(0, 0)}>
+                    <Link
+                      to='/login'
+                      className='text-decoration-underline'
+                      onClick={() => window.scrollTo(0, 0)}
+                    >
                       Hủy bỏ
                     </Link>
                   </div>

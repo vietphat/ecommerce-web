@@ -18,6 +18,7 @@ const AddBlogCategory = () => {
     initialValues: {
       title: '',
     },
+    isInitialValid: false,
     validationSchema: blogCategorySchema,
     // SUBMIT
     onSubmit: async (values) => {
@@ -52,6 +53,7 @@ const AddBlogCategory = () => {
 
           <button
             type='submit'
+            disabled={!formik.isValid}
             className='btn btn-success border-0 rounded-3 my-5'
           >
             Thêm danh mục bài viết

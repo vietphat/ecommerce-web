@@ -9,6 +9,68 @@ const generateJWT = require('./../config/generateJWT');
 const generateRefreshToken = require('../config/generateRefreshToken');
 const Email = require('../utils/email');
 
+// Kiểm tra nếu sđt đã tồn tại
+exports.checkPhoneNumber = catchAsync(async (req, res, next) => {
+  const { phoneNumber } = req.params;
+
+  const data = await User.findOne({ phoneNumber });
+
+  let isExisted = false;
+  if (data !== null) {
+    isExisted = true;
+  }
+
+  res.status(200).json({
+    status: 'Thành công',
+    data: { isExisted },
+  });
+});
+
+// Kiểm tra nếu email đã tồn tại
+exports.checkEmail = catchAsync(async (req, res, next) => {
+  const { email } = req.params;
+
+  const data = await User.findOne({ email });
+
+  let isExisted = false;
+  if (data !== null) {
+    isExisted = true;
+  }
+
+  res.status(200).json({
+    status: 'Thành công',
+    data: {
+      isExisted,
+    },
+  });
+});
+
+// Kiểm tra nếu sđt đã tồn tại khi thay đổi thông tin
+exports.checkPhoneNumberWhenUpdate = catchAsync(async (req, res, next) => {
+  const { phoneNumber } = req.params;
+
+  let isExisted = false;
+  if (req.user.phoneNumber === phoneNumber) {
+    return res.status(200).json({
+      status: 'Thành công',
+      data: { isExisted },
+    });
+  }
+
+  const data = await User.findOne({ phoneNumber });
+
+  if (data !== null) {
+    isExisted = true;
+  }
+
+  res.status(200).json({
+    status: 'Thành công',
+    data: {
+      isExisted,
+    },
+  });
+});
+
 // Register
 exports.register = catchAsync(async (req, res, next) => {
   const { firstName, lastName, phoneNumber, email, password, confirmPassword } =
@@ -91,6 +153,7 @@ exports.login = catchAsync(async (req, res, next) => {
     lastName: user.lastName,
     email: user.email,
     phoneNumber: user.phoneNumber,
+    address: user.address,
     token: generateJWT(user._id),
   });
 

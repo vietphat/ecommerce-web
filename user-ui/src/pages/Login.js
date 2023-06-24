@@ -14,7 +14,9 @@ import { getMyOrders } from '../features/order/orderSlice';
 import { getWishlist } from '../features/wishlist/wishlistSlice';
 
 const loginSchema = Yup.object({
-  email: Yup.string().required('Email không được để trống'),
+  email: Yup.string()
+    .email('Email không hợp lệ')
+    .required('Email không được để trống'),
   password: Yup.string().required('Mật khẩu không được để trống'),
 });
 
@@ -27,6 +29,7 @@ const Login = () => {
       email: '',
       password: '',
     },
+    isInitialValid: false,
     validationSchema: loginSchema,
     onSubmit: async (values) => {
       // alert(JSON.stringify(values));
@@ -83,13 +86,20 @@ const Login = () => {
                 <div>
                   <Link
                     to='/forgot-password'
+                    className='text-decoration-underline'
                     onClick={() => window.scrollTo(0, 0)}
                   >
                     Quên mật khẩu?
                   </Link>
 
                   <div className='mt-3 d-flex justify-content-center gap-15 align-items-center'>
-                    <button className='button border-0' type='submit'>
+                    <button
+                      disabled={!formik.isValid}
+                      className={`button border-0 ${
+                        formik.isValid ? '' : 'invalid-button'
+                      }`}
+                      type='submit'
+                    >
                       Đăng nhập
                     </button>
                     <Link

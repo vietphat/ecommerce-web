@@ -67,3 +67,7 @@
 .color-option-label {
   font-size: 14px;
 }
+
+.invalid-button {
+  opacity: 0.5;
+}

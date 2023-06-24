@@ -11,7 +11,9 @@ import Input from '../components/Input';
 import { forgotPassword } from '../features/auth/authSlice';
 
 const forgotPasswordSchema = Yup.object({
-  email: Yup.string().required('Email không được để trống'),
+  email: Yup.string()
+    .email('Email không hợp lệ')
+    .required('Email không được để trống'),
 });
 
 const ForgotPassword = () => {
@@ -63,12 +65,16 @@ const ForgotPassword = () => {
                   <div className='mt-3 d-flex justify-content-center flex-column gap-15 align-items-center'>
                     <button
                       disabled={!formik.isValid}
-                      className='button border-0'
+                      className={`button border-0 ${
+                        formik.isValid ? '' : 'invalid-button'
+                      }`}
                       type='submit'
                     >
                       Gửi
                     </button>
-                    <Link to='/login'>Hủy bỏ</Link>
+                    <Link to='/login' className='text-decoration-underline'>
+                      Hủy bỏ
+                    </Link>
                   </div>
                 </div>
               </form>

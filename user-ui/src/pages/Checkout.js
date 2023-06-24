@@ -1,8 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { BiArrowBack } from 'react-icons/bi';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
+import { toast } from 'react-toastify';
+import axios from 'axios';
 import * as Yup from 'yup';
 
 import formatCurrency from '../utils/format_currency';
@@ -10,79 +12,126 @@ import Container from '../components/Container';
 import { deleteCartAfterOrder, getCart } from '../features/cart/cartSlice';
 import Input from '../components/Input';
 import { createOrder } from '../features/order/orderSlice';
-import PaypalButton from '../components/PaypalButton';
+// import PaypalButton from '../components/PaypalButton';
 import Meta from '../components/Meta';
+import Colors from '../components/Colors';
 
 const orderSchema = Yup.object({
-  firstName: Yup.string().required('Tên không được để trống'),
-  lastName: Yup.string().required('Họ không được để trống'),
+  firstName: Yup.string()
+    .matches(
+      /^[A-Za-z\sàáạãảâầấậẫẩăằắặẵẳèéẹẽẻêềếệễểìíịĩỉòóọõỏôồốộỗổơờớợỡởùúụũủưừứựữửỳýỵỹỷđÀÁẠÃẢÂẦẤẬẪẨĂẰẮẶẴẲÈÉẸẼẺÊỀẾỆỄỂÌÍỊĨỈÒÓỌÕỎÔỒỐỘỖỔƠỜỚỢỠỞÙÚỤŨỦƯỪỨỰỮỬỲÝỴỸỶĐ]+$/,
+      'Tên không hợp lệ'
+    )
+    .required('Tên không được để trống'),
+  lastName: Yup.string()
+    .matches(
+      /^[A-Za-z\sàáạãảâầấậẫẩăằắặẵẳèéẹẽẻêềếệễểìíịĩỉòóọõỏôồốộỗổơờớợỡởùúụũủưừứựữửỳýỵỹỷđÀÁẠÃẢÂẦẤẬẪẨĂẰẮẶẴẲÈÉẸẼẺÊỀẾỆỄỂÌÍỊĨỈÒÓỌÕỎÔỒỐỘỖỔƠỜỚỢỠỞÙÚỤŨỦƯỪỨỰỮỬỲÝỴỸỶĐ]+$/,
+      'Tên không hợp lệ'
+    )
+    .required('Họ không được để trống'),
   address: Yup.string().required('Địa chỉ không được để trống'),
-  phoneNumber: Yup.string().required('Số điện thoại không được để trống'),
-  paymentMethod: Yup.string().required('Vui lòng chọn phương thức thanh toán'),
+  phoneNumber: Yup.string()
+    .matches(/^\d{10}$/, 'Số điện thoại không hợp lệ')
+    .required('Số điện thoại không được để trống'),
+  // paymentMethod: Yup.string().required('Vui lòng chọn phương thức thanh toán'),
   notes: Yup.string(),
 });
 
 const Checkout = () => {
+  const [shippingFee, setShippingFee] = useState(25000);
+  const [couponCode, setCouponCode] = useState('');
+  const [reducedPrice, setReducedPrice] = useState(0);
+  const [discountPercent, setDiscountPercent] = useState(0);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { cart, totalPrice } = useSelector((state) => state.cart);
   const { user } = useSelector((state) => state.auth);
+  const { isLoading: isOrdering } = useSelector((state) => state.order);
 
   const formik = useFormik({
     initialValues: {
       firstName: user?.firstName,
       lastName: user?.lastName,
-      address: '',
+      address: user?.address,
       phoneNumber: user?.phoneNumber,
       notes: '',
-      paymentMethod: '',
+      // paymentMethod: 'online',
     },
-    isInitialValid: false,
     validationSchema: orderSchema,
     onSubmit: async (values) => {
-      if (formik.values.paymentMethod === 'cod') {
-        // dữ liệu
-        const data = {
-          user: user._id,
-          shippingInfo: {
-            firstName: formik.values.firstName,
-            lastName: formik.values.lastName,
-            address: formik.values.address,
-            notes: formik.values.notes,
-          },
-          paymentMethod: formik.values.paymentMethod,
-          orderItems: cart.map((c) => {
-            return {
-              product: c.product._id,
-              color: c.color._id,
-              quantity: c.quantity,
-              price: c.price,
-            };
-          }),
-          totalPrice: totalPrice,
-          totalPriceAfterDiscount: totalPrice, // sửa sau
-        };
+      // dữ liệu
+      const data = {
+        user: user._id,
+        shippingInfo: {
+          firstName: values.firstName,
+          lastName: values.lastName,
+          address: values.address,
+          notes: values.notes,
+        },
+        paymentMethod: 'cod', // values.paymentMethod,
+        orderItems: cart.map((c) => {
+          return {
+            product: c.product._id,
+            color: c.color._id,
+            quantity: c.quantity,
+            price: c.price,
+          };
+        }),
+        totalPrice: totalPrice + shippingFee,
+        totalPriceAfterDiscount: totalPrice + shippingFee - reducedPrice,
+      };
 
-        // create order
-        const orderResult = await dispatch(createOrder(data));
+      console.log(data);
 
-        // xóa giỏ hàng
-        if (orderResult.meta.requestStatus === 'fulfilled') {
-          const cartIds = cart.map((c) => c._id);
-          dispatch(deleteCartAfterOrder(cartIds));
-        }
-        formik.resetForm();
-        navigate('/');
+      // create order
+      const orderResult = await dispatch(createOrder(data));
+
+      // xóa giỏ hàng
+      if (orderResult.meta.requestStatus === 'fulfilled') {
+        const cartIds = cart.map((c) => c._id);
+        dispatch(deleteCartAfterOrder(cartIds));
       }
-      // dispatch(addEnquiry(values));
-      // navigate('/');
+      formik.resetForm();
+      navigate('/');
     },
   });
 
   useEffect(() => {
     dispatch(getCart());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (totalPrice && totalPrice > 3000000) {
+      setShippingFee(0);
+    }
+  }, [totalPrice]);
+
+  const handleApplyCoupon = async (couponCode, price) => {
+    try {
+      const res = await axios.post(
+        'http://localhost:5000/api/coupons/apply-coupon',
+        {
+          couponCode,
+          price,
+        }
+      );
+
+      if (res.status === 200) {
+        setReducedPrice(res.data.data.reducedPrice);
+        setDiscountPercent(res.data.data.coupon.discount);
+        setCouponCode('');
+
+        toast.success(
+          `Bạn đã áp dụng mã giảm giá ${res.data.data.coupon.name} thành công! 
+          (đã giảm ${res.data.data.coupon.discount}% vào giá trị đơn hàng)!`
+        );
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message);
+    }
+  };
 
   return (
     <>
@@ -105,17 +154,6 @@ const Checkout = () => {
                     >
                       Giỏ hàng
                     </Link>
-                  </li>
-                  &nbsp;/
-                  <li
-                    className='breadcrumb-item active total-price'
-                    aria-current='page'
-                  >
-                    Thông tin
-                  </li>
-                  &nbsp;/
-                  <li className='breadcrumb-item active total-price'>
-                    Vận chuyển
                   </li>
                   &nbsp;/
                   <li
@@ -196,7 +234,7 @@ const Checkout = () => {
                   {formik.touched.address && formik.errors.address}
                 </div>
 
-                <select
+                {/* <select
                   className='form-select'
                   name='paymentMethod'
                   value={formik.values.paymentMethod}
@@ -209,7 +247,7 @@ const Checkout = () => {
                 </select>
                 <div className='error w-100'>
                   {formik.touched.paymentMethod && formik.errors.paymentMethod}
-                </div>
+                </div> */}
 
                 <div>
                   <textarea
@@ -238,7 +276,7 @@ const Checkout = () => {
                       <BiArrowBack className='me-2' />
                       Quay về giỏ hàng
                     </Link>
-                    {formik.values.paymentMethod === 'online' ? (
+                    {/* {formik.values.paymentMethod === 'online' ? (
                       <PaypalButton
                         totalPrice={totalPrice}
                         user={user}
@@ -265,7 +303,29 @@ const Checkout = () => {
                       <button
                         disabled={!formik.isValid}
                         type='submit'
-                        className='button border-0'
+                        className={`button border-0 ${
+                          formik.isValid ? '' : 'invalid-button'
+                        }`}
+                      >
+                        Đặt hàng
+                      </button>
+                    )} */}
+
+                    {isOrdering ? (
+                      <div>
+                        Đang đặt hàng
+                        <div class='spinner-border text-dark' role='status'>
+                          <span class='visually-hidden'>Loading...</span>
+                        </div>
+                      </div>
+                    ) : (
+                      <button
+                        disabled={!formik.isValid}
+                        type='submit'
+                        className={`button border-0 ${
+                          formik.isValid ? '' : 'invalid-button'
+                        }`}
+                        onClick={formik.handleSubmit}
                       >
                         Đặt hàng
                       </button>
@@ -301,20 +361,16 @@ const Checkout = () => {
                         </div>
 
                         <div>
-                          <h5 className='total-price'>{c.product.title}</h5>
-                          <p className='total-price d-flex align-items-center gap-1'>
+                          <Link
+                            to={`/product/${c.product._id}`}
+                            className='total-price text-dark fw-bold'
+                          >
+                            {c.product.title}
+                          </Link>
+                          <div className='total-price d-flex align-items-center gap-1'>
                             {formatCurrency(c.price)} /{' '}
-                            <li
-                              style={{
-                                backgroundColor: c.color.title,
-                                listStyle: 'none',
-                                display: 'inline-block',
-                                width: '20px',
-                                height: '20px',
-                                borderRadius: '50%',
-                              }}
-                            />
-                          </p>
+                            <Colors colors={c.product.colors} class1='mb-0' />
+                          </div>
                         </div>
                       </div>
 
@@ -333,25 +389,61 @@ const Checkout = () => {
 
             <div className='border-bottom py-4'>
               <div className='d-flex justify-content-between align-items-center'>
-                <p className='total'>Thành tiền</p>
-                <p className='total-price'>{formatCurrency(totalPrice)}</p>
+                <p className='total fw-bold'>Thành tiền</p>
+                <p
+                  className={`total-price ${
+                    reducedPrice > 0 && 'text-decoration-line-through'
+                  }`}
+                >
+                  {formatCurrency(totalPrice)}
+                </p>
               </div>
 
+              {reducedPrice > 0 && (
+                <div className='d-flex justify-content-between align-items-center'>
+                  <p className='total fw-bold'>
+                    Thành tiền sau khi giảm giá ({discountPercent}%)
+                  </p>
+                  <p className='total-price'>
+                    {formatCurrency(totalPrice - reducedPrice)}
+                  </p>
+                </div>
+              )}
+
               <div className='d-flex justify-content-between align-items-center'>
-                <p className='mb-0 total'>Vận chuyển</p>
+                <p className='mb-0 total fw-bold'>
+                  Vận chuyển (miễn phí cho các đơn hàng trên 3tr đồng)
+                </p>
                 <p className='mb-0 total-price'>
-                  {formatCurrency(totalPrice < 3000000 ? 25000 : 0)}
+                  {formatCurrency(shippingFee)}
                 </p>
               </div>
             </div>
 
             <div className='d-flex justify-content-between align-items-center border-bottom py-4'>
-              <h4 className='total'>Tổng</h4>
+              <h4 className='total'>Tổng cộng</h4>
               <h5 className='total-price'>
-                {formatCurrency(
-                  totalPrice + (totalPrice < 3000000 ? 25000 : 0)
-                )}
+                {formatCurrency(totalPrice + shippingFee - reducedPrice)}
               </h5>
+            </div>
+
+            <div className='d-flex justify-content-between py-4'>
+              <input
+                className='form-control'
+                type='text'
+                placeholder='Mã giảm giá'
+                value={couponCode}
+                onChange={(e) => setCouponCode(e.target.value)}
+              />
+
+              <button
+                disabled={couponCode === ''}
+                type='button'
+                className='btn btn-danger'
+                onClick={() => handleApplyCoupon(couponCode, totalPrice)}
+              >
+                MÃ GIẢM GIÁ (nếu có)
+              </button>
             </div>
           </div>
         </div>

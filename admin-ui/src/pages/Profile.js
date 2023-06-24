@@ -6,11 +6,36 @@ import { FiEdit } from 'react-icons/fi';
 
 import Input from '../components/Input';
 import { updateMyData } from '../features/auth/authSlice';
+import axios from 'axios';
+import { config } from '../utils/axios_config';
 
 const profileSchema = Yup.object({
-  firstName: Yup.string().required('Tên không được để trống'),
-  lastName: Yup.string().required('Họ không được để trống'),
-  phoneNumber: Yup.string().required('Số điện thoại không được để trống'),
+  firstName: Yup.string()
+    .matches(
+      /^[A-Za-z\sàáạãảâầấậẫẩăằắặẵẳèéẹẽẻêềếệễểìíịĩỉòóọõỏôồốộỗổơờớợỡởùúụũủưừứựữửỳýỵỹỷđÀÁẠÃẢÂẦẤẬẪẨĂẰẮẶẴẲÈÉẸẼẺÊỀẾỆỄỂÌÍỊĨỈÒÓỌÕỎÔỒỐỘỖỔƠỜỚỢỠỞÙÚỤŨỦƯỪỨỰỮỬỲÝỴỸỶĐ]+$/,
+      'Tên không hợp lệ'
+    )
+    .required('Tên không được để trống'),
+  lastName: Yup.string()
+    .matches(
+      /^[A-Za-z\sàáạãảâầấậẫẩăằắặẵẳèéẹẽẻêềếệễểìíịĩỉòóọõỏôồốộỗổơờớợỡởùúụũủưừứựữửỳýỵỹỷđÀÁẠÃẢÂẦẤẬẪẨĂẰẮẶẴẲÈÉẸẼẺÊỀẾỆỄỂÌÍỊĨỈÒÓỌÕỎÔỒỐỘỖỔƠỜỚỢỠỞÙÚỤŨỦƯỪỨỰỮỬỲÝỴỸỶĐ]+$/,
+      'Họ không hợp lệ'
+    )
+    .required('Họ không được để trống'),
+  phoneNumber: Yup.string()
+    .matches(/^\d{10}$/, 'Số điện thoại không hợp lệ')
+    .test('unique-phone-number', 'Số điện thoại đã tồn tại', async (value) => {
+      // Gửi request kiểm tra số điện thoại không trùng
+      const response = await axios(
+        `http://localhost:5000/api/auth/check-phone-number-when-update/${value}`,
+        config()
+      );
+
+      const isExisted = await response.data.data.isExisted;
+
+      return !isExisted;
+    })
+    .required('Số điện thoại không được để trống'),
   email: Yup.string().required('Email không được để trống'),
 });
 
@@ -40,8 +65,6 @@ const Profile = () => {
       setEditMode(false);
     },
   });
-
-  console.log(editMode);
 
   return (
     <div className='row'>

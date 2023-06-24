@@ -18,6 +18,7 @@ const AddBrand = () => {
     initialValues: {
       title: '',
     },
+    isInitialValid: false,
     validationSchema: brandSchema,
     // SUBMIT
     onSubmit: async (values) => {
@@ -53,6 +54,7 @@ const AddBrand = () => {
 
           <button
             type='submit'
+            disabled={!formik.isValid}
             className='btn btn-success border-0 rounded-3 my-5'
           >
             Thêm thương hiệu

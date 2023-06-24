@@ -3,6 +3,7 @@ const uniqid = require('uniqid');
 const User = require('./../models/User');
 const Cart = require('./../models/Cart');
 const Order = require('../models/Order');
+const Product = require('../models/Product');
 const AppError = require('../utils/AppError');
 const catchAsync = require('./../utils/catchAsync');
 const validateMongoDbId = require('./../config/validateMongoDbId');
@@ -31,7 +32,7 @@ exports.updateMyData = catchAsync(async (req, res, next) => {
     );
   }
 
-  const { firstName, lastName, phoneNumber } = req.body;
+  const { firstName, lastName, phoneNumber, address } = req.body;
 
   // Cập nhật và lưu vào db
   const user = await User.findByIdAndUpdate(
@@ -40,6 +41,7 @@ exports.updateMyData = catchAsync(async (req, res, next) => {
       firstName,
       lastName,
       phoneNumber,
+      address,
     },
     {
       runValidators: true,
@@ -139,7 +141,7 @@ exports.getUserCart = catchAsync(async (req, res, next) => {
   });
 });
 
-// Update quantity
+// Update cart quantity
 exports.updateCartQuantity = catchAsync(async (req, res, next) => {
   const { id } = req.params;
   const { quantity } = req.body;
@@ -189,6 +191,27 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 
   const data = await order.populate('orderItems.product orderItems.color');
 
+  // Giảm số lượng và tăng số lượng đã bán của sản phẩm
+  for (const item of orderItems) {
+    const product = await Product.findById(item.product);
+
+    if (!product) {
+      // Handle product not found error if needed
+      return res.status(400).json({
+        status: 'Thất bại',
+        message: 'Sản phẩm không còn tồn tại',
+      });
+    }
+
+    // Giảm số lượng
+    product.quantity -= item.quantity;
+
+    // Tăng số lượng đã bán
+    product.sold += item.quantity;
+
+    await product.save();
+  }
+
   const url = `${process.env.DEV_CLIENT_DOMAIN}/orders`;
 
   await new Email(req.user, url).sendCreateOrderSuccessfully();
@@ -213,7 +236,7 @@ exports.deleteCartsAfterOrder = catchAsync(async (req, res, next) => {
 exports.getMyOrders = catchAsync(async (req, res, next) => {
   const { _id } = req.user;
 
-  const data = await Order.find({ user: _id });
+  const data = await Order.find({ user: _id }).sort('-createdAt');
 
   res.status(200).json({
     status: 'Thành công',

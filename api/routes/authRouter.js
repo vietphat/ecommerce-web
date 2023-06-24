@@ -5,6 +5,19 @@ const isAuthenticated = require('../middlewares/isAuthenticated');
 
 const router = express.Router();
 
+// Kiểm tra sđt đã tồn tại
+router.get('/check-phone-number/:phoneNumber', authController.checkPhoneNumber);
+
+// Kiểm tra email đã tồn tại
+router.get('/check-email/:email', authController.checkEmail);
+
+// Kiểm tra sđt đã tồn tại
+router.get(
+  '/check-phone-number-when-update/:phoneNumber',
+  isAuthenticated,
+  authController.checkPhoneNumberWhenUpdate
+);
+
 // Register
 router.post('/register', authController.register);
 

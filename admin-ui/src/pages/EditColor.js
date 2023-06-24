@@ -8,7 +8,12 @@ import Input from '../components/Input';
 import { getAColor, editAColor } from '../features/color/colorSlice';
 
 let colorSchema = Yup.object({
-  title: Yup.string().required('Mã màu không được để trống'),
+  title: Yup.string()
+    .matches(
+      /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/,
+      'Màu sản phẩm phải là kiểu hex'
+    )
+    .required('Mã màu không được để trống'),
 });
 
 const EditColor = () => {
@@ -25,6 +30,7 @@ const EditColor = () => {
 
   const formik = useFormik({
     enableReinitialize: true,
+    isInitialValid: false,
     initialValues: {
       title: currentColor?.title ? currentColor?.title : '',
     },
@@ -62,6 +68,7 @@ const EditColor = () => {
           </div>
 
           <button
+            disabled={!formik.isValid}
             type='submit'
             className='btn btn-success border-0 rounded-3 my-5'
           >

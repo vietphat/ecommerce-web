@@ -20,6 +20,10 @@ const userSchema = new mongoose.Schema(
       default: '',
       unique: true,
     },
+    address: {
+      type: String,
+      default: '',
+    },
     wishlist: [
       {
         type: mongoose.Schema.Types.ObjectId,

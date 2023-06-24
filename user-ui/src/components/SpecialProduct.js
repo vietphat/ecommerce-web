@@ -18,8 +18,13 @@ const SpecialProduct = ({ data }) => {
               />
             </div>
             <div className='special-product-content'>
-              <h5 className='brand'>{data?.brand?.title}</h5>
-              <h6 className='title'>{data?.title}</h6>
+              <h5 className='brand text-danger fs-6'>{data?.brand?.title}</h5>
+              <Link
+                to={`/product/${data?._id}`}
+                className='title text-dark fw-bolder fs-5'
+              >
+                {data?.title}
+              </Link>
               <ReactStars
                 count={5}
                 size={24}

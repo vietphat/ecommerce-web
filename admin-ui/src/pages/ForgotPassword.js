@@ -7,7 +7,9 @@ import { forgotPassword } from '../features/auth/authSlice';
 import Input from '../components/Input';
 
 const forgotPasswordSchema = Yup.object({
-  email: Yup.string().required('Email không được để trống'),
+  email: Yup.string()
+    .email('Email không hợp lệ')
+    .required('Email không được để trống'),
 });
 
 const ForgotPassword = () => {
@@ -26,7 +28,13 @@ const ForgotPassword = () => {
   });
 
   return (
-    <div className='py-5' style={{ background: '#ffd333', minHeight: '100vh' }}>
+    <div
+      className='py-5'
+      style={{
+        background: 'radial-gradient(circle at center, #ff6b6b, #0a81ab)',
+        minHeight: '100vh',
+      }}
+    >
       <br />
       <div className='my-5 w-25 bg-white rounded-3 mx-auto p-3'>
         <h3 className='text-center title'>Quên mật khẩu</h3>
@@ -41,6 +49,7 @@ const ForgotPassword = () => {
           <Input
             type='email'
             name='email'
+            label='Email'
             placeholder='Email'
             value={formik.values.email}
             onChange={formik.handleChange('email')}
@@ -54,13 +63,22 @@ const ForgotPassword = () => {
             <div className='mt-3 d-flex justify-content-center flex-column gap-15 align-items-center'>
               <button
                 disabled={!formik.isValid}
-                className='border-0 px-3 py-2 text-white fw-bold w-100 mt-3'
+                className={`border-0 px-3 py-2 text-white fw-bold w-100 mt-3 ${
+                  formik.isValid ? '' : 'invalid-button'
+                }`}
                 type='submit'
-                style={{ backgroundColor: '#ffd333' }}
+                style={{
+                  background:
+                    'radial-gradient(circle at center, #ff6b6b, #0a81ab)',
+                }}
               >
                 Gửi
               </button>
-              <Link to='/' onClick={() => window.scrollTo(0, 0)}>
+              <Link
+                className='mt-3 text-dark'
+                to='/'
+                onClick={() => window.scrollTo(0, 0)}
+              >
                 Hủy bỏ
               </Link>
             </div>

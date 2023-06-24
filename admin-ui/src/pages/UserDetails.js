@@ -61,6 +61,13 @@ const UserDetails = () => {
             </div>
 
             <div className='d-flex align-items-center gap-3'>
+              <h6 className='mb-0'>Địa chỉ:</h6>
+              <p className='mb-0'>
+                {currentUser.address ? currentUser.address : <i>Chưa thêm</i>}
+              </p>
+            </div>
+
+            <div className='d-flex align-items-center gap-3'>
               <h6 className='mb-0'>Ngày tạo tài khoản:</h6>
               <p className='mb-0'>{format_date(currentUser.createdAt)}</p>
             </div>

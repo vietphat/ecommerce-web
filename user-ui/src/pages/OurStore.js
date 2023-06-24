@@ -187,6 +187,7 @@ const OurStore = () => {
 
                           <div className='w-50'>
                             <Link
+                              className='text-dark fw-bold'
                               to={`/product/${p._id}`}
                               onClick={() => window.scrollTo(0, 0)}
                             >

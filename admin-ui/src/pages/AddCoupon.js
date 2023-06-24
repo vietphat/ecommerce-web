@@ -7,8 +7,12 @@ import { createCoupon } from '../features/coupon/couponSlice';
 import { useNavigate } from 'react-router-dom';
 
 let couponSchema = Yup.object({
-  name: Yup.string().required('Mã giảm giá không được để trống'),
-  expiry: Yup.date().required('Hạn sử dụng không được để trống'),
+  name: Yup.string()
+    .min(6, 'Mã giảm giá phải có từ 6 kí tự trở lên')
+    .required('Mã giảm giá không được để trống'),
+  expiry: Yup.date()
+    .min(new Date(), 'Ngày hết hạn phải sau ngày hiện tại')
+    .required('Hạn sử dụng không được để trống'),
   discount: Yup.number()
     .min(1, 'Phần trăm phải lớn hơn 1 và nhỏ hơn hoặc bằng 100')
     .max(100, 'Phần trăm phải lớn hơn 1 và nhỏ hơn hoặc bằng 100')
@@ -25,6 +29,7 @@ const AddCoupon = () => {
       expiry: '',
       discount: '',
     },
+    isInitialValid: false,
     validationSchema: couponSchema,
     // SUBMIT
     onSubmit: async (values) => {
@@ -92,6 +97,7 @@ const AddCoupon = () => {
 
           <button
             type='submit'
+            disabled={!formik.isValid}
             className='btn btn-success border-0 rounded-3 my-5'
           >
             Thêm mã giảm giá

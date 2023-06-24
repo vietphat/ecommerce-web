@@ -48,6 +48,12 @@ const columns = [
     sorter: (a, b) => a.quantity - b.quantity,
   },
   {
+    title: 'Đã bán',
+    dataIndex: 'sold',
+    defaultSortOrder: 'descend',
+    sorter: (a, b) => a.sold - b.sold,
+  },
+  {
     title: 'Ngày tạo',
     dataIndex: 'createdAt',
     defaultSortOrder: 'descend',
@@ -99,6 +105,7 @@ const Products = () => {
               category: product.category.title,
               brand: product.brand.title,
               quantity: product.quantity,
+              sold: product.sold,
               createdAt: format_date(product.createdAt),
               actions: (
                 <>

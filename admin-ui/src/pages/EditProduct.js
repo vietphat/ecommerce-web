@@ -16,14 +16,18 @@ import { getColors } from '../features/color/colorSlice';
 let productSchema = Yup.object({
   title: Yup.string().required('Tên sản phẩm không được để trống'),
   description: Yup.string().required('Mô tả không được để trống'),
-  price: Yup.number().required('Giá sản phẩm không được để trống'),
+  price: Yup.number()
+    .min(1, 'Giá không hợp lệ')
+    .required('Giá  không được để trống'),
   category: Yup.string().required('Loại sản phẩm không được để trống'),
   tag: Yup.string().required('Tags không được để trống'),
   brand: Yup.string().required('Thương hiệu không được để trống'),
   colors: Yup.array()
     .min(1, 'Vui lòng chọn ít nhất 1 màu')
     .required('Màu sản phẩm không được để trống'),
-  quantity: Yup.number().required('Số lượng sản phẩm không được để trống'),
+  quantity: Yup.number()
+    .min(1, 'Số lượng không hợp lệ')
+    .required('Số lượng sản phẩm không được để trống'),
 });
 
 const EditProduct = () => {
@@ -54,6 +58,7 @@ const EditProduct = () => {
 
   const formik = useFormik({
     enableReinitialize: true,
+    isInitialValid: false,
     initialValues: {
       title: currentProduct?.title,
       description: currentProduct?.description,
@@ -97,7 +102,7 @@ const EditProduct = () => {
             label='Mã sản phẩm'
             name='idSanPham'
             disabled={true}
-            value={currentProduct._id}
+            value={currentProduct?._id}
           />
           <div></div>
 
@@ -226,6 +231,7 @@ const EditProduct = () => {
 
           <button
             type='submit'
+            disabled={!formik.isValid}
             className='btn btn-success border-0 rounded-3 my-5'
           >
             Lưu thay đổi

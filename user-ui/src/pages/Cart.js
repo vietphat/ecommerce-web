@@ -12,6 +12,7 @@ import {
   updateQuantity,
 } from '../features/cart/cartSlice';
 import formatCurrency from '../utils/format_currency';
+import Colors from '../components/Colors';
 
 const Cart = () => {
   const dispatch = useDispatch();
@@ -73,23 +74,15 @@ const Cart = () => {
                       </div>
                       <div className='w-25'>
                         <Link
-                          className='cart-item-link'
+                          className='cart-item-link text-dark fw-bold'
                           to={`/product/${item?.product?._id}`}
                           onClick={() => window.scrollTo(0, 0)}
                         >
                           {item?.product?.title}
                         </Link>
-                        <p className='d-flex gap-2'>
-                          Màu:
-                          <li
-                            style={{
-                              listStyle: 'none',
-                              backgroundColor: item?.color?.title,
-                              width: '20px',
-                              height: '20px',
-                              borderRadius: '50%',
-                            }}
-                          />
+                        <p className='d-flex gap-2 mt-2'>
+                          Màu sắc:
+                          <Colors colors={item?.product?.colors} />
                         </p>
                       </div>
                     </div>

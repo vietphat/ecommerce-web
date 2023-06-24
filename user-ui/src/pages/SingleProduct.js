@@ -230,6 +230,11 @@ const SingleProduct = () => {
                       </p>
                     </div>
 
+                    <div className='d-flex gap-10 align-items-center my-2'>
+                      <h3 className='product-heading'>Đã bán: </h3>
+                      <p className='product-data'>{currentProduct.sold}</p>
+                    </div>
+
                     <div className='d-flex gap-10 flex-column mt-2 mb-3'>
                       <h3 className='product-heading'>Màu sắc: </h3>
                       <Colors colors={currentProduct.colors} />

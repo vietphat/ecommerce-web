@@ -18,6 +18,7 @@ const AddProductCategory = () => {
     initialValues: {
       title: '',
     },
+    isInitialValid: false,
     validationSchema: productCategorySchema,
     // SUBMIT
     onSubmit: async (values) => {
@@ -52,6 +53,7 @@ const AddProductCategory = () => {
 
           <button
             type='submit'
+            disabled={!formik.isValid}
             className='btn btn-success border-0 rounded-3 my-5'
           >
             Thêm loại sản phẩm

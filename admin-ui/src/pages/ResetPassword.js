@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch } from 'react-redux';
@@ -27,6 +27,7 @@ const ResetPassword = () => {
       password: '',
       confirmPassword: '',
     },
+    isInitialValid: false,
     validationSchema: resetPasswordSchema,
     onSubmit: async (values) => {
       const data = {
@@ -43,7 +44,13 @@ const ResetPassword = () => {
   });
 
   return (
-    <div className='py-5' style={{ background: '#ffd333', minHeight: '100vh' }}>
+    <div
+      className='py-5'
+      style={{
+        background: 'radial-gradient(circle at center, #ff6b6b, #0a81ab)',
+        minHeight: '100vh',
+      }}
+    >
       <br />
       <div className='my-5 w-25 bg-white rounded-3 mx-auto p-3'>
         <form onSubmit={formik.handleSubmit}>
@@ -71,17 +78,34 @@ const ResetPassword = () => {
             onChange={formik.handleChange('confirmPassword')}
             onBlur={formik.handleBlur('confirmPassword')}
           />
+
           <div className='error'>
             {formik.touched.confirmPassword && formik.errors.confirmPassword}
           </div>
-          <button
-            disabled={!formik.isValid}
-            className='border-0 px-3 py-2 text-white fw-bold w-100 mt-3'
-            style={{ background: '#ffd333' }}
-            type='submit'
-          >
-            Xác nhận
-          </button>
+
+          <div className='mt-3 d-flex justify-content-center flex-column gap-15 align-items-center'>
+            <button
+              disabled={!formik.isValid}
+              className={`border-0 px-3 py-2 text-white fw-bold w-100 mt-3 ${
+                formik.isValid ? '' : 'invalid-button'
+              }`}
+              style={{
+                background:
+                  'radial-gradient(circle at center, #ff6b6b, #0a81ab)',
+              }}
+              type='submit'
+            >
+              Xác nhận
+            </button>
+
+            <Link
+              className='mt-3 text-dark'
+              to='/'
+              onClick={() => window.scrollTo(0, 0)}
+            >
+              Hủy bỏ
+            </Link>
+          </div>
         </form>
       </div>
     </div>

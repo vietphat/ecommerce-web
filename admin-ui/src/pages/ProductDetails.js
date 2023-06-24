@@ -60,6 +60,11 @@ const ProductDetails = () => {
             </div>
 
             <div className='d-flex align-items-center gap-3'>
+              <h6 className='mb-0'>Đã bán:</h6>
+              <p className='mb-0'>{currentProduct?.sold}</p>
+            </div>
+
+            <div className='d-flex align-items-center gap-3'>
               <h6 className='mb-0'>Mô tả:</h6>
               <div
                 dangerouslySetInnerHTML={{

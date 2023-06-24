@@ -85,6 +85,15 @@ strong {
   color: var(--color-131921);
 }
 
+.invalid-button {
+  opacity: 0.5;
+}
+
+button.invalid-button:hover {
+  background-color: var(--color-232f3e);
+  color: #fff;
+}
+
 .error {
   color: #f00;
   font-size: 13px;

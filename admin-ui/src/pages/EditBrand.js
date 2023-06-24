@@ -25,6 +25,7 @@ const EditBrand = () => {
 
   const formik = useFormik({
     enableReinitialize: true,
+    isInitialValid: false,
     initialValues: {
       title: currentBrand?.title ? currentBrand?.title : '',
     },
@@ -62,6 +63,7 @@ const EditBrand = () => {
 
           <button
             type='submit'
+            disabled={!formik.isValid}
             className='btn btn-success border-0 rounded-3 my-5'
           >
             Sửa thương hiệu

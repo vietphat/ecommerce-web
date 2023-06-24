@@ -22,6 +22,7 @@ const Login = () => {
       email: '',
       password: '',
     },
+    isInitialValid: false,
     validationSchema: loginSchema,
     onSubmit: async (values) => {
       const result = await dispatch(login(values));
@@ -35,7 +36,13 @@ const Login = () => {
   const { message } = useSelector((state) => state.auth);
 
   return (
-    <div className='py-5' style={{ background: '#ffd333', minHeight: '100vh' }}>
+    <div
+      className='py-5'
+      style={{
+        background: 'radial-gradient(circle at center, #ff6b6b, #0a81ab)',
+        minHeight: '100vh',
+      }}
+    >
       <br />
       <div className='my-5 w-25 bg-white rounded-3 mx-auto p-3'>
         <h3 className='text-center title'>Đăng nhập</h3>
@@ -51,12 +58,10 @@ const Login = () => {
             name='email'
             value={formik.values.email}
             onChange={formik.handleChange('email')}
-            onBlur={() => {}}
+            onBlur={formik.handleBlur('email')}
           />
           <div className='error'>
-            {formik.touched.email && formik.errors.email ? (
-              <div>{formik.errors.email}</div>
-            ) : null}
+            {formik.touched.email && formik.errors.email}
           </div>
 
           <Input
@@ -66,21 +71,26 @@ const Login = () => {
             name='password'
             value={formik.values.password}
             onChange={formik.handleChange('password')}
-            onBlur={() => {}}
+            onBlur={formik.handleBlur('password')}
           />
           <div className='error'>
-            {formik.touched.password && formik.errors.password ? (
-              <div>{formik.errors.password}</div>
-            ) : null}
+            <div>{formik.touched.password && formik.errors.password}</div>
           </div>
 
-          <div className='mb-3 text-end'>
-            <Link to='/forgot-password' onClick={() => window.scrollTo(0, 0)}>
+          <div className='mb-3 mt-2 text-end'>
+            <Link
+              className='text-dark'
+              to='/forgot-password'
+              onClick={() => window.scrollTo(0, 0)}
+            >
               Quên mật khẩu?
             </Link>
           </div>
           <button
-            className='d-block border-0 px-3 py-2 text-white fw-bold w-100 text-center text-decoration-none fs-5'
+            disabled={!formik.isValid}
+            className={`d-block border-0 px-3 py-2 text-white fw-bold w-100 text-center text-decoration-none fs-5 ${
+              formik.isValid ? '' : 'invalid-button'
+            }`}
             style={{ background: '#ffd333' }}
             type='submit'
           >

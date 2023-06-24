@@ -7,7 +7,12 @@ import Input from '../components/Input';
 import { createColor } from '../features/color/colorSlice';
 
 let colorSchema = Yup.object({
-  title: Yup.string().required('Màu không được để trống'),
+  title: Yup.string()
+    .matches(
+      /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/,
+      'Màu sản phẩm phải là kiểu hex'
+    )
+    .required('Màu không được để trống'),
 });
 
 const AddColor = () => {
@@ -18,6 +23,7 @@ const AddColor = () => {
     initialValues: {
       title: '',
     },
+    isInitialValid: false,
     validationSchema: colorSchema,
     // SUBMIT
     onSubmit: async (values) => {
@@ -52,6 +58,7 @@ const AddColor = () => {
 
           <button
             type='submit'
+            disabled={!formik.isValid}
             className='btn btn-success border-0 rounded-3 my-5'
           >
             Thêm màu sản phẩm

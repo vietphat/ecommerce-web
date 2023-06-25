@@ -2,6 +2,7 @@ const Enquiry = require('../models/Enquiry');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/AppError');
 const validateMongoDbId = require('../config/validateMongoDbId');
+const Email = require('../utils/email');
 
 exports.getAllEnquiries = catchAsync(async (req, res, next) => {
   const enquiries = await Enquiry.find();
@@ -44,6 +45,8 @@ exports.createAnEnquiry = catchAsync(async (req, res, next) => {
     comment,
     status,
   });
+
+  await new Email({ firstName: name, email }).sendFeedbackWhenReceivedEnquiry();
 
   res.status(200).json({
     status: 'Thành công',

@@ -1,6 +1,6 @@
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { AiOutlineHome, AiOutlineMail } from 'react-icons/ai';
 import { BiPhoneCall, BiInfoCircle } from 'react-icons/bi';
 
@@ -30,6 +30,8 @@ const enquirySchema = Yup.object({
 
 const Contact = () => {
   const dispatch = useDispatch();
+
+  const { isLoading } = useSelector((state) => state.auth);
 
   const formik = useFormik({
     initialValues: {
@@ -130,13 +132,19 @@ const Contact = () => {
 
                   <div>
                     <button
-                      disabled={!formik.isValid}
+                      disabled={!formik.isValid || isLoading}
                       className={`button border-0 ${
                         formik.isValid ? '' : 'invalid-button'
                       }`}
                       type='submit'
                     >
-                      Gửi
+                      {isLoading ? (
+                        <div class='spinner-border text-dark' role='status'>
+                          <span class='visually-hidden'>Loading...</span>
+                        </div>
+                      ) : (
+                        'Gửi'
+                      )}
                     </button>
                   </div>
                 </form>

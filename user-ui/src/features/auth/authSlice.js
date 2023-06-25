@@ -205,6 +205,9 @@ export const authSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(forgotPassword.fulfilled, (state, action) => {
+        state.isSuccess = true;
+        state.isError = false;
+        state.isLoading = false;
         toast.success('Vui lòng kiểm tra email để lấy lại mật khẩu mới!');
       })
       .addCase(forgotPassword.rejected, (state, action) => {

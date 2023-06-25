@@ -67,4 +67,11 @@ module.exports = class Email {
       Kiểm tra thông tin đơn hàng <a href="${this.url}">tại đây</a></p>`
     );
   }
+
+  async sendFeedbackWhenReceivedEnquiry() {
+    await this.send(
+      `Cám ơn đã gửi thắc mắc.`,
+      `<p>Xin chào ${this.firstName}. Cám ơn bạn đã gửi thắc mắc đến cửa hàng. Chúng tôi sẽ gửi phản hồi đến bạn sớm nhất có thể.</p>`
+    );
+  }
 };
